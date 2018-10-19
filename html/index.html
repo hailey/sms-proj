@@ -1,0 +1,21 @@
+<html>
+<head>
+    <link rel="stylesheet" href="inc/main.css">
+    <script src="inc/jquery-3.3.1.min.js"></script>
+    <title> Yeah! </title>
+    <script type="text/javascript">
+      $("document").ready(function() {
+      $("#counter").html("6");
+        
+        $.get( "test.html",function( data ) {
+            alert( "Data Loaded: " + data );
+            $("#counter").html(data);
+        });
+      });
+    </script>
+</head>
+<body>
+    <h1>yeah boi!</h1>
+    <p>The count is <div id='counter'>0</div></p>
+</body>
+</html>
