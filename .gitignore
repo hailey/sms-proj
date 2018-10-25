@@ -4,3 +4,5 @@ creds\.sh
 *.komodoproject
 
 desktop\.ini
+
+sms\.db
