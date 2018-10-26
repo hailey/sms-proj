@@ -5,17 +5,26 @@
     <title> Yeah! </title>
     <script type="text/javascript">
       $("document").ready(function() {
-      $("#counter").html("6");
-        
-        $.get( "test.html",function( data ) {
-            alert( "Data Loaded: " + data );
-            $("#counter").html(data);
-        });
+            // Do something...
+            $("#submit-chat").click(function(){
+                inputchat = $("#input-chat").val();
+                newHTML = '<div id="msg"><span class="chat-from">760 555 1212</span>: ' + inputchat + '</div>';
+                $("#chat-body").append( newHTML );
+            });
       });
     </script>
 </head>
 <body>
-    <h1>yeah boi!</h1>
-    <p>The count is <div id='counter'>0</div></p>
+    <h1 id="channel-name">(888) 555-1212</h1>
+    <div id="chat">
+        <div id="chat-body">
+            <div id="msg"><span class="chat-from">818 555 1212</span>: Hi how are you?</div>
+            <div id="msg"><span class="chat-from">818 555 1212</span>: Did you get this sample message?</div>
+        </div>
+        <div id="chat-input">
+                <input type="text" id="input-chat" />
+                <input type="button" id="submit-chat" value="Send"/>
+        </div>
+    </div>
 </body>
 </html>

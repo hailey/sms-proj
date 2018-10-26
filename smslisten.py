@@ -59,7 +59,7 @@ def smscount():
 def logsqlite(msg_id, to_did, from_did, msg):
     smsdb = sqlite3.connect('sms.db')
     smscursor = smsdb.cursor()
-    smscursor.execute("INSERT INTO sms VALUES (?,?,?,?,?)", (msg_id,datetime.datetime.now(),to_did, from_did, msg))
+    smscursor.execute("INSERT INTO sms VALUES (?,?,?,?,?)", (msg_id, int(time.time()), to_did, from_did, msg))
     smsdb.commit()
     smsdb.close()
     return '0'
