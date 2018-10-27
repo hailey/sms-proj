@@ -21,16 +21,16 @@ sqluser = config.get("sql","sqluser")
 sqlpass = config.get("sql","sqlpass")
 sqldb = config.get("sql","sqldb")
 
-
 basic_auth_user_name = config.get("flowroute","fr_access_key")
 basic_auth_password = config.get("flowroute","fr_secret_key")
-
 
 client = FlowroutenumbersandmessagingClient(basic_auth_user_name, basic_auth_password)
 messages_controller = client.messages
 
 #Flowroute API endpoint and reply SMS to be sent
 fr_api_url = "https://api.flowroute.com/v2.1/messages"
+
+############ Lets start our stuff
 db = MySQLdb.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
 
 
@@ -46,7 +46,9 @@ def inboundsms():
     reply_from = json_content['data']['attributes']['to']
     msg_id = json_content['data']['id']
     body = json_content['data']['attributes']['body'].decode('utf-8')
-
+    
+    logmysql(msg_id, json_content['data']['attributes']['timestamp'], 'inbound', reply_from, reply_to,json_content['data']['attributes']['amount_display'], body) # Lets log to our silly db.
+    
     pprint.pprint(body)
     if body.lower() == u'count'.lower():
         sendreply(reply_to, reply_from, "There have been " + str(counter) + " messages sent to this system.")
@@ -54,8 +56,6 @@ def inboundsms():
         sendreply(reply_to, reply_from, "Right now only the command 'count' works.")
     else:       #Echo a reply
         sendreply(reply_to, reply_from, "What? You should type 'help' for a list of valid commands")
-    
-    logmysql(msg_id, json_content['data']['attributes']['timestamp'], 'inbound', reply_from, reply_to,json_content['data']['attributes']['amount_display'], body) # Lets log to our silly db.
 
     counter += 1
     return '0'
@@ -89,9 +89,9 @@ def sendreply(reply_to, reply_from, msg):
     print ("---Returning message")
     result = messages_controller.send_a_message(request_body)
     pprint.pprint(result)
-    json_content = request.json
-    msg_id = json_content['data']['id']
-    logmysql(msg_id, json_content['data']['attributes']['timestamp'], 'outbound', reply_to, reply_from,'$0.0040', msg) # Lets log to our silly db.
+   
+    msg_id = result['data']['id']
+    logmysql(msg_id, '', 'outbound', reply_to, reply_from,'$0.0040', msg) # Lets log to our silly db.
 
     print ("ID: ", msg_id)
     return '0'
