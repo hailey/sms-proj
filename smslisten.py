@@ -4,8 +4,9 @@ import requests
 import json
 import pprint
 import time
-import sqlite3
+import MySQLdb
 import datetime
+import ConfigParser
 from flask import Flask, request
 from flowroutenumbersandmessaging.flowroutenumbersandmessaging_client import FlowroutenumbersandmessagingClient
 import sys
@@ -13,10 +14,16 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 counter = 1
+config = ConfigParser.ConfigParser()
+config.read('config.ini')
+sqlhost = config.get("sql","sqlhost")
+sqluser = config.get("sql","sqluser")
+sqlpass = config.get("sql","sqlpass")
+sqldb = config.get("sql","sqldb")
 
-basic_auth_user_name = os.environ.get('FR_ACCESS_KEY')
-basic_auth_password = os.environ.get('FR_SECRET_KEY')
-from_number = os.environ.get('FROM_NUMBER')
+
+basic_auth_user_name = config.get("flowroute","fr_access_key")
+basic_auth_password = config.get("flowroute","fr_secret_key")
 
 
 client = FlowroutenumbersandmessagingClient(basic_auth_user_name, basic_auth_password)
@@ -24,6 +31,8 @@ messages_controller = client.messages
 
 #Flowroute API endpoint and reply SMS to be sent
 fr_api_url = "https://api.flowroute.com/v2.1/messages"
+db = MySQLdb.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+
 
 app = Flask(__name__)
 app.debug = True
@@ -46,7 +55,7 @@ def inboundsms():
     else:       #Echo a reply
         sendreply(reply_to, reply_from, "What? You should type 'help' for a list of valid commands")
     
-    logsqlite(msg_id, reply_from, reply_to, body) # Lets log to our silly db.
+    logmysql(msg_id, json_content['data']['attributes']['timestamp'], 'inbound', reply_from, reply_to,json_content['data']['attributes']['amount_display'], body) # Lets log to our silly db.
 
     counter += 1
     return '0'
@@ -56,13 +65,13 @@ def smscount():
     print("Returning the count of " + str(counter) + ".")
     return str(counter)
 
-def logsqlite(msg_id, to_did, from_did, msg):
-    smsdb = sqlite3.connect('sms.db')
-    smscursor = smsdb.cursor()
-    smscursor.execute("INSERT INTO sms VALUES (?,?,?,?,?)", (msg_id, int(time.time()), to_did, from_did, msg))
-    smsdb.commit()
-    smsdb.close()
+def logmysql(msg_id, msg_ts, direction, to_did, from_did, cost, msg):
+    cur = db.cursor()
+    cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`, `body`)VALUES \
+                (%s, %s, %s, %s, %s, %s, %s, %s)",(int(time.time()),msg_ts, direction, from_did, to_did, cost, msg_id, msg))
+    db.commit()
     return '0'
+
 
 def sendreply(reply_to, reply_from, msg):
     request_body = '{ \
@@ -79,7 +88,12 @@ def sendreply(reply_to, reply_from, msg):
 
     print ("---Returning message")
     result = messages_controller.send_a_message(request_body)
-    #pprint.pprint(result)    
+    pprint.pprint(result)
+    json_content = request.json
+    msg_id = json_content['data']['id']
+    logmysql(msg_id, json_content['data']['attributes']['timestamp'], 'outbound', reply_to, reply_from,'$0.0040', msg) # Lets log to our silly db.
+
+    print ("ID: ", msg_id)
     return '0'
 
 if __name__ == '__main__':
