@@ -33,7 +33,6 @@ fr_api_url = "https://api.flowroute.com/v2.1/messages"
 ############ Lets start our stuff
 db = MySQLdb.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
 
-
 app = Flask(__name__)
 app.debug = True
 
