@@ -8,15 +8,17 @@
       $("document").ready(function() {
             // Do something...
         $("#submit-chat").click(function(){
+          fromDid = '19516025252';
           inputchat = $("#input-chat").val();
-          newHTML = '<div id="msg"><span class="chat-from">760 555 1212</span>: ' + inputchat + '</div>';
-          $("#chat-body").append( newHTML );
           $.ajax({
             method: "POST",
             url: "/submitMessage",
-            data: { message: inputchat }
+            data: { message: inputchat, fromdid: fromDid }
           }).done(function( msg ) {
-            alert( "Data Saved: " + msg );
+            msgParsed = $.parseJSON(msg);
+            newHTML = '<div id="msg"><span class="chat-from">' + msgParsed.fromdid + '</span>: ' + msgParsed.msg + '</div>';
+            $("#chat-body").append( newHTML );
+            alert(msg);
           });
         });
         $('#test-ajax').click(function() {
@@ -24,11 +26,12 @@
               url: '/testAjax',
               type: 'GET',
               success: function(response) {
-                newHTML = '<div id="msg"><span class="chat-from">260 555 1212</span>: ' + response + '</div>';
+                newHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: ' + response + '</div>';
                 $("#chat-body").append( newHTML );
               },
               error: function(error) {
-                  console.log(error);
+                errorHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: Error ' + error + '</div>';
+                $("#chat-body").append( errorHTML );
               }
           });
         });
@@ -39,8 +42,7 @@
     <h1 id="channel-name">(888) 555-1212</h1>
     <div id="chat">
         <div id="chat-body">
-            <div id="msg"><span class="chat-from">818 555 1212</span>: Hi how are you?</div>
-            <div id="msg"><span class="chat-from">818 555 1212</span>: Did you get this sample message?</div>
+            <div id="msg"><span class="chat-from">OPERATOR</span>: Welcome!</div>
         </div>
         <div id="chat-input">
                 <input type="text" id="input-chat" />

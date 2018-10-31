@@ -1,23 +1,15 @@
 import time
-import MySQLdb
 import datetime
 import pprint
 import ConfigParser
-from flask import Flask
-from flask import render_template
-from flask import request
+import json
+import appdb
+from flask import Flask, render_template, request
 app = Flask(__name__)
 app.debug = True
 
 config = ConfigParser.ConfigParser()
 config.read('config.ini')
-sqlhost = config.get("sql","sqlhost")
-sqluser = config.get("sql","sqluser")
-sqlpass = config.get("sql","sqlpass")
-sqldb = config.get("sql","sqldb")
-
-############ Lets start our stuff
-db = MySQLdb.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
 
 @app.route('/')
 def index():
@@ -26,8 +18,13 @@ def index():
 @app.route('/submitMessage', methods=['POST'])
 def submitMessage():
     message = request.form['message']
-    pprint.pprint('Got ' + message)
-    return message
+    fromDid = request.form['fromdid']
+    pprint.pprint('Got ' + message + ',' + fromDid)
+    
+    if appdb.validateFrom(fromDid) == False:
+        return "Not Authed"
+    returndata = json.dumps({"msg" : message, "fromdid" : fromDid})
+    return returndata
 
 @app.route('/testAjax')
 def testAjax():
