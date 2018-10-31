@@ -10,15 +10,22 @@
         $("#submit-chat").click(function(){
           fromDid = '19516025252';
           inputchat = $("#input-chat").val();
+          if (!$("#input-chat").val()){
+            alert("Empty message field! Cant do this!");
+            return false;
+          }
           $.ajax({
             method: "POST",
             url: "/submitMessage",
             data: { message: inputchat, fromdid: fromDid }
           }).done(function( msg ) {
+            dt = new Date();
+            time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
             msgParsed = $.parseJSON(msg);
-            newHTML = '<div id="msg"><span class="chat-from">' + msgParsed.fromdid + '</span>: ' + msgParsed.msg + '</div>';
+            statusHTML = '<div id="alert-messages">Success! Got "'+ msg +'"</div>';
+            newHTML = '<div id="msg"><span class="chat-time">(' + time + ')</span> <span class="chat-from">' + msgParsed.fromdid + '</span>: ' + msgParsed.msg + '</div>';
             $("#chat-body").append( newHTML );
-            alert(msg);
+            $("#alert-messages").html(statusHTML);
           });
         });
         $('#test-ajax').click(function() {
@@ -27,11 +34,15 @@
               type: 'GET',
               success: function(response) {
                 newHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: ' + response + '</div>';
+                statusHTML = '<div id="alert-messages">Success! Got "'+ response +'"</div>';
                 $("#chat-body").append( newHTML );
+                $("#alert-messages").html(statusHTML);
               },
               error: function(error) {
                 errorHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: Error ' + error + '</div>';
+                statusHTML = '<div id="alert-messages">Error! Got "'+ error +'"</div>';
                 $("#chat-body").append( errorHTML );
+                $("#alert-messages").html(statusHTML);
               }
           });
         });
@@ -39,7 +50,7 @@
     </script>
 </head>
 <body>
-    <h1 id="channel-name">(888) 555-1212</h1>
+    <h1 id="channel-name">SMS Project</h1>
     <div id="chat">
         <div id="chat-body">
             <div id="msg"><span class="chat-from">OPERATOR</span>: Welcome!</div>
@@ -48,6 +59,9 @@
                 <input type="text" id="input-chat" />
                 <input type="button" id="submit-chat" value="Send"/>
                 <input type="button" id="test-ajax" value="test ajax"/>
+        </div>
+        <div id="alert-messages">
+          Stuff
         </div>
     </div>
 </body>
