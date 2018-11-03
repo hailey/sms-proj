@@ -31,7 +31,7 @@ def submitMessage():
 
 @app.route('/testAjax')
 def testAjax():
-    return 'Success'
+    return json.dumps({"msg" : 'Success!'})
 
 if __name__ == '__main__':
     app.run(
