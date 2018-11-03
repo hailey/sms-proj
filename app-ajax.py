@@ -19,10 +19,13 @@ def index():
 def submitMessage():
     message = request.form['message']
     fromDid = request.form['fromdid']
+    targetDid = request.form['targetdid']
+    
     pprint.pprint('Got ' + message + ',' + fromDid)
     
     if appdb.validateFrom(fromDid) == False:
-        return "Not Authed"
+        return json.dumps({'error': 'Unauthorized source'})
+    
     returndata = json.dumps({"msg" : message, "fromdid" : fromDid})
     return returndata
 

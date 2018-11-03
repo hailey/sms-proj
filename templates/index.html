@@ -5,13 +5,20 @@
     <script src="/static/jquery-3.3.1.min.js"></script>
     <title> Yeah! </title>
     <script type="text/javascript">
-      $("document").ready(function() {
+    $("document").ready(function() {
             // Do something...
-        $("#submit-chat").click(function(){
-          fromDid = '19516025252';
+        function setStatus(statusmsg) {
+            $("#alert-messages").text(statusmsg);
+        }
+        function clearInput() {
+            $("#input-chat").val("");
+        }
+        $( "#chat-form" ).submit(function( event ) {
+          event.preventDefault();
+          fromDid = $("#source-num").val();
           inputchat = $("#input-chat").val();
           if (!$("#input-chat").val()){
-            alert("Empty message field! Cant do this!");
+            setStatus("Empty message field! Cant do this!");
             return false;
           }
           $.ajax({
@@ -22,10 +29,14 @@
             dt = new Date();
             time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
             msgParsed = $.parseJSON(msg);
-            statusHTML = '<div id="alert-messages">Success! Got "'+ msg +'"</div>';
+            if (msgParsed.error) {
+                setStatus('Error Got "'+ msgParsed.error +'"');
+                return false;
+            }
             newHTML = '<div id="msg"><span class="chat-time">(' + time + ')</span> <span class="chat-from">' + msgParsed.fromdid + '</span>: ' + msgParsed.msg + '</div>';
             $("#chat-body").append( newHTML );
-            $("#alert-messages").html(statusHTML);
+            setStatus('Success! Got "'+ msg +'"');
+            clearInput();
           });
         });
         $('#test-ajax').click(function() {
@@ -56,9 +67,19 @@
             <div id="msg"><span class="chat-from">OPERATOR</span>: Welcome!</div>
         </div>
         <div id="chat-input">
-                <input type="text" id="input-chat" />
-                <input type="button" id="submit-chat" value="Send"/>
-                <input type="button" id="test-ajax" value="test ajax"/>
+            <form id="chat-form">
+                <div id="chat-director">
+                    from: <input type="tel" id="source-num" value="19516025252"/>
+                    to: <input type="tel" id="dest-num" />
+                </div>
+                <div id="chat-fields">
+                    <input type="text" id="input-chat" />
+                </div>
+                <div id="chat-controls">
+                    <input type="submit" id="submit-chat" value="Send"/>
+                    <input type="button" id="test-ajax" value="test ajax"/>
+                </div>
+            </form>
         </div>
         <div id="alert-messages">
           Stuff
