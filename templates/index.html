@@ -16,7 +16,9 @@
         $( "#chat-form" ).submit(function( event ) {
           event.preventDefault();
           fromDid = $("#source-num").val();
+          targetDid = $("#dest-num").val();
           inputchat = $("#input-chat").val();
+          
           if (!$("#input-chat").val()){
             setStatus("Empty message field! Cant do this!");
             return false;
@@ -24,7 +26,7 @@
           $.ajax({
             method: "POST",
             url: "/submitMessage",
-            data: { message: inputchat, fromdid: fromDid }
+            data: { message: inputchat, fromdid: fromDid, targetdid : targetDid }
           }).done(function( msg ) {
             dt = new Date();
             time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();

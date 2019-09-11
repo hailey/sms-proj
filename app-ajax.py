@@ -26,7 +26,7 @@ def submitMessage():
     if appdb.validateFrom(fromDid) == False:
         return json.dumps({'error': 'Unauthorized source'})
     
-    returndata = json.dumps({"msg" : message, "fromdid" : fromDid})
+    returndata = json.dumps({"msg" : message, "fromdid" : fromDid, 'targetdid' : targetDid})
     return returndata
 
 @app.route('/testAjax')

@@ -9,6 +9,7 @@ import datetime
 import ConfigParser
 from flask import Flask, request
 from flowroutenumbersandmessaging.flowroutenumbersandmessaging_client import FlowroutenumbersandmessagingClient
+
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -20,6 +21,8 @@ sqlhost = config.get("sql","sqlhost")
 sqluser = config.get("sql","sqluser")
 sqlpass = config.get("sql","sqlpass")
 sqldb = config.get("sql","sqldb")
+
+smsRate = 0.0040
 
 basic_auth_user_name = config.get("flowroute","fr_access_key")
 basic_auth_password = config.get("flowroute","fr_secret_key")
@@ -90,7 +93,7 @@ def sendreply(reply_to, reply_from, msg):
     pprint.pprint(result)
    
     msg_id = result['data']['id']
-    logmysql(msg_id, '', 'outbound', reply_to, reply_from,'$0.0040', msg) # Lets log to our silly db.
+    logmysql(msg_id, '', 'outbound', reply_to, reply_from,smsRate, msg) # Lets log to our silly db.
 
     print ("ID: ", msg_id)
     return '0'
