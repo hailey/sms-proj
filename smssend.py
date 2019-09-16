@@ -7,8 +7,9 @@ import random
 import string
 from flowroutenumbersandmessaging.flowroutenumbersandmessaging_client import FlowroutenumbersandmessagingClient
 
-basic_auth_user_name = os.environ.get('FR_ACCESS_KEY')
-basic_auth_password = os.environ.get('FR_SECRET_KEY')
+basic_auth_user_name = config.get("flowroute","fr_access_key")
+basic_auth_password = config.get("flowroute","fr_secret_key")
+
 
 mobile_number = os.environ.get('TO_NUMBER')
 from_number = os.environ.get('FROM_NUMBER')

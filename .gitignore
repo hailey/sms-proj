@@ -14,3 +14,5 @@ html/
 *.pyc
 
 test\.py
+
+flowroute-sdk-v3-python
