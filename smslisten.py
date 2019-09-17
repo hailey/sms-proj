@@ -47,7 +47,7 @@ def inboundsms():
     reply_to = json_content['data']['attributes']['from']
     reply_from = json_content['data']['attributes']['to']
     msg_id = json_content['data']['id']
-    body = json_content['data']['attributes']['body'].decode('utf-8')
+    body = json_content['data']['attributes']['body']
     
     logmysql(msg_id, json_content['data']['attributes']['timestamp'], 'inbound', reply_from, reply_to,json_content['data']['attributes']['amount_display'], body) # Lets log to our silly db.
     
