@@ -2,6 +2,7 @@
 
 import os
 import urllib
+from importlib import reload
 import requests
 import json
 import pprint
