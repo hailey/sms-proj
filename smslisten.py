@@ -52,6 +52,8 @@ def inboundsms():
     logmysql(msg_id, json_content['data']['attributes']['timestamp'], 'inbound', reply_from, reply_to,json_content['data']['attributes']['amount_display'], body) # Lets log to our silly db.
     
     pprint.pprint(body)
+    pprint.pprint(reply_from)
+    pprint.pprint(reply_to)
     if body.lower() == u'count'.lower():
         sendreply(reply_to, reply_from, "There have been " + str(counter) + " messages sent to this system.")
     elif body.lower() == u'help'.lower():
