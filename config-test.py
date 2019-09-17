@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 # config-test.py
 # This file will run and tell you the values of the configuration.
 
-import ConfigParser
-config = ConfigParser.ConfigParser()
+import configparser
+config = configparser.ConfigParser()
 config.read('config.ini')
 
 sqlhost = config.get("sql","sqlhost")

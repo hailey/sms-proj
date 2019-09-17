@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import urllib
 import requests
@@ -6,7 +8,7 @@ import pprint
 import time
 import MySQLdb
 import datetime
-import ConfigParser
+import configparser
 from flask import Flask, request
 from flowroutenumbersandmessaging.flowroutenumbersandmessaging_client import FlowroutenumbersandmessagingClient
 
@@ -15,7 +17,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 counter = 1
-config = ConfigParser.ConfigParser()
+config = configparser.ConfigParser()
 config.read('config.ini')
 sqlhost = config.get("sql","sqlhost")
 sqluser = config.get("sql","sqluser")

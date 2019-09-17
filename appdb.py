@@ -1,10 +1,11 @@
+#!/usr/bin/env python3
 #appdb.py
 #We connect to our database and any database calls are put into functions here.
 
 import MySQLdb
 import time
-import ConfigParser
-config = ConfigParser.ConfigParser()
+import configparser
+config = configparser.ConfigParser()
 config.read('config.ini')
 sqlhost = config.get("sql","sqlhost")
 sqluser = config.get("sql","sqluser")

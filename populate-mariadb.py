@@ -1,11 +1,12 @@
+#!/usr/bin/env python3
 # Populate mariadb/mysqldb !
 # Okay so lets do this right.
 
 import MySQLdb
-import ConfigParser
+import configparser
 import time
 
-config = ConfigParser.ConfigParser()
+config = configparser.ConfigParser()
 config.read('config.ini')
 
 sqlhost = config.get("sql","sqlhost")
