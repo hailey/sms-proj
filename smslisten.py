@@ -2,7 +2,6 @@
 
 import os
 import urllib
-from importlib import reload
 import requests
 import json
 import pprint
@@ -14,8 +13,6 @@ from flask import Flask, request
 from flowroutenumbersandmessaging.flowroutenumbersandmessaging_client import FlowroutenumbersandmessagingClient
 
 import sys
-reload(sys)
-#sys.setdefaultencoding('utf-8')
 
 counter = 1
 config = configparser.ConfigParser()
