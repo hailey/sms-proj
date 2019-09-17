@@ -15,7 +15,7 @@ from flowroutenumbersandmessaging.flowroutenumbersandmessaging_client import Flo
 
 import sys
 reload(sys)
-sys.setdefaultencoding('utf-8')
+#sys.setdefaultencoding('utf-8')
 
 counter = 1
 config = configparser.ConfigParser()
