@@ -55,10 +55,10 @@ def inboundsms():
     pprint.pprint(reply_from)
     pprint.pprint(reply_to)
     if body.lower() == u'count'.lower():
-        print 'Sending count reply.'
+        print('Sending count reply.')
         sendreply(reply_to, reply_from, "There have been " + str(counter) + " messages sent to this system.")
     elif body.lower() == u'help'.lower():
-        print 'Sending help reply.'
+        print('Sending help reply.')
         sendreply(reply_to, reply_from, "Right now only the command 'count' works.")
     else:       #Echo a reply
         sendreply(reply_to, reply_from, "What? You should type 'help' for a list of valid commands")
