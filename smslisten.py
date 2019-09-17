@@ -44,8 +44,8 @@ def inboundsms():
     global counter
     #extract attributes from POSTed JSON of inbound SMS
     json_content = request.json
-    reply_from = json_content['data']['attributes']['from']
-    reply_to = json_content['data']['attributes']['to']
+    reply_to = json_content['data']['attributes']['from']
+    reply_from = json_content['data']['attributes']['to']
     msg_id = json_content['data']['id']
     body = json_content['data']['attributes']['body']
     
