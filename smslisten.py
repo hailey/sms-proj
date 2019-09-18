@@ -2,7 +2,7 @@
 
 import os
 import urllib
-import requests
+#import requests
 import json
 import pprint
 import time
