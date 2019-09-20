@@ -34,7 +34,6 @@ messages_controller = client.messages
 fr_api_url = "https://api.flowroute.com/v2.1/messages"
 
 ############ Lets start our stuff
-db = MySQLdb.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
 
 app = Flask(__name__)
 app.debug = True
@@ -72,10 +71,12 @@ def smscount():
     return str(counter)
 
 def logmysql(msg_id, msg_ts, direction, to_did, from_did, cost, msg):
+    db = MySQLdb.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
     cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`, `body`)VALUES \
                 (%s, %s, %s, %s, %s, %s, %s, %s)",(int(time.time()),msg_ts, direction, from_did, to_did, cost, msg_id, msg))
     db.commit()
+    db.close()
     return '0'
 
 
