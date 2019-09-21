@@ -73,7 +73,6 @@ def sendreply(reply_to, reply_from, msg):
       "to": "' + str(reply_to) + '", \
       "from": "' + str(reply_from) + '", \
       "body": "' + msg + '", \
-      "is_mms": "false" \
     } \
   } \
 }'
