@@ -81,12 +81,12 @@ def sendreply(reply_to, reply_from, msg):
     print ("---Returning message")
     result = messages_controller.send_a_message(request_body)
     pprint.pprint(result)
-   
+  
     msg_id = result['data']['id']
     appdb.logsms_db(msg_id, '', 'outbound', reply_to, reply_from,smsRate, msg) # Lets log to our silly db.
 
     print ("ID: ", msg_id)
-    return '0'
+    return 0
 
 if __name__ == '__main__':
     app.run(
