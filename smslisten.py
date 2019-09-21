@@ -48,6 +48,7 @@ def inboundsms():
     appdb.logsms_db(msg_id, json_content['data']['attributes']['timestamp'], 'inbound', reply_from, reply_to,json_content['data']['attributes']['amount_display'], body) # Lets log to our silly db.
     
     pprint.pprint(body)
+    pprint.pprint(msg_id)
     if body.lower() == u'count'.lower():
         print('Sending count reply.')
         smsMessage =  "There have been " + str(counter) + " messages sent to this system."
@@ -58,7 +59,7 @@ def inboundsms():
         smsMessage = "What? You should type 'help' for a list of valid commands"
     sendreply(reply_to, reply_from, smsMessage)
     counter += 1
-    return 'Success'
+    return "200: OK"
 
 @app.route('/smscount', methods=['GET'])
 def smscount():
@@ -72,20 +73,20 @@ def sendreply(reply_to, reply_from, msg):
     "attributes": { \
       "to": "' + str(reply_to) + '", \
       "from": "' + str(reply_from) + '", \
-      "body": "' + msg + '", \
+      "body": "' + msg + '" \
     } \
   } \
 }'
 
     print ("---Returning message")
     result = messages_controller.send_a_message(request_body)
-    pprint.pprint(result)
+#    pprint.pprint(result)
   
     msg_id = result['data']['id']
     appdb.logsms_db(msg_id, '', 'outbound', reply_to, reply_from,smsRate, msg) # Lets log to our silly db.
 
     print ("ID: ", msg_id)
-    return 0
+    return "0"
 
 if __name__ == '__main__':
     app.run(
