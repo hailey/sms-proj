@@ -58,7 +58,7 @@ def inboundsms():
         smsMessage = "What? You should type 'help' for a list of valid commands"
     sendreply(reply_to, reply_from, smsMessage)
     counter += 1
-    return '0'
+    return 'Success'
 
 @app.route('/smscount', methods=['GET'])
 def smscount():
