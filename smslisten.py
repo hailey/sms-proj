@@ -6,7 +6,7 @@ import appdb
 import json
 import pprint
 import time
-import MySQLdb
+#import PyMySQL
 import datetime
 
 import configparser
@@ -18,10 +18,6 @@ import sys
 counter = 1
 config = configparser.ConfigParser()
 config.read('config.ini')
-sqlhost = config.get("sql","sqlhost")
-sqluser = config.get("sql","sqluser")
-sqlpass = config.get("sql","sqlpass")
-sqldb = config.get("sql","sqldb")
 
 smsRate = 0.0040
 
@@ -32,7 +28,7 @@ client = FlowroutenumbersandmessagingClient(basic_auth_user_name, basic_auth_pas
 messages_controller = client.messages
 
 #Flowroute API endpoint and reply SMS to be sent
-fr_api_url = "https://api.flowroute.com/v2.1/messages"
+fr_api_url = "https://api.flowroute.com/v2.2/messages"
 
 ############ Lets start our stuff
 
@@ -54,13 +50,13 @@ def inboundsms():
     pprint.pprint(body)
     if body.lower() == u'count'.lower():
         print('Sending count reply.')
-        sendreply(reply_to, reply_from, "There have been " + str(counter) + " messages sent to this system.")
+        smsMessage =  "There have been " + str(counter) + " messages sent to this system."
     elif body.lower() == u'help'.lower():
         print('Sending help reply.')
-        sendreply(reply_to, reply_from, "Right now only the command 'count' works.")
+        smsMessage = "Right now only the command 'count' works."
     else:       #Echo a reply
-        sendreply(reply_to, reply_from, "What? You should type 'help' for a list of valid commands")
-
+        smsMessage = "What? You should type 'help' for a list of valid commands"
+    sendreply(reply_to, reply_from, smsMessage)
     counter += 1
     return '0'
 

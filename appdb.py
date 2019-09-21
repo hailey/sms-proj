@@ -2,7 +2,7 @@
 #appdb.py
 #We connect to our database and any database calls are put into functions here.
 
-import MySQLdb
+import pymysql
 import time
 import configparser
 config = configparser.ConfigParser()
