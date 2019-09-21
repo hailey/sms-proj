@@ -2,12 +2,13 @@
 
 import os
 import urllib
-#import requests
+import appdb
 import json
 import pprint
 import time
 import MySQLdb
 import datetime
+
 import configparser
 from flask import Flask, request
 from flowroutenumbersandmessaging.flowroutenumbersandmessaging_client import FlowroutenumbersandmessagingClient
@@ -48,11 +49,9 @@ def inboundsms():
     msg_id = json_content['data']['id']
     body = json_content['data']['attributes']['body']
     
-    logmysql(msg_id, json_content['data']['attributes']['timestamp'], 'inbound', reply_from, reply_to,json_content['data']['attributes']['amount_display'], body) # Lets log to our silly db.
+    appdb.logsms_db(msg_id, json_content['data']['attributes']['timestamp'], 'inbound', reply_from, reply_to,json_content['data']['attributes']['amount_display'], body) # Lets log to our silly db.
     
     pprint.pprint(body)
-    pprint.pprint(reply_from)
-    pprint.pprint(reply_to)
     if body.lower() == u'count'.lower():
         print('Sending count reply.')
         sendreply(reply_to, reply_from, "There have been " + str(counter) + " messages sent to this system.")
@@ -69,16 +68,6 @@ def inboundsms():
 def smscount():
     print("Returning the count of " + str(counter) + ".")
     return str(counter)
-
-def logmysql(msg_id, msg_ts, direction, to_did, from_did, cost, msg):
-    db = MySQLdb.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
-    cur = db.cursor()
-    cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`, `body`)VALUES \
-                (%s, %s, %s, %s, %s, %s, %s, %s)",(int(time.time()),msg_ts, direction, from_did, to_did, cost, msg_id, msg))
-    db.commit()
-    db.close()
-    return '0'
-
 
 def sendreply(reply_to, reply_from, msg):
     request_body = '{ \
@@ -98,7 +87,7 @@ def sendreply(reply_to, reply_from, msg):
     pprint.pprint(result)
    
     msg_id = result['data']['id']
-    logmysql(msg_id, '', 'outbound', reply_to, reply_from,smsRate, msg) # Lets log to our silly db.
+    appdb.logsms_db(msg_id, '', 'outbound', reply_to, reply_from,smsRate, msg) # Lets log to our silly db.
 
     print ("ID: ", msg_id)
     return '0'

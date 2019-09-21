@@ -1,14 +1,16 @@
+#!/usr/bin/env python3
+
 import time
 import datetime
 import pprint
-import ConfigParser
+import configparser
 import json
 import appdb
 from flask import Flask, render_template, request
 app = Flask(__name__)
 app.debug = True
 
-config = ConfigParser.ConfigParser()
+config = configparser.ConfigParser()
 config.read('config.ini')
 
 @app.route('/')
@@ -36,6 +38,6 @@ def testAjax():
 if __name__ == '__main__':
     app.run(
         host="0.0.0.0",
-        port=int("8090")
+        port=int("8890")
     )
     

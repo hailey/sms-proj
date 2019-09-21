@@ -17,7 +17,6 @@ sqldb = config.get("sql","sqldb")
 
 def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, msg):
     db = MySQLdb.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
-    db.ping()
     cur = db.cursor()
     cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`, `body`)VALUES \
                 (%s, %s, %s, %s, %s, %s, %s, %s)",(int(time.time()),msg_ts, direction, from_did, to_did, cost, msg_id, msg))
