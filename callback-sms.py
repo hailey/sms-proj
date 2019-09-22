@@ -69,3 +69,11 @@ def sendreply(reply_to, reply_from, msg):
         appdb.logsms_db(msg_id, '', 'outbound', reply_to, reply_from, smsRate, msg) # Lets log to our silly db.
         return "0"
     return "-1"
+
+#################
+##      Main loop
+if __name__ == '__main__':
+    app.run(
+        host="0.0.0.0",
+        port=int("8790")
+    )
