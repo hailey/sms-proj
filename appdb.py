@@ -3,6 +3,7 @@
 #We connect to our database and any database calls are put into functions here.
 
 import pymysql
+import pymysql.cursors
 import time
 import configparser
 config = configparser.ConfigParser()

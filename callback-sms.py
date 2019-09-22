@@ -46,8 +46,8 @@ def inboundsms():
     msg_id = json_content['data']['id']
     body = json_content['data']['attributes']['body']
     msg_timestamp = json_content['data']['attributes']['timestamp']
-    
-    msg_amount = re.search("\$?(\d.\d{1,5})",json_content['data']['attributes']['amount_display'])
+        #msg_amount = re.search("\$?(\d.\d{1,5})",json_content['data']['attributes']['amount_display'])
+    msg_amount = 0.0040
     
     appdb.logsms_db(msg_id, msg_timestamp, 'inbound', reply_from, reply_to, msg_amount, body) # Lets log to our silly db.
 
