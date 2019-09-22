@@ -14,7 +14,7 @@ basic_auth_password = config.get("flowroute","fr_secret_key")
 client = FlowroutenumbersandmessagingClient(basic_auth_user_name, basic_auth_password)
 messages_controller = client.messages
 
-def sendreply(reply_to, reply_from, msg):
+def sendsms(reply_to, reply_from, msg):
     request_body = '{ \
   "data": { "type": "message", \
     "attributes": { \
@@ -26,6 +26,5 @@ def sendreply(reply_to, reply_from, msg):
     result = messages_controller.send_a_message(request_body)
     if result:    
         msg_id = result['data']['id']
-        appdb.logsms_db(msg_id, '', 'outbound', reply_to, reply_from, smsRate, msg) # Lets log to our silly db.
-        return True
+        return msg_id
     return False
