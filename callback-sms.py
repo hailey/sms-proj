@@ -14,7 +14,6 @@ import appdb, appsms
 import configparser
 from flask import Flask, render_template, request
 
-smsRate = 0.0040
 
 ########################
 ##      Code starts here
@@ -38,7 +37,7 @@ def inboundsms():
     msg_id = json_content['data']['id']
     body = json_content['data']['attributes']['body']
     msg_timestamp = json_content['data']['attributes']['timestamp']
-    smsRate = json_content['data']['attributes']['amount_display'].strip('$')
+    smsRate = int(json_content['data']['attributes']['amount_display'])
 
     appdb.logsms_db(msg_id, msg_timestamp, 'inbound', reply_from, reply_to, smsRate, body) # Lets log to our silly db.
 
