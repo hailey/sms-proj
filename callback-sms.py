@@ -18,7 +18,6 @@ from flask import Flask, render_template, request
 ########################
 ##      Code starts here
 app = Flask(__name__)
-app.debug = True
 
 #########
 # This is so bare I don't need a config right now.
@@ -27,6 +26,9 @@ app.debug = True
 
 #############################
 ##      Callback defs go here
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/sms-inbound', methods=['POST'])
 def inboundsms():
@@ -40,7 +42,7 @@ def inboundsms():
     smsRate = json_content['data']['attributes']['amount_display'].replace('$','')
 
     appdb.logsms_db(msg_id, msg_timestamp, 'inbound', reply_from, reply_to, smsRate, body) # Lets log to our silly db.
-
+    #This command seems to make this function happen twice.
 #    appsms.sendsms(reply_to, reply_from, "Message received. Please wait for a reply.")
     return "0"
 
@@ -48,7 +50,8 @@ def inboundsms():
 #################
 ##      Main loop
 if __name__ == '__main__':
+    app.debug = True
     app.run(
         host="0.0.0.0",
-        port=int("8790")
+        port=8790
     )
