@@ -41,7 +41,7 @@ def inboundsms():
 
     appdb.logsms_db(msg_id, msg_timestamp, 'inbound', reply_from, reply_to, smsRate, body) # Lets log to our silly db.
 
-    appsms.sendsms(reply_to, reply_from, "Message received. Please wait for a reply.")
+#    appsms.sendsms(reply_to, reply_from, "Message received. Please wait for a reply.")
     return "0"
 
 
