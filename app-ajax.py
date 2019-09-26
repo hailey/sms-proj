@@ -47,14 +47,7 @@ def getNumMessages(did):
     smslog = appdb.getNumSMSLog(did,10)
     #pprint.pprint(smslog)
     i = 0
-    for line in smslog:
-        msgjson += json.dumps({'to':line[7],
-                              'from':line[6],
-                              'body':line[9],
-                              'timestamp': line[4]})
-
     msgjson = ""
-    i = 0
     for line in smslog:
         #pprint.pprint(line)
         if i >= 1:
