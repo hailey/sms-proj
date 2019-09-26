@@ -1,29 +1,37 @@
 body {
-    background-color: #000000;
-    color: #118811;
+    background-color: #1D2F2E;
+    color: #ACF39D;
 }
-
+/************
+ * 1D2F2E
+ * ACF39D
+ * B0C592
+ * A97C73
+ * AF3E4D
+ ************/
 .ts {
     font-size: 1em;
 }
 
 .to,.from {
     font-size: 2em;
-    color: #cff211;
+    color: #ACF39D;
 }
 
 .smschatlog {
     border:dashed;
+    border-color: #A97C73;
     padding: 10px;
     margin: 10px;
 }
 
 #chat-input {
     border: dotted;
+    border-color: #AF3E4D;
     padding: 1em;
     
 }
 .smsbody {
     font-size:2em;
-    color: #fef;
+    color: #B0C592;
 }
