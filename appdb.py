@@ -31,7 +31,7 @@ def getAllSMSLog(limit=5,order='desc'):
     #This gets the last X amount of logs from all numbers.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    cur.execute("SELECT * FROM messages ORDER BY timestamp DESC LIMIT %s;",(limit))
+    cur.execute("SELECT * FROM messages ORDER BY timestamp LIMIT %s;",(limit))
     rows = cur.fetchall()
     #for row in rows:
         #pprint.pprint(row)
@@ -42,7 +42,7 @@ def getNumSMSLog(did,limit=5):
     #This gets the last X amount of logs from all numbers.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    cur.execute("SELECT * FROM messages WHERE source_number=%s OR dest_number=%s ORDER BY timestamp DESC LIMIT %s;",(did,did,limit))
+    cur.execute("SELECT * FROM messages WHERE source_number=%s OR dest_number=%s ORDER BY timestamp LIMIT %s;",(did,did,limit))
     rows = cur.fetchall()
     #for row in rows:
         #pprint.pprint(row)

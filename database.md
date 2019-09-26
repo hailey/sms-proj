@@ -11,6 +11,7 @@ COLLATE='utf8_bin'
 ENGINE=InnoDB
 ;
 
+
 CREATE TABLE `destination` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`dest_did` VARCHAR(11) NOT NULL DEFAULT '0' COLLATE 'utf8_bin',
@@ -37,6 +38,7 @@ CREATE TABLE `dids` (
 COLLATE='utf8_bin'
 ENGINE=InnoDB
 ;
+
 
 CREATE TABLE `messages` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
