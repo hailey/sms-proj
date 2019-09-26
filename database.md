@@ -38,6 +38,7 @@ CREATE TABLE `dids` (
 COLLATE='utf8_bin'
 ENGINE=InnoDB
 ;
+INSERT INTO dids (number,provider,account_id) VALUES ('17605551212','Flowroute',1)
 
 
 CREATE TABLE `messages` (

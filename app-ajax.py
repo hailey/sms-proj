@@ -28,11 +28,13 @@ def getMessages():
         if i >= 1:
             msgjson = msgjson + ',' + json.dumps({'to':line[7],
                               'from':line[6],
-                              'body':line[9]})
+                              'body':line[9],
+                              'timestamp': line[4]})
         else:
             msgjson =  json.dumps({'to':line[7],
                               'from':line[6],
-                              'body':line[9]})
+                              'body':line[9],
+                              'timestamp': line[4]})
         i += 1
         
     
@@ -48,7 +50,8 @@ def getNumMessages(did):
     for line in smslog:
         msgjson += json.dumps({'to':line[7],
                               'from':line[6],
-                              'body':line[9]})
+                              'body':line[9],
+                              'timestamp': line[4]})
 
     msgjson = ""
     i = 0
@@ -57,11 +60,10 @@ def getNumMessages(did):
         if i >= 1:
             msgjson = msgjson + ',' + json.dumps({'to':line[7],
                               'from':line[6],
-                              'body':line[9]})
+                              'body':line[9],
+                              'timestamp': line[4]})
         else:
-            msgjson =  json.dumps({'to':line[7],
-                              'from':line[6],
-                              'body':line[9]})
+            msgjson =  json.dumps({'to':line[7],'from':line[6],'body':line[9],'timestamp': line[4]})
         i += 1
         
     
@@ -85,7 +87,7 @@ def submitMessage():
     else:
         msgTS = time.strftime("%Y-%m-%dT%H:%m:%SZ")
         appdb.logsms_db(msg_id, msgTS, 'outbound', targetDid, fromDid, 0.0040, message)
-        returndata = json.dumps({"msg" : message, "fromdid" : fromDid, 'targetdid' : targetDid})
+        returndata = json.dumps({"msg" : message, "fromdid" : fromDid, 'targetdid' : targetDid,})
     return returndata
 
 @app.route('/testAjax')

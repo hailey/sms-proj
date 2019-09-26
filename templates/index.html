@@ -18,7 +18,7 @@
                 chatHtml = ""
                 $.each(result, function(i,field){
                     chatHtml  = chatHtml +  "<div class='smschatlog'>" + field['from'] +
-                                " to " + field['to'] + ": " + field['body'] + "</div>";
+                                " to " + field['to'] + " [" + field['timestamp'] +"]: " + field['body'] + "</div>";
                 });
                 $("#chat-body").html(chatHtml);
             });
