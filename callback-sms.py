@@ -31,7 +31,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/sms-inbound', methods=['POST'])
-def inboundsms():
+def smsinbound():
     #extract attributes from POSTed JSON of inbound SMS
     json_content = request.json
     reply_to = json_content['data']['attributes']['from']

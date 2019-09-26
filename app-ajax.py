@@ -5,7 +5,7 @@ import datetime
 import pprint
 import configparser
 import json
-import appdb
+import appdb, appsms
 from flask import Flask, render_template, request
 app = Flask(__name__)
 app.debug = True
@@ -17,18 +17,74 @@ config.read('config.ini')
 def index():
     return render_template('index.html')
 
+@app.route('/getMessages',methods=['GET'])
+def getMessages():
+    smslog = appdb.getAllSMSLog(10)
+    #pprint.pprint(smslog)
+    msgjson = ""
+    i = 0
+    for line in smslog:
+        pprint.pprint(line)
+        if i >= 1:
+            msgjson = msgjson + ',' + json.dumps({'to':line[7],
+                              'from':line[6],
+                              'body':line[9]})
+        else:
+            msgjson =  json.dumps({'to':line[7],
+                              'from':line[6],
+                              'body':line[9]})
+        i += 1
+        
+    
+    msgArrayJson = '['+msgjson +']'
+    return msgArrayJson
+
+@app.route('/getNumber/<int:did>',methods=['GET'])
+def getNumMessages(did):
+    #This gets the mssages based on the provided from or two DID
+    smslog = appdb.getNumSMSLog(did,10)
+    #pprint.pprint(smslog)
+    i = 0
+    for line in smslog:
+        msgjson += json.dumps({'to':line[7],
+                              'from':line[6],
+                              'body':line[9]})
+
+    msgjson = ""
+    i = 0
+    for line in smslog:
+        pprint.pprint(line)
+        if i >= 1:
+            msgjson = msgjson + ',' + json.dumps({'to':line[7],
+                              'from':line[6],
+                              'body':line[9]})
+        else:
+            msgjson =  json.dumps({'to':line[7],
+                              'from':line[6],
+                              'body':line[9]})
+        i += 1
+        
+    
+    msgArrayJson = '['+msgjson +']'
+    return msgArrayJson
+
 @app.route('/submitMessage', methods=['POST'])
 def submitMessage():
+    #This is to submit a message.
     message = request.form['message']
     fromDid = request.form['fromdid']
     targetDid = request.form['targetdid']
     
-    pprint.pprint('Got ' + message + ',' + fromDid)
-    
     if appdb.validateFrom(fromDid) == False:
-        return json.dumps({'error': 'Unauthorized source'})
+        return json.dumps({'error': 'Unauthorized source phone number.'})
     
-    returndata = json.dumps({"msg" : message, "fromdid" : fromDid, 'targetdid' : targetDid})
+    pprint.pprint('Got ' + message + ',' + fromDid)
+    msg_id = appsms.sendsms(targetDid,fromDid,message)
+    if msg_id == False: #This sends the sms!
+        returndata = json.dumps({'error': 'Unable to send SMS'})
+    else:
+        appdb.logsms_db(msg_id, msg_timestamp, 'outbound', targetDid, fromDid, 0.0040, body)
+        returndata = json.dumps({"msg" : message, "fromdid" : fromDid, 'targetdid' : targetDid})
     return returndata
 
 @app.route('/testAjax')

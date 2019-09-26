@@ -13,6 +13,17 @@
         function clearInput() {
             $("#input-chat").val("");
         }
+        $( "#refresh-msg" ).click(function() {
+            $.getJSON("getMessages",function(result) {
+                chatHtml = ""
+                $.each(result, function(i,field){
+                    chatHtml  = chatHtml +  "<div class='smschatlog'>" + field['from'] +
+                                " to " + field['to'] + ": " + field['body'] + "</div>";
+                });
+                $("#chat-body").html(chatHtml);
+            });
+        });
+        
         $( "#chat-form" ).submit(function( event ) {
           event.preventDefault();
           fromDid = $("#source-num").val();
@@ -32,7 +43,7 @@
             time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
             msgParsed = $.parseJSON(msg);
             if (msgParsed.error) {
-                setStatus('Error Got "'+ msgParsed.error +'"');
+                setStatus('Error! Got "'+ msgParsed.error +'"');
                 return false;
             }
             newHTML = '<div id="msg"><span class="chat-time">(' + time + ')</span> <span class="chat-from">' + msgParsed.fromdid + '</span>: ' + msgParsed.msg + '</div>';
@@ -80,6 +91,7 @@
                 <div id="chat-controls">
                     <input type="submit" id="submit-chat" value="Send"/>
                     <input type="button" id="test-ajax" value="test ajax"/>
+                    <input type="button" id="refresh-msg" value="Refresh"/>
                 </div>
             </form>
         </div>

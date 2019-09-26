@@ -4,6 +4,7 @@
 
 import pymysql
 import pymysql.cursors
+import pprint
 import time
 import configparser
 config = configparser.ConfigParser()
@@ -17,6 +18,7 @@ sqldb = config.get("sql","sqldb")
 
 
 def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, msg):
+    #This statement logs a SMS to the smslog table.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
     cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`, `body`)VALUES \
@@ -25,6 +27,28 @@ def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, msg):
     db.close()
     return True
 
+def getAllSMSLog(limit=5,order='desc'):
+    #This gets the last X amount of logs from all numbers.
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT * FROM messages ORDER BY timestamp DESC LIMIT %s;",(limit))
+    rows = cur.fetchall()
+    #for row in rows:
+        #pprint.pprint(row)
+    db.close()
+    return rows
+
+def getNumSMSLog(did,limit=5):
+    #This gets the last X amount of logs from all numbers.
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT * FROM messages WHERE source_number=%s OR dest_number=%s ORDER BY timestamp DESC LIMIT %s;",(did,did,limit))
+    rows = cur.fetchall()
+    #for row in rows:
+        #pprint.pprint(row)
+    db.close()
+    return rows
+    
 # We gotta do lookups or checks here.. prolly a database call, but right now its an if statement.
 def validateFrom(did):
     #this statement is here for testing. It bypasses DBs.

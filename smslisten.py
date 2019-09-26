@@ -66,6 +66,10 @@ def smscount():
     print("Returning the count of " + str(counter) + ".")
     return str(counter)
 
+@app.route('/submitMessage', methods=['POST'])
+def submitMessage
+    return "Submitted"
+
 def sendreply(reply_to, reply_from, msg):
     request_body = '{ \
   "data": { \
