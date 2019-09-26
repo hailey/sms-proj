@@ -2,3 +2,28 @@ body {
     background-color: #000000;
     color: #118811;
 }
+
+.ts {
+    font-size: 1em;
+}
+
+.to,.from {
+    font-size: 2em;
+    color: #cff211;
+}
+
+.smschatlog {
+    border:dashed;
+    padding: 10px;
+    margin: 10px;
+}
+
+#chat-input {
+    border: dotted;
+    padding: 1em;
+    
+}
+.smsbody {
+    font-size:2em;
+    color: #fef;
+}

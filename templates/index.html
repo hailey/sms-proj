@@ -13,15 +13,18 @@
         function clearInput() {
             $("#input-chat").val("");
         }
-        $( "#refresh-msg" ).click(function() {
+        function getMessages () {
             $.getJSON("getMessages",function(result) {
                 chatHtml = ""
                 $.each(result, function(i,field){
-                    chatHtml  = chatHtml +  "<div class='smschatlog'>" + field['from'] +
-                                " to " + field['to'] + " [" + field['timestamp'] +"]: " + field['body'] + "</div>";
+                    chatHtml  = chatHtml +  "<div class='smschatlog'><div class='ts'>" + field['timestamp'] +"</div> <span class='from'>" + field['from'] +
+                                "</span> to <span class='to'>" + field['to'] + "</span>: <div class='smsbody'>" + field['body'] + "</div></div>";
                 });
                 $("#chat-body").html(chatHtml);
             });
+        }
+        $( "#refresh-msg" ).click(function() {
+           getMessages();
         });
         
         $( "#chat-form" ).submit(function( event ) {
@@ -46,9 +49,11 @@
                 setStatus('Error! Got "'+ msgParsed.error +'"');
                 return false;
             }
-            newHTML = '<div id="msg"><span class="chat-time">(' + time + ')</span> <span class="chat-from">' + msgParsed.fromdid + '</span>: ' + msgParsed.msg + '</div>';
-            $("#chat-body").append( newHTML );
+            //newHTML = '<div id="msg"><span class="chat-time">(' + time + ')</span> <span class="chat-from">' + msgParsed.fromdid + '</span>: ' + msgParsed.msg + '</div>';
+            //$("#chat-body").append( newHTML );
+            getMessages();
             setStatus('Success! Got "'+ msg +'"');
+            
             clearInput();
           });
         });
@@ -76,13 +81,10 @@
 <body>
     <h1 id="channel-name">SMS Project</h1>
     <div id="chat">
-        <div id="chat-body">
-            <div id="msg"><span class="chat-from">OPERATOR</span>: Welcome!</div>
-        </div>
         <div id="chat-input">
             <form id="chat-form">
                 <div id="chat-director">
-                    from: <input type="tel" id="source-num" value="19516025252"/>
+                    from: <input type="tel" id="source-num" value="19515551212"/>
                     to: <input type="tel" id="dest-num" />
                 </div>
                 <div id="chat-fields">
@@ -95,6 +97,10 @@
                 </div>
             </form>
         </div>
+        <div id="chat-body">
+            <div id="msg"><span class="chat-from">OPERATOR</span>: Welcome!</div>
+        </div>
+        
         <div id="alert-messages">
           Stuff
         </div>
