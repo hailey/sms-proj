@@ -3,6 +3,10 @@
 <head>
     <link rel="stylesheet" href="/static/main.css">
     <script src="/static/jquery-3.3.1.min.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+    <link rel="manifest" href="/static/site.webmanifest">
     <title> Yeah! </title>
     <script type="text/javascript">
     $("document").ready(function() {
@@ -15,10 +19,16 @@
         }
         function getMessages () {
             $.getJSON("getMessages",function(result) {
-                chatHtml = ""
+                chatHtml = "";
                 $.each(result, function(i,field){
-                    chatHtml  = chatHtml +  "<div class='smschatlog'><div class='ts'>" + field['timestamp'] +"</div> <span class='from'>" + field['from'] +
-                                "</span> to <span class='to'>" + field['to'] + "</span>: <div class='smsbody'>" + field['body'] + "</div></div>";
+                    //chatHtml = chatHtml + "<div class='smschatlog'><div class='ts'>" + field.timestamp + "</div> <span class='from'>" + field.from + "</span> to <span class='to'>" + field.to. + "</span><div class='smsbody'>" + field.body + "</div></div>";
+                    chatHtml = chatHtml +
+                    "<div class='smschatlog'><div class='ts'>" +
+                    field.timestamp + "</div> <span class='from'>" +
+                    field.from + "</span> to <span class='to'>" +
+                    field.to + "</span><div class='smsbody'>" +
+                    field.body + "</div></div>";
+                   
                 });
                 $("#chat-body").html(chatHtml);
             });
