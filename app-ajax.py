@@ -24,7 +24,7 @@ def getMessages():
     msgjson = ""
     i = 0
     for line in smslog:
-        pprint.pprint(line)
+        #pprint.pprint(line)
         if i >= 1:
             msgjson = msgjson + ',' + json.dumps({'to':line[7],
                               'from':line[6],
@@ -56,7 +56,7 @@ def getNumMessages(did):
     msgjson = ""
     i = 0
     for line in smslog:
-        pprint.pprint(line)
+        #pprint.pprint(line)
         if i >= 1:
             msgjson = msgjson + ',' + json.dumps({'to':line[7],
                               'from':line[6],
