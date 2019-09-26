@@ -83,7 +83,7 @@ def submitMessage():
     if msg_id == False: #This sends the sms!
         returndata = json.dumps({'error': 'Unable to send SMS'})
     else:
-        appdb.logsms_db(msg_id, msg_timestamp, 'outbound', targetDid, fromDid, 0.0040, body)
+        appdb.logsms_db(msg_id, int(time.time()), 'outbound', targetDid, fromDid, 0.0040, message)
         returndata = json.dumps({"msg" : message, "fromdid" : fromDid, 'targetdid' : targetDid})
     return returndata
 
