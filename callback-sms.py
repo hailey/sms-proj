@@ -46,6 +46,10 @@ def smsinbound():
 #    appsms.sendsms(reply_to, reply_from, "Message received. Please wait for a reply.")
     return "0"
 
+@app.route('/dlr', methods=['POST','GET'])
+def deliveryReport():
+    json_content = request.json
+    pprint.pprint(json_content)
 
 #################
 ##      Main loop

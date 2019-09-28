@@ -50,7 +50,7 @@ CREATE TABLE `messages` (
 	`direction` ENUM('inbound','outbound') NULL DEFAULT 'inbound' COLLATE 'utf8_bin',
 	`source_number` VARCHAR(11) NOT NULL COLLATE 'utf8_bin',
 	`dest_number` VARCHAR(11) NOT NULL COLLATE 'utf8_bin',
-	`cost` VARCHAR(10) NOT NULL DEFAULT '$0.00' COLLATE 'utf8_bin',
+	`cost` VARCHAR(10) NOT NULL DEFAULT '0.00' COLLATE 'utf8_bin',
 	`body` TEXT NOT NULL COLLATE 'utf8_bin',
 	PRIMARY KEY (`id`),
 	INDEX `FK_messages_account` (`account_id`),
@@ -59,3 +59,5 @@ CREATE TABLE `messages` (
 COLLATE='utf8_bin'
 ENGINE=InnoDB
 ;
+########## Update V1, add delivered enum to messages table.
+ALTER TABLE messages ADD COLUMN delivered ENUM('success','fail','buffered','pending','smsc submit','smsc reject','smsc intermediate notifications') NOT NULL DEFAULT 'pending';
