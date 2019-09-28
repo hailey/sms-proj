@@ -50,6 +50,9 @@ def smsinbound():
 def deliveryReport():
     json_content = request.json
     pprint.pprint(json_content)
+    msg_id = json_content['data']['id']
+    msg_status = json_content['data']['attributes']['status']
+    appdb.updateMsgStatus(msg_id, msg_status)
     return "0"
 
 #################
