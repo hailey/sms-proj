@@ -54,7 +54,8 @@ def updateMsgStatus(msg_id,status):
     #UPDATE messages SET delivered='success' WHERE pid='mdr2-46999f9ce19e11e99074722a1f1f4bb4'
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    affected_count = cur.execute("UPDATE messages SET status=%s WHERE `pid`=%s",(status,msg_id))
+    affected_count = cur.execute("UPDATE `messages` SET status=%s WHERE `pid`=%s",(status,msg_id))
+    db.commit()
     pprint.pprint("updated : " + str(affected_count) + " set "+ status +" to " +msg_id)
     db.close()
     return True
