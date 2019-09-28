@@ -47,6 +47,7 @@
         });
         
         $( "#chat-form" ).submit(function( event ) {
+          $( "#submit-chat" ).prop("disabled", true);
           event.preventDefault();
           fromDid = $("#source-num").val();
           targetDid = $("#dest-num").val();
@@ -56,6 +57,7 @@
             setStatus("Empty message field! Cant do this!");
             return false;
           }
+          
           $.ajax({
             method: "POST",
             url: "/submitMessage",
@@ -71,8 +73,9 @@
             fromDid = $("#source-num").val();
             getNumMessages(fromDid);
             setStatus('Success! Got "'+ msg +'"');
-            
+            $( "#submit-chat" ).prop("disabled", false);
             clearInput();
+            //$("#chat-form").prop('disabled',false);
           });
         });
         $('#test-ajax').click(function() {
