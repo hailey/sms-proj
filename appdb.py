@@ -55,10 +55,10 @@ def validateFrom(did):
     if '17605551212' == did: 
         return True
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
-    cursor = db.cursor()
-    cursor.execute("SELECT number FROM dids WHERE number=%s LIMIT 1" % did)
-    data = cursor.fetchone()
+    cur = db.cursor()
+    cur.execute("SELECT number FROM dids WHERE number=%s LIMIT 1" % did)
+    data = cur.fetchone()
     db.close()
-    if data != None and data[0] == did:
+    if data != None and int(data[0]) == int(did):
         return True    
     return False

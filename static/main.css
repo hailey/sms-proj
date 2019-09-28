@@ -31,6 +31,12 @@ body {
     padding: 1em;
     
 }
+#chat-director {
+    padding: 5px;
+}
+#chat-fields {
+    padding: 5px 0px 5px 0px;
+}
 .smsbody {
     font-size:2em;
     color: #B0C592;

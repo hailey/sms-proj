@@ -17,6 +17,13 @@ config.read('config.ini')
 def index():
     return render_template('index.html')
 
+@app.route('/single/<int:number>', methods=['GET'])
+def manageSingleSMS(number):
+    if appdb.validateFrom(int(number)):
+        return render_template('single.html',srcnumber = number)
+    else:
+        return render_template('notvalid.html', srcnumber = number)
+
 @app.route('/getMessages',methods=['GET'])
 def getMessages():
     smslog = appdb.getAllSMSLog(10)

@@ -7,8 +7,17 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
     <link rel="manifest" href="/static/site.webmanifest">
-    <title> Yeah! </title>
+    <title>SMS Chat for {{ srcnumber }}</title>
     <script type="text/javascript">
+        
+    function countChar(val) {
+        var len = val.value.length;
+        if (len >= 160) {
+          val.value = val.value.substring(0, 160);
+        } else {
+          $('#charNum').text(160 - len);
+        }
+      }
     $("document").ready(function() {
             // Do something...
         function setStatus(statusmsg) {
@@ -17,11 +26,10 @@
         function clearInput() {
             $("#input-chat").val("");
         }
-        function getMessages () {
-            $.getJSON("getMessages",function(result) {
+        function getNumMessages (number) {
+            $.getJSON("/getNumber/" + number,function(result) {
                 chatHtml = "";
                 $.each(result, function(i,field){
-                    //chatHtml = chatHtml + "<div class='smschatlog'><div class='ts'>" + field.timestamp + "</div> <span class='from'>" + field.from + "</span> to <span class='to'>" + field.to. + "</span><div class='smsbody'>" + field.body + "</div></div>";
                     chatHtml = chatHtml +
                     "<div class='smschatlog'><div class='ts'>" +
                     field.timestamp + "</div> <span class='from'>" +
@@ -34,7 +42,8 @@
             });
         }
         $( "#refresh-msg" ).click(function() {
-           getMessages();
+            fromDid = $("#source-num").val();
+           getNumMessages(fromDid);
         });
         
         $( "#chat-form" ).submit(function( event ) {
@@ -59,9 +68,8 @@
                 setStatus('Error! Got "'+ msgParsed.error +'"');
                 return false;
             }
-            //newHTML = '<div id="msg"><span class="chat-time">(' + time + ')</span> <span class="chat-from">' + msgParsed.fromdid + '</span>: ' + msgParsed.msg + '</div>';
-            //$("#chat-body").append( newHTML );
-            getMessages();
+            fromDid = $("#source-num").val();
+            getNumMessages(fromDid);
             setStatus('Success! Got "'+ msg +'"');
             
             clearInput();
@@ -89,16 +97,17 @@
     </script>
 </head>
 <body>
-    <h1 id="channel-name">SMS Project</h1>
+    <h1 id="channel-name">SMS Chat for {{ srcnumber }}</h1>
     <div id="chat">
         <div id="chat-input">
             <form id="chat-form">
                 <div id="chat-director">
-                    from: <input type="tel" id="source-num" value="19515551212"/>
-                    to: <input type="tel" id="dest-num" />
+                    <span id='fromnum'>From: <input type="tel" id="source-num" value="{{ srcnumber }}" size="10" readonly="readonly"/></span>
+                    <span id="tonum">To: <input type="tel" id="dest-num" size="10"/></soan>
                 </div>
                 <div id="chat-fields">
-                    <input type="text" id="input-chat" />
+                    <textarea type="text" id="input-chat" rows="3" cols="60" onkeyup="countChar(this)"></textarea>
+                    <span id="charNum">160</span> characters left.
                 </div>
                 <div id="chat-controls">
                     <input type="submit" id="submit-chat" value="Send Message"/>
