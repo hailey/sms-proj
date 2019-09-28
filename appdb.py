@@ -55,8 +55,8 @@ def updateMsgStatus(msg_id,status):
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
     try:
-        affected_count = cur.execute("UPDATE messages SET delivered=%s WHERE pid=%s LIMIT 1;",(status,msg_id))
-        cur.commit()
+        affected_count = cur.execute("UPDATE messages SET delivered=%s WHERE pid=%s;",(status,msg_id))
+        pprint.pprint("got : " + str(affected_count))
     except MySQLdb.IntegrityError:
         pprint.pprint("Unable to update SQL for pid %s" % msg_id)
         db.close()

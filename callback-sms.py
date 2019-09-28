@@ -52,6 +52,8 @@ def deliveryReport():
     pprint.pprint(json_content)
     msg_id = json_content['data']['id']
     msg_status = json_content['data']['attributes']['status']
+    pprint.pprint("Got:" + msg_id)
+    pprint.pprint("Got:" + msg_status)
     appdb.updateMsgStatus(msg_id, msg_status)
     return "0"
 
