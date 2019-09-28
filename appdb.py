@@ -42,7 +42,7 @@ def getNumSMSLog(did,limit=5):
     #This gets the last X amount of logs from all numbers.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    cur.execute("SELECT * FROM messages WHERE source_number=%s OR dest_number=%s ORDER BY timestamp DESC LIMIT %s;",(did,did,limit))
+    cur.execute("SELECT * FROM messages WHERE source_number=%s OR dest_number=%s ORDER BY timestamp DESC LIMIT %s",(did,did,limit))
     rows = cur.fetchall()
     #for row in rows:
         #pprint.pprint(row)
@@ -54,7 +54,7 @@ def updateMsgStatus(msg_id,status):
     #UPDATE messages SET delivered='success' WHERE pid='mdr2-46999f9ce19e11e99074722a1f1f4bb4'
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    affected_count = cur.execute("UPDATE messages SET `delivered`=%s WHERE `pid`=%s;",(status,msg_id))
+    affected_count = cur.execute("UPDATE messages SET status=%s WHERE `pid`=%s",(status,msg_id))
     pprint.pprint("updated : " + str(affected_count) + " set "+ status +" to " +msg_id)
     db.close()
     return True

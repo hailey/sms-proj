@@ -59,5 +59,5 @@ CREATE TABLE `messages` (
 COLLATE='utf8_bin'
 ENGINE=InnoDB
 ;
-########## Update V1, add delivered enum to messages table.
-ALTER TABLE messages ADD COLUMN delivered VARCHAR(30) NOT NULL DEFAULT 'pending';
+########## Update V1, add delivered status to messages table.
+ALTER TABLE messages ADD COLUMN status VARCHAR(30) NOT NULL DEFAULT 'pending';
