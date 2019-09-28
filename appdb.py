@@ -15,8 +15,6 @@ sqlpass = config.get("sql","sqlpass")
 sqldb = config.get("sql","sqldb")
 
 
-
-
 def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, msg):
     #This statement logs a SMS to the smslog table.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
@@ -49,16 +47,24 @@ def getNumSMSLog(did,limit=5):
     db.close()
     return rows
     
-def updateMsgStatus(msg_id,status):
+def updateMsgStatus(msg_id,status, timestamp):
     #Update the delivered field in the database based on delivery reports.
     #UPDATE messages SET delivered='success' WHERE pid='mdr2-46999f9ce19e11e99074722a1f1f4bb4'
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    affected_count = cur.execute("UPDATE `messages` SET status=%s WHERE `pid`=%s",(status,msg_id))
+    affected_count = cur.execute("UPDATE `messages` SET status=%s, `timetsamp`=%s WHERE `pid`=%s",(status, timestamp,msg_id))
     db.commit()
-    pprint.pprint("updated : " + str(affected_count) + " set "+ status +" to " +msg_id)
     db.close()
     return True
+
+def updateMsgTimestamp(msg_id,timestamp):
+    #This changes the timestamp of the msg_id to the timestamp provided by the provider.
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    affected_count = cur.execute("UPDATE `messages` SET `timetsamp`=%s WHERE `pid`=%s",(timestamp,msg_id))
+    db.commit()
+    db.close()
+
 # We gotta do lookups or checks here.. prolly a database call, but right now its an if statement.
 def validateFrom(did):
     #this statement is here for testing. It bypasses DBs.
