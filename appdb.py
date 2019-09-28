@@ -19,24 +19,26 @@ def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, msg):
     #This statement logs a SMS to the smslog table.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`, `body`)VALUES \
-                (%s, %s, %s, %s, %s, %s, %s, %s)",(int(time.time()),msg_ts, direction, from_did, to_did, cost, msg_id, msg))
+    if direction == 'inbound':
+        status = 'success'
+    else:
+        status = 'pending'
+    cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`,`status, `body`)VALUES \
+                (%s, %s, %s, %s, %s, %s, %s, %s, %s)",(int(time.time()),msg_ts, direction, from_did, to_did, cost, msg_id, status, msg))
     db.commit()
     db.close()
     return True
 
-def getAllSMSLog(limit=5,order='desc'):
+def getAllSMSLog(limit=5, order='desc'):
     #This gets the last X amount of logs from all numbers.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    cur.execute("SELECT * FROM messages ORDER BY timestamp DESC LIMIT %s;",(limit))
+    cur.execute("SELECT * FROM messages ORDER BY timestamp DESC LIMIT %s",(limit))
     rows = cur.fetchall()
-    #for row in rows:
-        #pprint.pprint(row)
     db.close()
     return rows
 
-def getNumSMSLog(did,limit=5):
+def getNumSMSLog(did, limit=5):
     #This gets the last X amount of logs from all numbers.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
@@ -47,7 +49,7 @@ def getNumSMSLog(did,limit=5):
     db.close()
     return rows
     
-def updateMsgStatus(msg_id,status, msg_timestamp):
+def updateMsgStatus(msg_id, status, msg_timestamp):
     #Update the delivered field in the database based on delivery reports.
     #UPDATE messages SET delivered='success' WHERE pid='mdr2-46999f9ce19e11e99074722a1f1f4bb4'
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
@@ -57,7 +59,7 @@ def updateMsgStatus(msg_id,status, msg_timestamp):
     db.close()
     return True
 
-def updateMsgTimestamp(msg_id,timestamp):
+def updateMsgTimestamp(msg_id, timestamp):
     #This changes the timestamp of the msg_id to the timestamp provided by the provider.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
@@ -69,7 +71,7 @@ def updateMsgTimestamp(msg_id,timestamp):
 def validateFrom(did):
     #this statement is here for testing. It bypasses DBs.
     if '17605551212' == did: 
-        return Trueh
+        return True
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
     cur.execute("SELECT number FROM dids WHERE number=%s LIMIT 1" % did)
