@@ -52,7 +52,7 @@ def updateMsgStatus(msg_id,status, msg_timestamp):
     #UPDATE messages SET delivered='success' WHERE pid='mdr2-46999f9ce19e11e99074722a1f1f4bb4'
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    affected_count = cur.execute("UPDATE `messages` SET status=%s, `timestamp`=%s WHERE `pid`=%s",(status, msg_timestamp ,msg_id))
+    affected_count = cur.execute("UPDATE `messages` SET status=%s, `provider_timestamp`=%s WHERE `pid`=%s",(status, msg_timestamp ,msg_id))
     db.commit()
     db.close()
     return True
@@ -61,7 +61,7 @@ def updateMsgTimestamp(msg_id,timestamp):
     #This changes the timestamp of the msg_id to the timestamp provided by the provider.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    affected_count = cur.execute("UPDATE `messages` SET `timetsamp`=%s WHERE `pid`=%s",(timestamp,msg_id))
+    affected_count = cur.execute("UPDATE `messages` SET `provider_timestamp`=%s WHERE `pid`=%s",(timestamp,msg_id))
     db.commit()
     db.close()
 
@@ -69,7 +69,7 @@ def updateMsgTimestamp(msg_id,timestamp):
 def validateFrom(did):
     #this statement is here for testing. It bypasses DBs.
     if '17605551212' == did: 
-        return True
+        return Trueh
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
     cur.execute("SELECT number FROM dids WHERE number=%s LIMIT 1" % did)

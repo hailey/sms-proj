@@ -17,8 +17,10 @@
         } else {
           $('#charNum').text(160 - len);
         }
-      }
+    }
     $("document").ready(function() {
+        fromDid = $("#source-num").val();
+        getNumMessages(fromDid);
             // Do something...
         function setStatus(statusmsg) {
             $("#alert-messages").text(statusmsg);
@@ -47,56 +49,56 @@
         });
         
         $( "#chat-form" ).submit(function( event ) {
-          $( "#submit-chat" ).prop("disabled", true);
-          event.preventDefault();
-          fromDid = $("#source-num").val();
-          targetDid = $("#dest-num").val();
-          inputchat = $("#input-chat").val();
+            $( "#submit-chat" ).prop("disabled", true);
+            event.preventDefault();
+            fromDid = $("#source-num").val();
+            targetDid = $("#dest-num").val();
+            inputchat = $("#input-chat").val();
           
-          if (!$("#input-chat").val()){
-            setStatus("Empty message field! Cant do this!");
-            return false;
-          }
-          
-          $.ajax({
-            method: "POST",
-            url: "/submitMessage",
-            data: { message: inputchat, fromdid: fromDid, targetdid : targetDid }
-          }).done(function( msg ) {
-            dt = new Date();
-            time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-            msgParsed = $.parseJSON(msg);
-            if (msgParsed.error) {
-                setStatus('Error! Got "'+ msgParsed.error +'"');
+            if (!$("#input-chat").val()){
+                setStatus("Empty message field! Cant do this!");
                 return false;
             }
-            fromDid = $("#source-num").val();
-            getNumMessages(fromDid);
-            setStatus('Success! Got "'+ msg +'"');
-            $( "#submit-chat" ).prop("disabled", false);
-            clearInput();
-            //$("#chat-form").prop('disabled',false);
-          });
+          
+            $.ajax({
+                method: "POST",
+                url: "/submitMessage",
+                data: { message: inputchat, fromdid: fromDid, targetdid : targetDid }
+            }).done(function( msg ) {
+                dt = new Date();
+                time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+                msgParsed = $.parseJSON(msg);
+                if (msgParsed.error) {
+                    setStatus('Error! Got "'+ msgParsed.error +'"');
+                    return false;
+                }
+                fromDid = $("#source-num").val();
+                getNumMessages(fromDid);
+                setStatus('Success! Got "'+ msg +'"');
+                $( "#submit-chat" ).prop("disabled", false);
+                $('#charNum').text('160');
+                clearInput();
+            });
         });
         $('#test-ajax').click(function() {
-          $.ajax({
-              url: '/testAjax',
-              type: 'GET',
-              success: function(response) {
+            $.ajax({
+                url: '/testAjax',
+                type: 'GET',
+                success: function(response) {
                 newHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: ' + response + '</div>';
                 statusHTML = '<div id="alert-messages">Success! Got "'+ response +'"</div>';
                 $("#chat-body").append( newHTML );
                 $("#alert-messages").html(statusHTML);
-              },
-              error: function(error) {
+            },
+            error: function(error) {
                 errorHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: Error ' + error + '</div>';
                 statusHTML = '<div id="alert-messages">Error! Got "'+ error +'"</div>';
                 $("#chat-body").append( errorHTML );
                 $("#alert-messages").html(statusHTML);
-              }
-          });
+            }
+            });
         });
-      });
+    });
     </script>
 </head>
 <body>
