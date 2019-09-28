@@ -50,6 +50,7 @@ def smsinbound():
 def deliveryReport():
     json_content = request.json
     pprint.pprint(json_content)
+    return "0"
 
 #################
 ##      Main loop
