@@ -47,12 +47,12 @@ def getNumSMSLog(did,limit=5):
     db.close()
     return rows
     
-def updateMsgStatus(msg_id,status, timestamp):
+def updateMsgStatus(msg_id,status, msg_timestamp):
     #Update the delivered field in the database based on delivery reports.
     #UPDATE messages SET delivered='success' WHERE pid='mdr2-46999f9ce19e11e99074722a1f1f4bb4'
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    affected_count = cur.execute("UPDATE `messages` SET status=%s, `timetsamp`=%s WHERE `pid`=%s",(status, timestamp,msg_id))
+    affected_count = cur.execute("UPDATE `messages` SET status=%s, `timestamp`=%s WHERE `pid`=%s",(status, msg_timestamp ,msg_id))
     db.commit()
     db.close()
     return True
