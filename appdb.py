@@ -15,15 +15,12 @@ sqlpass = config.get("sql","sqlpass")
 sqldb = config.get("sql","sqldb")
 
 
-def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, msg):
+def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, status, msg):
     #This statement logs a SMS to the smslog table.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    if direction == 'inbound':
-        status = 'success'
-    else:
-        status = 'pending'
-    cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`,`status, `body`)VALUES \
+
+    cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`,`status`, `body`)VALUES \
                 (%s, %s, %s, %s, %s, %s, %s, %s, %s)",(int(time.time()),msg_ts, direction, from_did, to_did, cost, msg_id, status, msg))
     db.commit()
     db.close()

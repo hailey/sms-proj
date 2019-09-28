@@ -40,8 +40,9 @@ def smsinbound():
     body = json_content['data']['attributes']['body']
     msg_timestamp = json_content['data']['attributes']['timestamp']
     smsRate = json_content['data']['attributes']['amount_display'].replace('$','')
+    status = 'success'
 
-    appdb.logsms_db(msg_id, msg_timestamp, 'inbound', reply_from, reply_to, smsRate, body) # Lets log to our silly db.
+    appdb.logsms_db(msg_id, msg_timestamp, 'inbound', reply_from, reply_to, smsRate, status, body) # Lets log to our silly db.
     #This command seems to make this function happen twice.
 #    appsms.sendsms(reply_to, reply_from, "Message received. Please wait for a reply.")
     return "0"
