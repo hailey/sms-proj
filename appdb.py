@@ -54,15 +54,9 @@ def updateMsgStatus(msg_id,status):
     #UPDATE messages SET delivered='success' WHERE pid='mdr2-46999f9ce19e11e99074722a1f1f4bb4'
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    try:
-        affected_count = cur.execute("UPDATE messages SET delivered=%s WHERE pid=%s;",(status,msg_id))
-        pprint.pprint("got : " + str(affected_count))
-    except MySQLdb.IntegrityError:
-        pprint.pprint("Unable to update SQL for pid %s" % msg_id)
-        db.close()
-        return False
-    finally:
-        db.close()
+    affected_count = cur.execute("UPDATE messages SET delivered=%s WHERE pid=%s;",(status,msg_id))
+    pprint.pprint("updated : " + str(affected_count) + " set "+ status +" to " +msg_id)
+    db.close()
     return True
 # We gotta do lookups or checks here.. prolly a database call, but right now its an if statement.
 def validateFrom(did):

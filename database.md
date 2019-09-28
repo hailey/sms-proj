@@ -60,4 +60,4 @@ COLLATE='utf8_bin'
 ENGINE=InnoDB
 ;
 ########## Update V1, add delivered enum to messages table.
-ALTER TABLE messages ADD COLUMN delivered ENUM('delivery success','delivery failure','message buffered','pending','smsc submit','smsc reject','smsc intermediate notifications') NOT NULL DEFAULT 'pending';
+ALTER TABLE messages ADD COLUMN delivered VARCHAR(30) NOT NULL DEFAULT 'pending';
