@@ -49,21 +49,21 @@ def getNumSMSLog(did,limit=5):
     db.close()
     return rows
     
-    def updateMsgStatus(msg_id,status):
-        #Update the delivered field in the database based on delivery reports.
-        #UPDATE messages SET delivered='success' WHERE pid='mdr2-46999f9ce19e11e99074722a1f1f4bb4'
-        db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
-        cur = db.cursor()
-        try:
-            affected_count = cur.execute("UPDATE messages SET delivered=%s WHERE pid=%s LIMIT 1;",(status,msg_id))
-            cur.commit()
-        except MySQLdb.IntegrityError:
-            pprint.pprint("Unable to update SQL for pid %s" % msg_id)
-            db.close()
-            return False
-        finally:
-           db.close()
-        return True
+def updateMsgStatus(msg_id,status):
+    #Update the delivered field in the database based on delivery reports.
+    #UPDATE messages SET delivered='success' WHERE pid='mdr2-46999f9ce19e11e99074722a1f1f4bb4'
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    try:
+        affected_count = cur.execute("UPDATE messages SET delivered=%s WHERE pid=%s LIMIT 1;",(status,msg_id))
+        cur.commit()
+    except MySQLdb.IntegrityError:
+        pprint.pprint("Unable to update SQL for pid %s" % msg_id)
+        db.close()
+        return False
+    finally:
+        db.close()
+    return True
 # We gotta do lookups or checks here.. prolly a database call, but right now its an if statement.
 def validateFrom(did):
     #this statement is here for testing. It bypasses DBs.
