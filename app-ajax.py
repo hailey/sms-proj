@@ -52,18 +52,19 @@ def getMessages():
 def getNumMessages(did):
     #This gets the mssages based on the provided from or two DID
     smslog = appdb.getNumSMSLog(did,10)
-    #pprint.pprint(smslog)
+    pprint.pprint(smslog)
     i = 0
     msgjson = ""
     for line in smslog:
-        #pprint.pprint(line)
+        pprint.pprint(line)
         if i >= 1:
             msgjson = msgjson + ',' + json.dumps({'to':line[7],
-                              'from':line[6],
+                              'from':line[6], # :)
                               'body':line[9],
-                              'timestamp': line[4]})
+                              'timestamp': line[4],
+                              'status': line[10]})
         else:
-            msgjson =  json.dumps({'to':line[7],'from':line[6],'body':line[9],'timestamp': line[4]})
+            msgjson =  json.dumps({'to':line[7],'from':line[6],'body':line[9],'timestamp': line[4], 'status': line[10]})
         i += 1
         
     

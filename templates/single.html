@@ -34,7 +34,7 @@
                 $.each(result, function(i,field){
                     chatHtml = chatHtml +
                     "<div class='smschatlog'><div class='ts'>" +
-                    field.timestamp + "</div> <span class='from'>" +
+                    field.timestamp + " Status:" + field.status + "</div> <span class='from'>" +
                     field.from + "</span> to <span class='to'>" +
                     field.to + "</span><div class='smsbody'>" +
                     field.body + "</div></div>";
