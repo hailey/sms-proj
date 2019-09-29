@@ -52,11 +52,11 @@ def getMessages():
 def getNumMessages(did):
     #This gets the mssages based on the provided from or two DID
     smslog = appdb.getNumSMSLog(did,10)
-    pprint.pprint(smslog)
+    #pprint.pprint(smslog)
     i = 0
     msgjson = ""
     for line in smslog:
-        pprint.pprint(line)
+        #pprint.pprint(line)
         if i >= 1:
             msgjson = msgjson + ',' + json.dumps({'to':line[7],
                               'from':line[6], # :)
@@ -81,7 +81,7 @@ def submitMessage():
     if appdb.validateFrom(fromDid) == False:
         return json.dumps({'error': 'Unauthorized source phone number.'})
     
-    pprint.pprint('Got ' + message + ',' + fromDid)
+    #pprint.pprint('Got ' + message + ',' + fromDid)
     msg_id = appsms.sendsms(targetDid,fromDid,message)
     if msg_id == False: #This sends the sms!
         returndata = json.dumps({'error': 'Unable to send SMS'})
