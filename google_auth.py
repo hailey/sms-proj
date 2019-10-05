@@ -50,7 +50,7 @@ def build_credentials():
         raise Exception('User must be logged in')
 
     oauth2_tokens = flask.session[AUTH_TOKEN_KEY]
-    
+    pprint.pprint(oauth2_tokens)
     return google.oauth2.credentials.Credentials(
                 oauth2_tokens['access_token'],
                 refresh_token=oauth2_tokens['refresh_token'],
@@ -85,11 +85,11 @@ def login():
                             scope=AUTHORIZATION_SCOPE,
                             redirect_uri=AUTH_REDIRECT_URI)
   
-    uri, state = session.create_authorization_url(AUTHORIZATION_URL)
-    pprint(state)
+    uri, state = session.create_authorization_url(AUTHORIZATION_URL,access_type='offline')
+    pprint.pprint(state)
     flask.session[AUTH_STATE_KEY] = state
     flask.session.permanent = True
-
+    pprint.pprint(flask.session)
     return flask.redirect(uri, code=302)
 
 @app.route('/google/auth')
@@ -106,11 +106,11 @@ def google_auth_redirect():
                             scope=AUTHORIZATION_SCOPE,
                             state=flask.session[AUTH_STATE_KEY],
                             redirect_uri=AUTH_REDIRECT_URI)
-    pprint.pprint("authtoken"+flask.request.url)
-    oauth2_tokens = session.fetch_access_token(
+    oauth2_tokens = session.fetch_token(
                         ACCESS_TOKEN_URI,            
                         authorization_response=flask.request.url)
-
+    pprint.pprint ("----")
+    pprint.pprint (oauth2_tokens)
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
 
     return flask.redirect(BASE_URI, code=302)
