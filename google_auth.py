@@ -5,7 +5,7 @@
 import functools
 import os
 
-from flask import Flask, request
+from Flask import flask, request, session
 import configparser
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
@@ -29,7 +29,7 @@ AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
 
 #app = Flask.Blueprint('google_auth', __name__)
-app = Flask(__name__)
+app = flask(__name__)
 if app_debug == '1':
     app.debug = True
 else:
