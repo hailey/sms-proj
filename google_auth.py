@@ -6,10 +6,14 @@ import functools
 import os
 
 import flask
-
+import configparser
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+app_debug = config.get("app","debug")
 
 ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent'
@@ -20,7 +24,7 @@ AUTH_REDIRECT_URI = config.get("auth","FN_AUTH_REDIRECT_URI")
 BASE_URI = config.get("auth","FN_BASE_URI")
 CLIENT_ID = config.get("auth","FN_CLIENT_ID")
 CLIENT_SECRET = config.get("auth","FN_CLIENT_SECRET")
-
+ 
 AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
 
