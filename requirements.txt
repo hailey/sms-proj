@@ -1,4 +1,4 @@
-Flask==0.12.2
+Flask==1.0
 PyMySQL==0.8.0
 Authlib==0.11
 protobuf==3.10.0
