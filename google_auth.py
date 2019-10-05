@@ -5,7 +5,7 @@
 import functools
 import os
 
-import flask
+from flask import Flask, request
 import configparser
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
@@ -14,12 +14,6 @@ import googleapiclient.discovery
 config = configparser.ConfigParser()
 config.read('config.ini')
 app_debug = config.get("app","debug")
-
-app = Flask(__name__)
-if app_debug == '1':
-    app.debug = True
-else:
-    app.debug = False
 
 ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent'
@@ -34,8 +28,13 @@ CLIENT_SECRET = config.get("auth","FN_CLIENT_SECRET")
 AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
 
-app = flask.Blueprint('google_auth', __name__)
-
+#app = Flask.Blueprint('google_auth', __name__)
+app = Flask(__name__)
+if app_debug == '1':
+    app.debug = True
+else:
+    app.debug = False
+    
 def is_logged_in():
     return True if AUTH_TOKEN_KEY in flask.session else False
 
