@@ -107,9 +107,9 @@ def submitMessage():
     if not google_auth.is_logged_in():
         return flask.render_template('deny.html')
     
-    message = request.form['message']
-    fromDid = request.form['fromdid']
-    targetDid = request.form['targetdid']
+    message = flask.request.form['message']
+    fromDid = flask.request.form['fromdid']
+    targetDid = flask.request.form['targetdid']
     
     
     if appdb.validateFrom(fromDid) == False:
