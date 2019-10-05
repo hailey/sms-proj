@@ -15,6 +15,12 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 app_debug = config.get("app","debug")
 
+app = Flask(__name__)
+if app_debug == '1':
+    app.debug = True
+else:
+    app.debug = False
+
 ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent'
 
