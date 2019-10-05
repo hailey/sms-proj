@@ -33,21 +33,23 @@ else:
 @app.route('/')
 def index():
     if google_auth.is_logged_in():
+        pprint.pprint("Getting userinfo on /")
         user_info = google_auth.get_user_info()
+        pprint.pprint("Gotem!")
         return '<div>You are currently logged in as ' + user_info['given_name'] + '<div><pre>' + json.dumps(user_info, indent=4) + "</pre>"
     return 'You are not currently logged in.'
 
 @app.route('/single/<int:number>', methods=['GET'])
 def manageSingleSMS(number):
     if appdb.validateFrom(int(number)):
-        return render_template('single.html',srcnumber = number)
+        return flask.render_template('single.html',srcnumber = number)
     else:
-        return render_template('notvalid.html', srcnumber = number)
+        return flask.render_template('notvalid.html', srcnumber = number)
 
 @app.route('/getMessages',methods=['GET'])
 def getMessages():
     smslog = appdb.getAllSMSLog(10)
-    #pprint.pprint(smslog)
+    epprint.pprint(smslog)
     msgjson = ""
     i = 0
     for line in smslog:

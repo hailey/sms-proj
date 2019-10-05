@@ -19,10 +19,14 @@ config.read('config.ini')
 app_debug = config.get("app","debug")
 
 #ACCESS_TOKEN_URI = 'https://oauth2.googleapis.com/token'
-ACCESS_TOKEN_URI = GOOGLE_TOKEN_URI
-AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
+#ACCESS_TOKEN_URI = GOOGLE_TOKEN_URIi
+#ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
+ACCESS_TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
+AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent'
 
-AUTHORIZATION_SCOPE ='openid email profile'
+#AUTHORIZATION_SCOPE ='openid email profile'
+AUTHORIZATION_SCOPE = ['openid', 'https://www.googleapis.com/auth/userinfo.email',
+                     'https://www.googleapis.com/auth/userinfo.profile']
 
 AUTH_REDIRECT_URI = config.get("auth","FN_AUTH_REDIRECT_URI")
 BASE_URI = config.get("auth","FN_BASE_URI")
@@ -60,11 +64,11 @@ def build_credentials():
 
 def get_user_info():
     credentials = build_credentials()
-
+    pprint.pprint("Credentials Built!")
     oauth2_client = googleapiclient.discovery.build(
                         'oauth2', 'v2',
                         credentials=credentials)
-
+    pprint.pprint("oauth2_client done")
     return oauth2_client.userinfo().get().execute()
 
 def no_cache(view):
@@ -85,7 +89,7 @@ def login():
                             scope=AUTHORIZATION_SCOPE,
                             redirect_uri=AUTH_REDIRECT_URI)
   
-    uri, state = session.create_authorization_url(AUTHORIZATION_URL,access_type='offline')
+    uri, state = session.create_authorization_url(AUTHORIZATION_URL,access_type='offline',include_granted_scopes='true')
     pprint.pprint(state)
     flask.session[AUTH_STATE_KEY] = state
     flask.session.permanent = True
