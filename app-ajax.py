@@ -36,11 +36,14 @@ def index():
         pprint.pprint("Getting userinfo on /")
         user_info = google_auth.get_user_info()
         pprint.pprint("Gotem!")
-        return '<div>You are currently logged in as ' + user_info['given_name'] + '<div><pre>' + json.dumps(user_info, indent=4) + "</pre>"
+        return '<div>You are currently logged in as ' + user_info['given_name'] + '<div><div><img src="' + user_info['picture'] + '" alt="Self Photo" /></div><pre>' + json.dumps(user_info, indent=4) + "</pre>"
     return 'You are not currently logged in.'
 
 @app.route('/single/<int:number>', methods=['GET'])
 def manageSingleSMS(number):
+    if not google_auth.is_logged_in():
+        return flask.render_template('deny.html')
+    
     if appdb.validateFrom(int(number)):
         return flask.render_template('single.html',srcnumber = number)
     else:
@@ -48,6 +51,8 @@ def manageSingleSMS(number):
 
 @app.route('/getMessages',methods=['GET'])
 def getMessages():
+    if not google_auth.is_logged_in():
+        return flask.render_template('deny.html')
     smslog = appdb.getAllSMSLog(10)
     epprint.pprint(smslog)
     msgjson = ""
@@ -72,6 +77,8 @@ def getMessages():
 
 @app.route('/getNumber/<int:did>',methods=['GET'])
 def getNumMessages(did):
+    if not google_auth.is_logged_in():
+        return flask.render_template('deny.html')
     #This gets the mssages based on the provided from or two DID
     smslog = appdb.getNumSMSLog(did,10)
     #pprint.pprint(smslog)
@@ -96,9 +103,14 @@ def getNumMessages(did):
 @app.route('/submitMessage', methods=['POST'])
 def submitMessage():
     #This is to submit a message.
+    
+    if not google_auth.is_logged_in():
+        return flask.render_template('deny.html')
+    
     message = request.form['message']
     fromDid = request.form['fromdid']
     targetDid = request.form['targetdid']
+    
     
     if appdb.validateFrom(fromDid) == False:
         return json.dumps({'error': 'Unauthorized source phone number.'})
@@ -119,7 +131,7 @@ def testAjax():
 
 if __name__ == '__main__':
     app.run(
-        host="0.0.0.0",
+        host="127.0.0.1",
         port=int("8890")
     )
     
