@@ -85,8 +85,8 @@ def login():
                             scope=AUTHORIZATION_SCOPE,
                             redirect_uri=AUTH_REDIRECT_URI)
   
-    uri, state = session.authorization_url(AUTHORIZATION_URL)
-
+    uri, state = session.create_authorization_url(AUTHORIZATION_URL)
+    pprint(state)
     flask.session[AUTH_STATE_KEY] = state
     flask.session.permanent = True
 
@@ -97,6 +97,7 @@ def login():
 def google_auth_redirect():
     req_state = flask.request.args.get('state', default=None, type=None)
     pprint.pprint(req_state)
+
     if req_state != flask.session[AUTH_STATE_KEY]:
         response = flask.make_response('Invalid state parameter', 401)
         return response
@@ -105,8 +106,8 @@ def google_auth_redirect():
                             scope=AUTHORIZATION_SCOPE,
                             state=flask.session[AUTH_STATE_KEY],
                             redirect_uri=AUTH_REDIRECT_URI)
-
-    oauth2_tokens = session.fetch_token(
+    pprint.pprint("authtoken"+flask.request.url)
+    oauth2_tokens = session.fetch_access_token(
                         ACCESS_TOKEN_URI,            
                         authorization_response=flask.request.url)
 
