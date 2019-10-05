@@ -115,3 +115,9 @@ def logout():
     flask.session.pop(AUTH_STATE_KEY, None)
 
     return flask.redirect(BASE_URI, code=302)
+
+if __name__ == '__main__':
+    app.run(
+        host="0.0.0.0",
+        port=int("8020")
+    )
