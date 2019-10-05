@@ -5,7 +5,8 @@
 import functools
 import os
 
-from flask import Flask, request, session, render_template, flash
+#from flask import Flask, request, session, render_template, flash
+import flask
 import configparser
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
@@ -25,21 +26,18 @@ BASE_URI = config.get("auth","FN_BASE_URI")
 CLIENT_ID = config.get("auth","FN_CLIENT_ID")
 CLIENT_SECRET = config.get("auth","FN_CLIENT_SECRET")
  
+#FN_FLASK_SECRET_KEY 
 AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
 
-#app = Flask.Blueprint('google_auth', __name__)
-app = flask.Flask(__name__)
-if app_debug == '1':
-    app.debug = True
-else:
-    app.debug = False
+app = flask.Blueprint('google_auth', __name__)
+#app = flask.Flask(__name__)
+#if app_debug == '1':
+app.debug = True
+##else:
+#app.debug = False
+    
 
-if __name__ == '__main__':
-    app.run(
-        host="0.0.0.0",
-        port=int("8020")
-    )
 
 def is_logged_in():
     return True if AUTH_TOKEN_KEY in flask.session else False
@@ -69,7 +67,7 @@ def get_user_info():
 def no_cache(view):
     @functools.wraps(view)
     def no_cache_impl(*args, **kwargs):
-        response = app.make_response(view(*args, **kwargs))
+        response = flask.make_response(view(*args, **kwargs))
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '-1'
@@ -120,3 +118,10 @@ def logout():
     flask.session.pop(AUTH_STATE_KEY, None)
 
     return flask.redirect(BASE_URI, code=302)
+
+
+if __name__ == '__main__':
+    app.run(
+        host="0.0.0.0",
+        port=int("8020")
+    )

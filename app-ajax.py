@@ -6,13 +6,22 @@ import pprint
 import configparser
 import json
 import appdb, appsms
-from flask import Flask, render_template, request
+#from flask import Flask, render_template, request
+import flask
+from authlib.client import OAuth2Session
+import google.oauth2.credentials
+import googleapiclient.discovery
+
+import google_auth
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 app_debug = config.get("app","debug")
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
+app.secret_key = config.get("auth","FN_FLASK_SECRET_KEY")
+
+app.register_blueprint(google_auth.app)
 if app_debug == '1':
     app.debug = True
 else:
@@ -20,7 +29,10 @@ else:
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if google_auth.is_logged_in():
+        user_info = google_auth.get_user_info()
+        return '<div>You are currently logged in as ' + user_info['given_name'] + '<div><pre>' + json.dumps(user_info, indent=4) + "</pre>"
+    return 'You are not currently logged in.'
 
 @app.route('/single/<int:number>', methods=['GET'])
 def manageSingleSMS(number):
