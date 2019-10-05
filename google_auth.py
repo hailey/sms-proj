@@ -12,12 +12,14 @@ import configparser
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
+from oauth2client import GOOGLE_TOKEN_URI
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 app_debug = config.get("app","debug")
 
-ACCESS_TOKEN_URI = 'https://oauth2.googleapis.com/token'
+#ACCESS_TOKEN_URI = 'https://oauth2.googleapis.com/token'
+ACCESS_TOKEN_URI = GOOGLE_TOKEN_URI
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 
 AUTHORIZATION_SCOPE ='openid email profile'
