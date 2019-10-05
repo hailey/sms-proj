@@ -7,11 +7,16 @@ import configparser
 import json
 import appdb, appsms
 from flask import Flask, render_template, request
-app = Flask(__name__)
-app.debug = True
 
 config = configparser.ConfigParser()
 config.read('config.ini')
+app_debug = config.get("app","debug")
+
+app = Flask(__name__)
+if app_debug == '1':
+    app.debug = True
+else:
+    app.debug = False
 
 @app.route('/')
 def index():

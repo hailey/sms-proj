@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/main.css">
+    <script src="/static/jquery-3.3.1.min.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+    <link rel="manifest" href="/static/site.webmanifest">
+    <title> Yeah! </title>
+    <script type="text/javascript">
+    $("document").ready(function() {
+            // Do something...
+        function setStatus(statusmsg) {
+            $("#alert-messages").text(statusmsg);
+        }
+        function clearInput() {
+            $("#input-chat").val("");
+        }
+        function getMessages () {
+            $.getJSON("getMessages",function(result) {
+                chatHtml = "";
+                $.each(result, function(i,field){
+                    //chatHtml = chatHtml + "<div class='smschatlog'><div class='ts'>" + field.timestamp + "</div> <span class='from'>" + field.from + "</span> to <span class='to'>" + field.to. + "</span><div class='smsbody'>" + field.body + "</div></div>";
+                    chatHtml = chatHtml +
+                    "<div class='smschatlog'><div class='ts'>" +
+                    field.timestamp + "</div> <span class='from'>" +
+                    field.from + "</span> to <span class='to'>" +
+                    field.to + "</span><div class='smsbody'>" +
+                    field.body + "</div></div>";
+                   
+                });
+                $("#chat-body").html(chatHtml);
+            });
+        }
+        $( "#refresh-msg" ).click(function() {
+           getMessages();
+        });
+        
+        $( "#chat-form" ).submit(function( event ) {
+          event.preventDefault();
+          fromDid = $("#source-num").val();
+          targetDid = $("#dest-num").val();
+          inputchat = $("#input-chat").val();
+          
+          if (!$("#input-chat").val()){
+            setStatus("Empty message field! Cant do this!");
+            return false;
+          }
+          $.ajax({
+            method: "POST",
+            url: "/submitMessage",
+            data: { message: inputchat, fromdid: fromDid, targetdid : targetDid }
+          }).done(function( msg ) {
+            dt = new Date();
+            time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+            msgParsed = $.parseJSON(msg);
+            if (msgParsed.error) {
+                setStatus('Error! Got "'+ msgParsed.error +'"');
+                return false;
+            }
+            //newHTML = '<div id="msg"><span class="chat-time">(' + time + ')</span> <span class="chat-from">' + msgParsed.fromdid + '</span>: ' + msgParsed.msg + '</div>';
+            //$("#chat-body").append( newHTML );
+            getMessages();
+            setStatus('Success! Got "'+ msg +'"');
+            
+            clearInput();
+          });
+        });
+        $('#test-ajax').click(function() {
+          $.ajax({
+              url: '/testAjax',
+              type: 'GET',
+              success: function(response) {
+                newHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: ' + response + '</div>';
+                statusHTML = '<div id="alert-messages">Success! Got "'+ response +'"</div>';
+                $("#chat-body").append( newHTML );
+                $("#alert-messages").html(statusHTML);
+              },
+              error: function(error) {
+                errorHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: Error ' + error + '</div>';
+                statusHTML = '<div id="alert-messages">Error! Got "'+ error +'"</div>';
+                $("#chat-body").append( errorHTML );
+                $("#alert-messages").html(statusHTML);
+              }
+          });
+        });
+      });
+    </script>
+</head>
+<body>
+    <h1 id="channel-name">SMS Project</h1>
+    <div id="chat">
+        <div id="chat-input">
+            <form id="chat-form">
+                <div id="chat-director">
+                    from: <input type="tel" id="source-num" value="19515551212"/>
+                    to: <input type="tel" id="dest-num" />
+                </div>
+                <div id="chat-fields">
+                    <input type="text" id="input-chat" />
+                </div>
+                <div id="chat-controls">
+                    <input type="submit" id="submit-chat" value="Send Message"/>
+                    <input type="button" id="test-ajax" value="Test Communications"/>
+                    <input type="button" id="refresh-msg" value="Refresh Log"/>
+                </div>
+            </form>
+        </div>
+        <div id="alert-messages">
+          
+        </div>
+        <div id="chat-body">
+            <div id="msg"><span class="chat-from">OPERATOR</span>: Welcome!</div>
+        </div>
+    </div>
+</body>
+</html>

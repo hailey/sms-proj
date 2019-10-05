@@ -21,8 +21,9 @@ app = Flask(__name__)
 
 #########
 # This is so bare I don't need a config right now.
-#config = configparser.ConfigParser()
-#config.read('config.ini')
+config = configparser.ConfigParser()
+config.read('config.ini')
+app_debug = config.get("app","debug")
 
 #############################
 ##      Callback defs go here
@@ -60,7 +61,10 @@ def deliveryReport():
 #################
 ##      Main loop
 if __name__ == '__main__':
-    app.debug = True
+    if app_debug == '1':
+        app.debug = True
+    else:
+        app.debug = False
     app.run(
         host="0.0.0.0",
         port=8790
