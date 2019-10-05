@@ -7,6 +7,7 @@ import os
 
 #from flask import Flask, request, session, render_template, flash
 import flask
+import pprint
 import configparser
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
@@ -93,7 +94,7 @@ def login():
 @no_cache
 def google_auth_redirect():
     req_state = flask.request.args.get('state', default=None, type=None)
-
+    pprint.pprint(req_state)
     if req_state != flask.session[AUTH_STATE_KEY]:
         response = flask.make_response('Invalid state parameter', 401)
         return response
