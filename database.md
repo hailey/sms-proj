@@ -68,3 +68,11 @@ ALTER TABLE `messages` MODIFY `provider_timestamp` VARCHAR(36);
 ALTER TABLE account ADD COLUMN `refresh_token` BLOB NULL;
 ALTER TABLE account ADD COLUMN `google_id` VARCHAR(255) NULL UNIQUE;
 ALTER TABLE account ADD COLUMN `verified_email` BOOL NOT NULL DEFAULT False;
+
+##########Update V3
+# Adding last modified and created, as well as changing the timestamp
+# This requires loss of all logs. Oops.
+ALTER TABLE account ADD COLUMN `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE account ADD COLUMN `last_modified` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+ALTER TABLE messages MODIFY `timestamp` TIMESTAMP NOT NULL;

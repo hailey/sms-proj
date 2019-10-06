@@ -38,9 +38,13 @@ def index():
     indbRes = appdb.isUserinDB(user_info['id'])
     if indbRes:
         pprint.pprint(indbRes)
+        refreshtoken = google_auth.getRefreshToken()
+        userid = appdb.getUserIdFromRT(refreshtoken)
+        rows = appdb.getDIDsbyAccount(userid)
         return flask.render_template('index.html',
                                     name = user_info['name'],
-                                    picture = user_info['picture'])
+                                    picture = user_info['picture'],
+                                    dids = rows)
     else:
         # Lets setup the user
         refreshtoken = google_auth.getRefreshToken()
@@ -63,7 +67,7 @@ def manageSingleSMS(number):
     
     refreshtoken = google_auth.getRefreshToken()
     userid = appdb.getUserIdFromRT(refreshtoken)
-    result = appdb.authIdforDID(userid[0],number)
+    result = appdb.authIdforDID(userid,number)
     
     if appdb.validateFrom(int(number)) and result:
         return flask.render_template('single.html',srcnumber = number)
@@ -101,7 +105,15 @@ def submitMessage():
     fromDid = flask.request.form['fromdid']
     targetDid = flask.request.form['targetdid']
     
+    refreshtoken = google_auth.getRefreshToken()
+    userid = appdb.getUserIdFromRT(refreshtoken)
+    result = appdb.authIdforDID(userid,fromDid)
     
+    if userid != result:
+        pprint.pprint(userid)
+        pprint.pprint(result)
+        return json.dumps({'error': 'Unauthorized UserID'})
+     
     if appdb.validateFrom(fromDid) == False:
         return json.dumps({'error': 'Unauthorized source phone number.'})
     
@@ -111,7 +123,7 @@ def submitMessage():
         returndata = json.dumps({'error': 'Unable to send SMS'})
     else:
         msgTS = time.strftime("%Y-%m-%dT%H:%m:%SZ")
-        appdb.logsms_db(msg_id, msgTS, 'outbound', targetDid, fromDid, 0.0040, 'pending', message)
+        appdb.logsms_db(msg_id, msgTS, 'outbound', targetDid, fromDid, 0.0040, 'pending', message, result)
         returndata = json.dumps({"msg" : message, "fromdid" : fromDid, 'targetdid' : targetDid,})
     return returndata
 

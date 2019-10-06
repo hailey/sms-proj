@@ -12,6 +12,14 @@
 <body>
 <h1>Welcome back {{ name }}!</h1>
 <img src="{{ picture }}" alt="Self Photo" />
+<div id='body'>
+    Your active DIDs: (Click number to access messaging)
+<ul>
+    {% for item in dids %}
+        <li><a href='/single/{{ item[0] }}'>{{ item[0] }}</a></li>
+    {% endfor %}
+</ul>
+</div>
     {% include 'include/footer.html' %}
 </body>
 </html>

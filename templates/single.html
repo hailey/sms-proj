@@ -42,6 +42,10 @@
             fromDid = $("#source-num").val();
            getNumMessages(fromDid);
         });
+        $( "#resetbutton" ).click(function() {        
+            $( "#submit-chat" ).prop("disabled", false);
+            clearInput();
+        });
         
         $( "#chat-form" ).submit(function( event ) {
             $( "#submit-chat" ).prop("disabled", true);
@@ -113,7 +117,9 @@
                     <input type="submit" id="submit-chat" value="Send Message"/>
                     <input type="button" id="test-ajax" value="Test Communications"/>
                     <input type="button" id="refresh-msg" value="Refresh Log"/>
+                    <div id="right-side"><input type="button" id='resetbutton' value="RESET" /></div>
                 </div>
+                
             </form>
         </div>
         <div id="alert-messages">

@@ -5,7 +5,7 @@
 import pymysql
 import pymysql.cursors
 import pprint
-import time
+#import time
 import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -15,13 +15,13 @@ sqlpass = config.get("sql","sqlpass")
 sqldb = config.get("sql","sqldb")
 
 
-def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, status, msg):
+def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, status, msg, account_id):
     #This statement logs a SMS to the smslog table.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
 
-    cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`,`status`, `body`)VALUES \
-                (%s, %s, %s, %s, %s, %s, %s, %s, %s)",(int(time.time()),msg_ts, direction, from_did, to_did, cost, msg_id, status, msg))
+    cur.execute("INSERT INTO messages (`timestamp`, `provider_timestamp`,`direction`, `source_number`, `dest_number`, `cost`,`pid`,`status`, `body`, `account_id`)VALUES \
+                (now(), %s, %s, %s, %s, %s, %s, %s, %s, %s)",(msg_ts, direction, from_did, to_did, cost, msg_id, status, msg, account_id))
     db.commit()
     db.close()
     return True
@@ -68,7 +68,28 @@ def getUserIdFromRT(refreshtoken):
     cur.execute("SELECT id FROM account WHERE refresh_token=%s",(refreshtoken))
     data = cur.fetchone()
     db.close()
-    return data
+    return data[0]
+
+def getAccountbyDID(did):
+    #This function pulls the account id for the DID in the query.
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT account_id FROM dids WHERE number=%s LIMIT 1",(did))
+    data = cur.fetchone()
+    db.close()
+    if not data:
+        return False
+    return data[0]
+
+def getDIDsbyAccount(account_id):
+    #DIDs that are assigned to an account.
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT number,provider FROM dids WHERE account_id=%s",(account_id))
+    rows = cur.fetchall()
+    db.close()
+    return rows    
+    
 
 def authIdforDID(account_id,did):
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
@@ -76,7 +97,7 @@ def authIdforDID(account_id,did):
     cur.execute("SELECT * FROM dids,account WHERE dids.account_id=account.id AND account.id=%s AND dids.number=%s LIMIT 1",(account_id,did))
     data = cur.fetchone()
     db.close()
-    return data
+    return data[0]
 
 def setRefreshToken(refresh_token, google_id):
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)

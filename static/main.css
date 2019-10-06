@@ -9,6 +9,13 @@ body {
  * A97C73
  * AF3E4D
  ************/
+
+a {color: #D9FFF8;}
+a:visited {color: #C7FFDA;}
+a:hover, a:active {color: C4F4C7;}
+a:disabled {color: #9BB291;}
+
+
 .ts {
     font-size: 1em;
 }
@@ -31,6 +38,7 @@ body {
     padding: 1em;
     
 }
+
 #chat-director {
     padding: 5px;
 }
@@ -44,7 +52,10 @@ body {
 .footlinks {
     text-align: center;
 }
-
+#right-side {
+    float: right;
+    text-align: right;    
+}
 .smsbody {
     font-size:2em;
     color: #B0C592;
