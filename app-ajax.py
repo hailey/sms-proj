@@ -112,7 +112,7 @@ def submitMessage():
     if userid != result:
         pprint.pprint(userid)
         pprint.pprint(result)
-        return json.dumps({'error': 'Unauthorized UserID of ' + userid + "and DID id of " + result})
+        return json.dumps({'error': 'Unauthorized UserID of ' + str(userid) + "and DID id of " + str(result) + " and fromDID " + str(fromDid)})
      
     if appdb.validateFrom(fromDid) == False:
         return json.dumps({'error': 'Unauthorized source phone number.'})
