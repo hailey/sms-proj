@@ -41,6 +41,9 @@ def index():
         pprint.pprint(indbRes)
         refreshtoken = google_auth.getRefreshToken()
         userid = appdb.getUserIdFromRT(refreshtoken)
+        if not userid:
+            return 'You are not currently logged in.'
+        
         rows = appdb.getDIDsbyAccount(userid)
         return flask.render_template('index.html',
                                     name = user_info['name'],

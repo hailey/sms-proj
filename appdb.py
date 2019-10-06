@@ -68,6 +68,8 @@ def getUserIdFromRT(refreshtoken):
     cur.execute("SELECT id FROM account WHERE refresh_token=%s",(refreshtoken))
     data = cur.fetchone()
     db.close()
+    if not data:
+        return False
     return data[0]
 
 def getAccountbyDID(did):
