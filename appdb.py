@@ -55,8 +55,8 @@ def setNewUser(google_id, refresh_token, name, email, verified):
     #This statement is for creating a user into the account table.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    cur.execute("INSERT INTO account (`name`, `email`, `refresh_token`, `google_id`, `verified_email`) VALUES \
-                (%s, %s, %s, %s, %s)",(name, email, refresh_token, google_id, verified))
+    cur.execute("INSERT INTO account (`name`, `email`, `refresh_token`, `google_id`, `verified_email`, `created`, `last_modified`) VALUES \
+                (%s, %s, %s, %s, %s, NOW(), NOW())",(name, email, refresh_token, google_id, verified))
     db.commit()
     db.close()
     return True
@@ -88,7 +88,7 @@ def getDIDsbyAccount(account_id):
     cur.execute("SELECT number,provider FROM dids WHERE account_id=%s",(account_id))
     rows = cur.fetchall()
     db.close()
-    return rows    
+    return rows 
     
 
 def authIdforDID(account_id,did):
@@ -106,7 +106,7 @@ def setRefreshToken(refresh_token, google_id):
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
 
-    cur.execute("UPDATE account SET refresh_token=%s WHERE google???",(refresh_token))
+    cur.execute("UPDATE account SET refresh_token=%s WHERE google_id=%s",(refresh_token, google_id))
     db.commit()
     db.close()
     return True
