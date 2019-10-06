@@ -18,10 +18,8 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 app_debug = config.get("app","debug")
 
-#ACCESS_TOKEN_URI = 'https://oauth2.googleapis.com/token'
-#ACCESS_TOKEN_URI = GOOGLE_TOKEN_URIi
 ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
-#ACCESS_TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
+
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent'
 
 #AUTHORIZATION_SCOPE ='openid email profile'
