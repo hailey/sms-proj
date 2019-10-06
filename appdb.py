@@ -121,7 +121,7 @@ def authIdforDID(account_id,did):
 def setRefreshToken(refresh_token, google_id):
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-
+    pprint.pprint("Setting new refresh token of " + google_id + " and " + refresh_token)
     cur.execute("UPDATE account SET refresh_token=%s WHERE google_id=%s",(refresh_token, google_id))
     db.commit()
     db.close()

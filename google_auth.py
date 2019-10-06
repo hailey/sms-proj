@@ -110,7 +110,7 @@ def google_auth_redirect():
                         ACCESS_TOKEN_URI,            
                         authorization_response=flask.request.url)
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
-
+    appdb.setRefreshToken(oauth2_tokens['refresh_token'],oauth2_tokens['id'])
     return flask.redirect(BASE_URI, code=302)
 
 @app.route('/google/logout')
