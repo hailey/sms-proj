@@ -97,10 +97,10 @@ def authIdforDID(account_id,did):
     cur.execute("SELECT account.id FROM dids,account WHERE dids.account_id=account.id AND account.id=%s AND dids.number=%s LIMIT 1",(account_id,did))
     data = cur.fetchone()
     db.close()
-    pprint.pprint('-----')
-    pprint.pprint(data)
-    pprint.pprint('----')
-    return data[3]
+    #pprint.pprint('-----')
+    #pprint.pprint(data)
+    #pprint.pprint('----')
+    return data[0]
 
 def setRefreshToken(refresh_token, google_id):
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
