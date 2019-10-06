@@ -65,37 +65,10 @@ def manageSingleSMS(number):
     userid = appdb.getUserIdFromRT(refreshtoken)
     result = appdb.authIdforDID(userid[0],number)
     
-    pprint.pprint(result)
-    
     if appdb.validateFrom(int(number)) and result:
         return flask.render_template('single.html',srcnumber = number)
     else:
         return flask.render_template('notvalid.html', srcnumber = number)
-
-@app.route('/getMessages',methods=['GET'])
-def getMessages():
-    if not google_auth.is_logged_in():
-        return flask.render_template('deny.html')
-    smslog = appdb.getAllSMSLog(10)
-    pprint.pprint(smslog)
-    msgjson = ""
-    i = 0
-    for line in smslog:
-        if i >= 1:
-            msgjson = msgjson + ',' + json.dumps({'to':line[7],
-                              'from':line[6],
-                              'body':line[9],
-                              'timestamp': line[4]})
-        else:
-            msgjson =  json.dumps({'to':line[7],
-                              'from':line[6],
-                              'body':line[9],
-                              'timestamp': line[4]})
-        i += 1
-        
-    
-    msgArrayJson = '['+msgjson +']'
-    return msgArrayJson
 
 @app.route('/getNumber/<int:did>',methods=['GET'])
 def getNumMessages(did):
@@ -151,9 +124,9 @@ def PrivacyPolicy():
     pprint.pprint(flask.session)
     return flask.render_template('pp.html')
 
-@app.route('/aup')
-def AuP():
-    return flask.render_template('aup.html')
+@app.route('/tos')
+def tos():
+    return flask.render_template('tos.html')
 
 if __name__ == '__main__':
     app.run(
