@@ -26,6 +26,67 @@ def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, status, msg):
     db.close()
     return True
 
+def isUserinDB(google_id):
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT * FROM account WHERE google_id=%s LIMIT 1" % google_id)
+    data = cur.fetchone()
+    db.close()
+    if data:
+        pprint.pprint(data)
+        return True
+    else:
+        return False
+    
+def isUserVerfied(google_id):
+    #This checks to see if the account is set to verified true
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT verified_email FROM account WHERE google_id=%s",(google_id))
+    data = cur.fetchone()
+    db.close()
+    if data:
+        pprint.pprint(data)
+        return True
+    else:
+        return False
+
+def setNewUser(google_id, refresh_token, name, email, verified):
+    #This statement is for creating a user into the account table.
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("INSERT INTO account (`name`, `email`, `refresh_token`, `google_id`, `verified_email`) VALUES \
+                (%s, %s, %s, %s, %s)",(name, email, refresh_token, google_id, verified))
+    db.commit()
+    db.close()
+    return True
+
+def getUserIdFromRT(refreshtoken):
+    #This pulls an UserID from a Refresh Token
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT id FROM account WHERE refresh_token=%s",(refreshtoken))
+    data = cur.fetchone()
+    db.close()
+    return data
+
+def authIdforDID(account_id,did):
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT * FROM dids,account WHERE dids.account_id=account.id AND account.id=%s AND dids.number=%s LIMIT 1",(account_id,did))
+    data = cur.fetchone()
+    db.close()
+    return data
+
+def setRefreshToken(refresh_token, google_id):
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+
+    cur.execute("UPDATE account SET refresh_token=%s WHERE google???",(refresh_token))
+    db.commit()
+    db.close()
+    return True
+
 def getAllSMSLog(limit=5, order='desc'):
     #This gets the last X amount of logs from all numbers.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)

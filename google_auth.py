@@ -19,10 +19,8 @@ config.read('config.ini')
 app_debug = config.get("app","debug")
 
 ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
-
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent'
 
-#AUTHORIZATION_SCOPE ='openid email profile'
 AUTHORIZATION_SCOPE = ['openid', 'https://www.googleapis.com/auth/userinfo.email',
                      'https://www.googleapis.com/auth/userinfo.profile']
 
@@ -62,12 +60,14 @@ def build_credentials():
 
 def get_user_info():
     credentials = build_credentials()
-    pprint.pprint("Credentials Built!")
     oauth2_client = googleapiclient.discovery.build(
                         'oauth2', 'v2',
                         credentials=credentials)
-    pprint.pprint("oauth2_client done")
     return oauth2_client.userinfo().get().execute()
+
+def getRefreshToken():
+    oauth2_tokens = flask.session[AUTH_TOKEN_KEY]
+    return oauth2_tokens['refresh_token']
 
 def no_cache(view):
     @functools.wraps(view)
@@ -88,10 +88,8 @@ def login():
                             redirect_uri=AUTH_REDIRECT_URI)
   
     uri, state = session.create_authorization_url(AUTHORIZATION_URL,access_type='offline',include_granted_scopes='true')
-    pprint.pprint(state)
     flask.session[AUTH_STATE_KEY] = state
     flask.session.permanent = True
-    pprint.pprint(flask.session)
     return flask.redirect(uri, code=302)
 
 @app.route('/google/auth')
@@ -111,8 +109,6 @@ def google_auth_redirect():
     oauth2_tokens = session.fetch_token(
                         ACCESS_TOKEN_URI,            
                         authorization_response=flask.request.url)
-    pprint.pprint ("----")
-    pprint.pprint (oauth2_tokens)
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
 
     return flask.redirect(BASE_URI, code=302)

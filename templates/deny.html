@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="/static/main.css">
-    <script src="/static/jquery-3.3.1.min.js"></script>
-    <!-- include header.html -->
+    {% include 'header.html' %}
     <title> Yeah! </title>
     <script type="text/javascript">
     $("document").ready(function() {
@@ -14,5 +12,6 @@
 <body>
 <h1>503 Denied. Please Log in.</h1>
 <p>Please login at <a href='/google/login'>The Login Page</a></p>
+    {% include 'footer.html' %}
 </body>
 </html>

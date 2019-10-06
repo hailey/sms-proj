@@ -32,19 +32,42 @@ else:
 
 @app.route('/')
 def index():
-    if google_auth.is_logged_in():
-        pprint.pprint("Getting userinfo on /")
-        user_info = google_auth.get_user_info()
-        pprint.pprint("Gotem!")
-        return '<div>You are currently logged in as ' + user_info['given_name'] + '<div><div><img src="' + user_info['picture'] + '" alt="Self Photo" /></div><pre>' + json.dumps(user_info, indent=4) + "</pre>"
-    return 'You are not currently logged in.'
+    if not google_auth.is_logged_in():
+        return 'You are not currently logged in.'
+    user_info = google_auth.get_user_info()
+    indbRes = appdb.isUserinDB(user_info['id'])
+    if indbRes:
+        pprint.pprint(indbRes)
+        return flask.render_template('index.html',
+                                    name = user_info['name'],
+                                    picture = user_info['picture'])
+    else:
+        # Lets setup the user
+        refreshtoken = google_auth.getRefreshToken()
+        
+        if user_info['verified_email'] == True:
+            verifiedVar = True
+        else:
+            verifiedVar = False
+            
+        appdb.setNewUser(user_info['id'], refreshtoken, user_info['name'], user_info['email'], verifiedVar)
+        return flask.render_template('landing.html',
+                                    name = user_info['name'],
+                                    picture = user_info['picture'])
+
 
 @app.route('/single/<int:number>', methods=['GET'])
 def manageSingleSMS(number):
     if not google_auth.is_logged_in():
         return flask.render_template('deny.html')
     
-    if appdb.validateFrom(int(number)):
+    refreshtoken = google_auth.getRefreshToken()
+    userid = appdb.getUserIdFromRT(refreshtoken)
+    result = appdb.authIdforDID(userid[0],number)
+    
+    pprint.pprint(result)
+    
+    if appdb.validateFrom(int(number)) and result:
         return flask.render_template('single.html',srcnumber = number)
     else:
         return flask.render_template('notvalid.html', srcnumber = number)
@@ -54,11 +77,10 @@ def getMessages():
     if not google_auth.is_logged_in():
         return flask.render_template('deny.html')
     smslog = appdb.getAllSMSLog(10)
-    epprint.pprint(smslog)
+    pprint.pprint(smslog)
     msgjson = ""
     i = 0
     for line in smslog:
-        #pprint.pprint(line)
         if i >= 1:
             msgjson = msgjson + ',' + json.dumps({'to':line[7],
                               'from':line[6],
@@ -77,21 +99,16 @@ def getMessages():
 
 @app.route('/getNumber/<int:did>',methods=['GET'])
 def getNumMessages(did):
+    #This gets the mssages based on the provided from or two DID
     if not google_auth.is_logged_in():
         return flask.render_template('deny.html')
-    #This gets the mssages based on the provided from or two DID
+    
     smslog = appdb.getNumSMSLog(did,10)
-    #pprint.pprint(smslog)
     i = 0
     msgjson = ""
     for line in smslog:
-        #pprint.pprint(line)
         if i >= 1:
-            msgjson = msgjson + ',' + json.dumps({'to':line[7],
-                              'from':line[6], # :)
-                              'body':line[9],
-                              'timestamp': line[4],
-                              'status': line[10]})
+            msgjson = msgjson + ',' + json.dumps({'to':line[7],'from':line[6],'body':line[9],'timestamp': line[4],'status': line[10]})
         else:
             msgjson =  json.dumps({'to':line[7],'from':line[6],'body':line[9],'timestamp': line[4], 'status': line[10]})
         i += 1
@@ -128,6 +145,15 @@ def submitMessage():
 @app.route('/testAjax')
 def testAjax():
     return json.dumps({"msg" : 'Success!'})
+
+@app.route('/pp')
+def PrivacyPolicy():
+    pprint.pprint(flask.session)
+    return flask.render_template('pp.html')
+
+@app.route('/aup')
+def AuP():
+    return flask.render_template('aup.html')
 
 if __name__ == '__main__':
     app.run(

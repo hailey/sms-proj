@@ -52,6 +52,7 @@ def smsinbound():
 
 @app.route('/dlr', methods=['POST','GET'])
 def deliveryReport():
+    #This is the delivery report callback function.
     json_content = flask.request.json
     pprint.pprint(json_content)
     msg_id = json_content['data']['id']

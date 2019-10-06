@@ -62,3 +62,9 @@ ENGINE=InnoDB
 ########## Update V1, add delivered status to messages table.
 ALTER TABLE messages ADD COLUMN status VARCHAR(30) NOT NULL DEFAULT 'pending';
 ALTER TABLE `messages` MODIFY `provider_timestamp` VARCHAR(36);
+
+##########Update V2
+# Adding token and other infos.
+ALTER TABLE account ADD COLUMN `refresh_token` BLOB NULL;
+ALTER TABLE account ADD COLUMN `google_id` VARCHAR(255) NULL UNIQUE;
+ALTER TABLE account ADD COLUMN `verified_email` BOOL NOT NULL DEFAULT False;

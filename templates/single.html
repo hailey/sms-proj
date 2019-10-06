@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="/static/main.css">
-    <script src="/static/jquery-3.3.1.min.js"></script>
-    <!-- include header.html -->
+    {% include 'include/header.html' %}
     <title>SMS Chat for {{ srcnumber }}</title>
     <script type="text/javascript">
         
@@ -125,5 +123,6 @@
             <div id="msg"><span class="chat-from">OPERATOR</span>: Welcome!</div>
         </div>
     </div>
+    {% include 'include/footer.html' %}
 </body>
 </html>

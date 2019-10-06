@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- include header.html -->
+    {% include 'include/header.html' %}
     <title>{{ srcnumber }} Is not a valid DID</title>
 </head>
 <body>
     <h1 id="channel-name">{{ srcnumber }} is not a valid number.</h1>
+    {% include 'include/footer.html' %}
 </body>
 </html>

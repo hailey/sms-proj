@@ -37,6 +37,14 @@ body {
 #chat-fields {
     padding: 5px 0px 5px 0px;
 }
+#footer {
+    border-top: double;
+    padding: 20px 5px 10px 5px;
+}
+.footlinks {
+    text-align: center;
+}
+
 .smsbody {
     font-size:2em;
     color: #B0C592;
