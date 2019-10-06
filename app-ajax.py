@@ -5,6 +5,7 @@ import datetime
 import pprint
 import configparser
 import json
+import re
 import appdb, appsms
 #from flask import Flask, render_template, request
 import flask
@@ -68,11 +69,11 @@ def manageSingleSMS(number):
     refreshtoken = google_auth.getRefreshToken()
     userid = appdb.getUserIdFromRT(refreshtoken)
     result = appdb.authIdforDID(userid,number)
-    
+    prettynum = appsms.prettyPhone(number)
     if appdb.validateFrom(int(number)) and result:
-        return flask.render_template('single.html',srcnumber = number)
+        return flask.render_template('single.html',srcnumber = number, prettynum = prettynum)
     else:
-        return flask.render_template('notvalid.html', srcnumber = number)
+        return flask.render_template('notvalid.html', srcnumber = number, prettynum = prettynum)
 
 @app.route('/getNumber/<int:did>',methods=['GET'])
 def getNumMessages(did):
@@ -84,10 +85,12 @@ def getNumMessages(did):
     i = 0
     msgjson = ""
     for line in smslog:
+        prettyto = appsms.prettyPhone(line[7])
+        prettyfrom = appsms.prettyPhone(line[6])
         if i >= 1:
-            msgjson = msgjson + ',' + json.dumps({'to':line[7],'from':line[6],'body':line[9],'timestamp': line[4],'status': line[10]})
+            msgjson = msgjson + ',' + json.dumps({'to':prettyto,'from':prettyfrom,'body':line[9],'timestamp': line[4],'status': line[10]})
         else:
-            msgjson =  json.dumps({'to':line[7],'from':line[6],'body':line[9],'timestamp': line[4], 'status': line[10]})
+            msgjson =  json.dumps({'to':prettyto,'from':prettyfrom,'body':line[9],'timestamp': line[4], 'status': line[10]})
         i += 1
         
     
@@ -117,13 +120,15 @@ def submitMessage():
     if appdb.validateFrom(fromDid) == False:
         return json.dumps({'error': 'Unauthorized source phone number.'})
     
+    uglyphone = appsms.uglyPhone(targetDid)
+    
     #pprint.pprint('Got ' + message + ',' + fromDid)
-    msg_id = appsms.sendsms(targetDid,fromDid,message)
+    msg_id = appsms.sendsms(uglyphone,fromDid,message)
     if msg_id == False: #This sends the sms!
         returndata = json.dumps({'error': 'Unable to send SMS'})
     else:
         msgTS = time.strftime("%Y-%m-%dT%H:%m:%SZ")
-        appdb.logsms_db(msg_id, msgTS, 'outbound', targetDid, fromDid, 0.0040, 'pending', message, result)
+        appdb.logsms_db(msg_id, msgTS, 'outbound', uglyphone, fromDid, 0.0040, 'pending', message, result)
         returndata = json.dumps({"msg" : message, "fromdid" : fromDid, 'targetdid' : targetDid,})
     return returndata
 
