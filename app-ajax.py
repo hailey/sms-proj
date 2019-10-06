@@ -40,7 +40,10 @@ def index():
     if indbRes:
         pprint.pprint(indbRes)
         refreshtoken = google_auth.getRefreshToken()
-        userid = appdb.getUserIdFromRT(refreshtoken)
+        if not refreshtoken:
+            return "Error with your refresh token"
+        
+        userid = appdb.getUserIDfromGoogleID(user_info['id'])
         if not userid:
             return 'You are not currently logged in.'
         

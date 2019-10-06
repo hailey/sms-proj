@@ -72,6 +72,17 @@ def getUserIdFromRT(refreshtoken):
         return False
     return data[0]
 
+def getUserIDfromGoogleID(google_id):
+    #This pulls an UserID from a Google ID
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT id FROM account WHERE google_id=%s",(google_id))
+    data = cur.fetchone()
+    db.close()
+    if not data:
+        return False
+    return data[0]
+
 def getAccountbyDID(did):
     #This function pulls the account id for the DID in the query.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
