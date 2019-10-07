@@ -23,7 +23,8 @@ ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent'
 
 AUTHORIZATION_SCOPE = ['openid', 'https://www.googleapis.com/auth/userinfo.email',
-                     'https://www.googleapis.com/auth/userinfo.profile']
+                     'https://www.googleapis.com/auth/userinfo.profile',
+                     'https://www.googleapis.com/auth/contacts.readonly']
 
 AUTH_REDIRECT_URI = config.get("auth","FN_AUTH_REDIRECT_URI")
 BASE_URI = config.get("auth","FN_BASE_URI")
@@ -117,6 +118,8 @@ def google_auth_redirect():
                         'oauth2', 'v2',
                         credentials=credentials)
     userInfo = oauth2_client.userinfo().get().execute()
+    pprint.pprint("User info")
+    pprint.pprint(userInfo)
     appdb.setRefreshToken(oauth2_tokens['refresh_token'],userInfo['id'])
     return flask.redirect(BASE_URI, code=302)
 
