@@ -76,3 +76,34 @@ ALTER TABLE account ADD COLUMN `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE account ADD COLUMN `last_modified` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 ALTER TABLE messages MODIFY `timestamp` TIMESTAMP NOT NULL;
+
+##########Update V4
+# Add an entirely new table contactlist
+CREATE TABLE `contacts` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`account_id` SMALLINT(5) UNSIGNED NULL DEFAULT NULL,
+	`last_modified` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`archived` BOOL NOT NULL DEFAULT '0',
+	`fullname` VARCHAR(122) NOT NULL,
+	`email` VARCHAR(200) NULL,
+	PRIMARY KEY (`id`),
+	INDEX `FK_contacts_account` (`account_id`)
+)
+COLLATE='utf8_bin'
+ENGINE=InnoDB;
+
+CREATE TABLE `phonebase` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`contact_id` SMALLINT(5) UNSIGNED NULL DEFAULT NULL,
+	`phone_number` VARCHAR(15) NOT NULL,
+	`number_type` ENUM('mobile','home', 'office', 'other') NULL DEFAULT 'mobile',j
+	`archived` BOOL NOT NULL DEFAULT '0',
+	PRIMARY KEY (`id`),
+	INDEX `pb_phonebaseID` (`contact_id`),
+	INDEX `index_archivedNumbers` (`archived`),
+	CONSTRAINT `pb_accountassoc`
+		FOREIGN KEY (`contact_id`) REFERENCES account (id)
+)
+COLLATE='utf8_bin'
+ENGINE=InnoDB;

@@ -6,10 +6,7 @@ import json
 import pprint
 import time
 import datetime
-import sys
 import string
-import re
-import io
 import appdb, appsms
 import configparser
 #from flask import Flask, render_template, request
@@ -60,9 +57,7 @@ def smsinbound():
     status = 'Delivered'
     account_id = appdb.getAccountbyDID(reply_from)
     appdb.logsms_db(msg_id, msg_timestamp, 'inbound', reply_from, reply_to, smsRate, status, body, account_id) # Lets log to our silly db.
-    #This command seems to make this function happen twice.
-#    appsms.sendsms(reply_to, reply_from, "Message received. Please wait for a reply.")
-    return "0"
+    return "200"
 
 @app.route('/dlr', methods=['POST','GET'])
 def deliveryReport():
