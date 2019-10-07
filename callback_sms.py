@@ -72,6 +72,6 @@ def deliveryReport():
     msg_id = json_content['data']['id']
     msg_status = json_content['data']['attributes']['status']
     msg_timestamp = json_content['data']['attributes']['timestamp']
-    prettyStatus = prettyStatus(msg_status)
-    appdb.updateMsgStatus(msg_id, msg_status, msg_timestamp)
+    pstatus = prettyStatus(msg_status)
+    appdb.updateMsgStatus(msg_id, pstatus, msg_timestamp)
     return "0"
