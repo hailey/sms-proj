@@ -57,7 +57,7 @@ def smsinbound():
     body = json_content['data']['attributes']['body']
     msg_timestamp = json_content['data']['attributes']['timestamp']
     smsRate = json_content['data']['attributes']['amount_display'].replace('$','')
-    status = 'success'
+    status = 'Delivered'
     account_id = appdb.getAccountbyDID(reply_from)
     appdb.logsms_db(msg_id, msg_timestamp, 'inbound', reply_from, reply_to, smsRate, status, body, account_id) # Lets log to our silly db.
     #This command seems to make this function happen twice.
