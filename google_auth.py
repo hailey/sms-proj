@@ -13,7 +13,11 @@ import appdb
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
-from oauth2client import GOOGLE_TOKEN_URI
+import atom.data
+import gdata.data
+import gdata.contacts.client
+import gdata.contacts.data
+#from oauth2client import GOOGLE_TOKEN_URI
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -82,6 +86,29 @@ def no_cache(view):
 
     return functools.update_wrapper(no_cache_impl, view)
 
+def getContacts():
+    userInfo = get_user_info()
+    gd_client = gdata.contacts.client.ContactsClient(source='TheWords.faith
+    feed = gd_client.GetContacts()
+    for i, entry in enumerate(feed.entry):
+    print '\n%s %s' % (i+1, entry.name.full_name.text)
+    if entry.content:
+        print '    %s' % (entry.content.text)
+    # Display the primary email address for the contact.
+    for email in entry.email:
+        if email.primary and email.primary == 'true':
+            print '    %s' % (email.address)
+    # Show the contact groups that this contact is a member of.
+    for group in entry.group_membership_info:
+        print '    Member of group: %s' % (group.href)
+    # Display extended properties.
+    for extended_property in entry.extended_property:
+        if extended_property.value:
+            value = extended_property.value
+        else:
+            value = extended_property.GetXmlBlob()
+    print '    Extended Property - %s: %s' % (extended_property.name, value)')
+
 @app.route('/google/login')
 @no_cache
 def login():
@@ -113,11 +140,7 @@ def google_auth_redirect():
                         authorization_response=flask.request.url)
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
     
-    credentials = build_credentials()
-    oauth2_client = googleapiclient.discovery.build(
-                        'oauth2', 'v2',
-                        credentials=credentials)
-    userInfo = oauth2_client.userinfo().get().execute()
+    userInfo = get_user_info()
     pprint.pprint("User info")
     pprint.pprint(userInfo)
     appdb.setRefreshToken(oauth2_tokens['refresh_token'],userInfo['id'])

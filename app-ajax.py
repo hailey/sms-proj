@@ -148,6 +148,7 @@ def submitMessage():
 
 @app.route('/testAjax')
 def testAjax():
+    google_auth.getContacts()
     return json.dumps({"msg" : 'Success!'})
 
 @app.route('/pp')
