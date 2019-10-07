@@ -83,7 +83,7 @@ def manageSingleSMS(number):
     else:
         return flask.render_template('notvalid.html', srcnumber = number, prettynum = prettynum)
 
-@app.route('/getNumber/<int:did>',methods=['GET'])
+@app.route('/getNumber/<int:number>',methods=['GET'])
 def getNumMessages(number):
     #This gets the mssages based on the provided from or two DID
     if not google_auth.is_logged_in():
