@@ -87,7 +87,12 @@ def getNumMessages(did):
     if not google_auth.is_logged_in():
         return flask.render_template('deny.html')
     
+    refreshtoken = google_auth.getRefreshToken()
+    userid = appdb.getUserIdFromRT(refreshtoken)
+    result = appdb.authIdforDID(userid,number)
     smslog = appdb.getNumSMSLog(did,10)
+    if not result:
+        return flask.render_template('deny.html')
     i = 0
     msgjson = ""
     for line in smslog:
@@ -121,7 +126,7 @@ def submitMessage():
     if userid != result:
         pprint.pprint(userid)
         pprint.pprint(result)
-        return json.dumps({'error': 'Unauthorized UserID of ' + str(userid) + "and DID id of " + str(result) + " and fromDID " + str(fromDid)})
+        return json.dumps({'error': 'Unauthorized UserID of ' + str(userid) + " and DID id of " + str(result) + " and fromDID " + str(fromDid)})
      
     if appdb.validateFrom(fromDid) == False:
         return json.dumps({'error': 'Unauthorized source phone number.'})
