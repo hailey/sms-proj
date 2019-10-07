@@ -73,8 +73,10 @@ def manageSingleSMS(number):
         return flask.render_template('deny.html')
     
     refreshtoken = google_auth.getRefreshToken()
+    
     userid = appdb.getUserIdFromRT(refreshtoken)
     result = appdb.authIdforDID(userid,number)
+    
     prettynum = appsms.prettyPhone(number)
     if appdb.validateFrom(int(number)) and result:
         return flask.render_template('single.html',srcnumber = number, prettynum = prettynum)
@@ -82,7 +84,7 @@ def manageSingleSMS(number):
         return flask.render_template('notvalid.html', srcnumber = number, prettynum = prettynum)
 
 @app.route('/getNumber/<int:did>',methods=['GET'])
-def getNumMessages(did):
+def getNumMessages(number):
     #This gets the mssages based on the provided from or two DID
     if not google_auth.is_logged_in():
         return flask.render_template('deny.html')
@@ -90,9 +92,10 @@ def getNumMessages(did):
     refreshtoken = google_auth.getRefreshToken()
     userid = appdb.getUserIdFromRT(refreshtoken)
     result = appdb.authIdforDID(userid,number)
-    smslog = appdb.getNumSMSLog(did,10)
+    smslog = appdb.getNumSMSLog(number,10)
     if not result:
-        return flask.render_template('deny.html')
+        return flask.render_template('deny.html', 'Invalid ID for DID')
+    
     i = 0
     msgjson = ""
     for line in smslog:
