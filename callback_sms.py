@@ -33,6 +33,20 @@ app_debug = config.get("app","debug")
 #ef index():
 #    return render_template('index.html')
 
+def prettyStatus(status):
+    if status == 'message buffered':
+        return 'Delivered'
+    elif status == 'smsc submit':
+        return'Sent'
+    elif status == 'smsc reject':
+        return 'Rejected'
+    elif status == 'delivery success':
+        return 'Delivered'
+    elif status == 'delivery failure':
+        return 'Failed'
+    elif status == 'smsc intermediate notifications':
+        return 'Sent'
+
 @app.route('/sms-inbound', methods=['POST'])
 def smsinbound():
     #extract attributes from POSTed JSON of inbound SMS
@@ -58,5 +72,6 @@ def deliveryReport():
     msg_id = json_content['data']['id']
     msg_status = json_content['data']['attributes']['status']
     msg_timestamp = json_content['data']['attributes']['timestamp']
+    prettyStatus = prettyStatus(msg_status)
     appdb.updateMsgStatus(msg_id, msg_status, msg_timestamp)
     return "0"
