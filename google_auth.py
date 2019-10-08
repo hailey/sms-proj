@@ -86,7 +86,7 @@ def no_cache(view):
 
     return functools.update_wrapper(no_cache_impl, view)
 
-def getContacts():
+def getGoogleContacts():
     userInfo = get_user_info()
     gd_client = gdata.contacts.client.ContactsClient(source='TheWords.faith')
     feed = gd_client.GetContacts()
