@@ -169,7 +169,7 @@ def tos():
         loggedin = True
     else:
         loggedin = False 
-    return flask.render_template('tos.html',loggedin=loggedin))
+    return flask.render_template('tos.html',loggedin=loggedin)
 
 @app.route('/about')
 def about():
