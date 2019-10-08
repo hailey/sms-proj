@@ -97,7 +97,7 @@ CREATE TABLE `phonebase` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`contact_id` SMALLINT(5) UNSIGNED NULL DEFAULT NULL,
 	`phone_number` VARCHAR(15) NOT NULL,
-	`number_type` ENUM('mobile','home', 'office', 'other') NULL DEFAULT 'mobile',j
+	`number_type` ENUM('mobile','home', 'office', 'other') NULL DEFAULT 'mobile',
 	`archived` BOOL NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
 	INDEX `pb_phonebaseID` (`contact_id`),

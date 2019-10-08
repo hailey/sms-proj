@@ -15,6 +15,7 @@ import googleapiclient.discovery
 
 import google_auth
 import callback_sms
+import app_settings
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -25,6 +26,9 @@ app.secret_key = config.get("auth","FN_FLASK_SECRET_KEY")
 
 app.register_blueprint(google_auth.app)
 app.register_blueprint(callback_sms.app)
+app.register_blueprint(app_settings.app)
+
+loginMsg = "You are not logged in, <a href='/google/login'>Click here to login</a>"
 
 if app_debug == '1':
     app.debug = True
@@ -34,7 +38,7 @@ else:
 @app.route('/')
 def index():
     if not google_auth.is_logged_in():
-        return flask.render_template('deny.html')
+        return flask.render_template('deny.html', denymsg = loginMsg)
     user_info = google_auth.get_user_info()
     indbRes = appdb.isUserinDB(user_info['id'])
     if indbRes:
@@ -55,22 +59,20 @@ def index():
     else:
         # Lets setup the user
         refreshtoken = google_auth.getRefreshToken()
-        
         if user_info['verified_email'] == True:
             verifiedVar = True
+            appdb.setNewUser(user_info['id'], refreshtoken, user_info['name'], user_info['email'], verifiedVar)
+            return flask.redirect(uri, code=302)
         else:
+            #This means they aren't verified.
             verifiedVar = False
-            
-        appdb.setNewUser(user_info['id'], refreshtoken, user_info['name'], user_info['email'], verifiedVar)
-        return flask.render_template('landing.html',
-                                    name = user_info['name'],
-                                    picture = user_info['picture'])
+            return flask.render_template('deny.html',denymsg = 'Your google account does not have a verified email. This is required to use this service.')
 
 
 @app.route('/single/<int:number>', methods=['GET'])
 def manageSingleSMS(number):
     if not google_auth.is_logged_in():
-        return flask.render_template('deny.html')
+        return flask.render_template('deny.html',denymsg = loginMsg)
     
     refreshtoken = google_auth.getRefreshToken()
     
@@ -87,14 +89,14 @@ def manageSingleSMS(number):
 def getNumMessages(number):
     #This gets the mssages based on the provided from or two DID
     if not google_auth.is_logged_in():
-        return flask.render_template('deny.html')
+        return flask.render_template('deny.html', denymsg = loginMsg)
     
     refreshtoken = google_auth.getRefreshToken()
     userid = appdb.getUserIdFromRT(refreshtoken)
     result = appdb.authIdforDID(userid,number)
     smslog = appdb.getNumSMSLog(number,10)
     if not result:
-        return flask.render_template('deny.html', 'Invalid ID for DID')
+        return flask.render_template('deny.html', denymsg = 'Invalid ID for DID')
     
     i = 0
     msgjson = ""
@@ -116,7 +118,7 @@ def submitMessage():
     #This is to submit a message.
     
     if not google_auth.is_logged_in():
-        return flask.render_template('deny.html')
+        return flask.render_template('deny.html', denymsg = loginMsg)
     
     message = flask.request.form['message']
     fromDid = flask.request.form['fromdid']
