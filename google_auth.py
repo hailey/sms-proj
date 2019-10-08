@@ -28,7 +28,8 @@ AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent
 
 AUTHORIZATION_SCOPE = ['openid', 'https://www.googleapis.com/auth/userinfo.email',
                      'https://www.googleapis.com/auth/userinfo.profile',
-                     'https://www.googleapis.com/auth/contacts.readonly']
+                     'https://www.googleapis.com/auth/contacts.readonly',
+                     'https://www.googleapis.com/auth/user.phonenumbers.read']
 
 AUTH_REDIRECT_URI = config.get("auth","FN_AUTH_REDIRECT_URI")
 BASE_URI = config.get("auth","FN_BASE_URI")
@@ -87,9 +88,12 @@ def no_cache(view):
     return functools.update_wrapper(no_cache_impl, view)
 
 def getGoogleContacts():
-    userInfo = get_user_info()
+    #userInfo = get_user_info()
     gd_client = gdata.contacts.client.ContactsClient(source='TheWords.faith')
     feed = gd_client.GetContacts()
+    if not feed:
+        return "Unable to run 'GetContacts()'"
+    
     for i, entry in enumerate(feed.entry):
         print( '\n%s %s' % (i+1, entry.name.full_name.text))
     if entry.content:

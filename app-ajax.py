@@ -34,7 +34,7 @@ else:
 @app.route('/')
 def index():
     if not google_auth.is_logged_in():
-        return 'You are not currently logged in.'
+        return flask.render_template('deny.html')
     user_info = google_auth.get_user_info()
     indbRes = appdb.isUserinDB(user_info['id'])
     if indbRes:
