@@ -77,8 +77,8 @@ def getGoogleId():
         gid = flask.session['gid']
     else:
         return False
-    print ("Google ID from Storage is:")
-    print (gid)
+    pprint.pprint ("Google ID from Storage is:")
+    pprint.pprint (gid)
     return gid
 
 def getRefreshToken():
