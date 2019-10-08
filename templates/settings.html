@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'include/header.html' %}
+    <title> {{ name }}'s Settings </title>
+    <script type="text/javascript">
+    $("document").ready(function() {
+           
+      });
+    </script>
+</head>
+<body>
+<h1>Settings for {{ name }}!</h1>
+
+<div id='body'>
+    Your active DIDs: (Click number to access messaging)
+<ul>
+    {% for item in dids %}
+        <li><a href='/single/{{ item[0] }}'>{{ item[0] }}</a></li>
+    {% endfor %}
+</ul>
+</div>
+    {% include 'include/footer.html' %}
+</body>
+</html>
