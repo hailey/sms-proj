@@ -28,7 +28,7 @@ app.register_blueprint(google_auth.app)
 app.register_blueprint(callback_sms.app)
 app.register_blueprint(app_settings.app)
 
-loginMsg = "You are not logged in, <a href='/google/login'>Click here to login</a>"
+loginMsg = "You are not logged in.</a>"loggedin
 
 if app_debug == '1':
     app.debug = True
@@ -38,7 +38,7 @@ else:
 @app.route('/')
 def index():
     if not google_auth.is_logged_in():
-        return flask.render_template('deny.html', denymsg = loginMsg)
+        return flask.render_template('deny.html', denymsg = loginMsg, loggedin = False)
     user_info = google_auth.get_user_info()
     indbRes = appdb.isUserinDB(user_info['id'])
     if indbRes:
@@ -66,13 +66,13 @@ def index():
         else:
             #This means they aren't verified.
             verifiedVar = False
-            return flask.render_template('deny.html',denymsg = 'Your google account does not have a verified email. This is required to use this service.')
+            return flask.render_template('deny.html',denymsg = 'Your google account does not have a verified email. This is required to use this service.', loggedin = False)
 
 
 @app.route('/single/<int:number>', methods=['GET'])
 def manageSingleSMS(number):
     if not google_auth.is_logged_in():
-        return flask.render_template('deny.html',denymsg = loginMsg)
+        return flask.render_template('deny.html',denymsg = loginMsg, loggedin = False)
     
     refreshtoken = google_auth.getRefreshToken()
     
@@ -83,20 +83,20 @@ def manageSingleSMS(number):
     if appdb.validateFrom(int(number)) and result:
         return flask.render_template('single.html',srcnumber = number, prettynum = prettynum)
     else:
-        return flask.render_template('notvalid.html', srcnumber = number, prettynum = prettynum)
+        return flask.render_template('notvalid.html', srcnumber = number, prettynum = prettynum, loggedin = True)
 
 @app.route('/getNumber/<int:number>',methods=['GET'])
 def getNumMessages(number):
     #This gets the mssages based on the provided from or two DID
     if not google_auth.is_logged_in():
-        return flask.render_template('deny.html', denymsg = loginMsg)
+        return json.dumps({'error': 'Unable to send SMS, you are not logged in'})
     
     refreshtoken = google_auth.getRefreshToken()
     userid = appdb.getUserIdFromRT(refreshtoken)
     result = appdb.authIdforDID(userid,number)
     smslog = appdb.getNumSMSLog(number,10)
     if not result:
-        return flask.render_template('deny.html', denymsg = 'Invalid ID for DID')
+        return json.dumps({'error': 'You are not allowed to use the requested DID'})
     
     i = 0
     msgjson = ""
@@ -118,7 +118,7 @@ def submitMessage():
     #This is to submit a message.
     
     if not google_auth.is_logged_in():
-        return flask.render_template('deny.html', denymsg = loginMsg)
+        return json.dumps({'error': 'Unable to send SMS'})
     
     message = flask.request.form['message']
     fromDid = flask.request.form['fromdid']
