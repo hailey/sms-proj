@@ -20,7 +20,6 @@ else:
     app.debug = False
 
 @app.route('/settings')
-@no_cache
 def appsettings():
     if not google_auth.is_logged_in():
         return flask.render_template('deny.html', denymsg = 'You are not authorized to be here')
