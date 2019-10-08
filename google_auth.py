@@ -73,7 +73,7 @@ def get_user_info():
     return oauth2_client.userinfo().get().execute()
 
 def getGoogleId():
-    if 'gid' in session:
+    if 'gid' in flask.session:
         gid = flask.session['gid']
     else:
         return False
