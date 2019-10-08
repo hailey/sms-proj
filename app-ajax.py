@@ -76,8 +76,8 @@ def manageSingleSMS(number):
         return flask.render_template('deny.html',denymsg = loginMsg, loggedin = False)
     
     refreshtoken = google_auth.getRefreshToken()
-    
-    userid = appdb.getUserIdFromRT(refreshtoken)
+    googleid = google_auth.getGoogleId()
+    userid = appdb.getUserIDfromGoogleID(googleid)
     result = appdb.authIdforDID(userid,number)
     
     prettynum = appsms.prettyPhone(number)
@@ -93,7 +93,8 @@ def getNumMessages(number):
         return json.dumps({'error': 'Unable to send SMS, you are not logged in'})
     
     refreshtoken = google_auth.getRefreshToken()
-    userid = appdb.getUserIdFromRT(refreshtoken)
+    googleid = google_auth.getGoogleId()
+    userid = appdb.getUserIDfromGoogleID(googleid)
     result = appdb.authIdforDID(userid,number)
     smslog = appdb.getNumSMSLog(number,10)
     if not result:
@@ -124,9 +125,10 @@ def submitMessage():
     message = flask.request.form['message']
     fromDid = flask.request.form['fromdid']
     targetDid = flask.request.form['targetdid']
-    
+    user_info = google_auth.get_user_info()
     refreshtoken = google_auth.getRefreshToken()
-    userid = appdb.getUserIdFromRT(refreshtoken)
+    googleid = google_auth.getGoogleId()
+    userid = appdb.getUserIDfromGoogleID(googleid)
     result = appdb.authIdforDID(userid,fromDid)
     
     if userid != result:

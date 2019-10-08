@@ -72,6 +72,12 @@ def get_user_info():
                         credentials=credentials)
     return oauth2_client.userinfo().get().execute()
 
+def getGoogleId():
+    gid = flask.session['gid']
+    print ("Google ID from Storage is:")
+    print (gid)
+    return gid
+
 def getRefreshToken():
     oauth2_tokens = flask.session[AUTH_TOKEN_KEY]
     return oauth2_tokens['refresh_token']
@@ -147,6 +153,7 @@ def google_auth_redirect():
     userInfo = get_user_info()
     pprint.pprint("User info")
     pprint.pprint(userInfo)
+    flask.session['gid'] = userInfo['id']
     appdb.setRefreshToken(oauth2_tokens['refresh_token'],userInfo['id'])
     return flask.redirect(BASE_URI, code=302)
 
