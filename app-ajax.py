@@ -55,7 +55,8 @@ def index():
         return flask.render_template('index.html',
                                     name = user_info['name'],
                                     picture = user_info['picture'],
-                                    dids = rows)
+                                    dids = rows,
+                                    loggedin = True)
     else:
         # Lets setup the user
         refreshtoken = google_auth.getRefreshToken()
@@ -81,7 +82,7 @@ def manageSingleSMS(number):
     
     prettynum = appsms.prettyPhone(number)
     if appdb.validateFrom(int(number)) and result:
-        return flask.render_template('single.html',srcnumber = number, prettynum = prettynum)
+        return flask.render_template('single.html',srcnumber = number, prettynum = prettynum,loggedin = True)
     else:
         return flask.render_template('notvalid.html', srcnumber = number, prettynum = prettynum, loggedin = True)
 
@@ -156,15 +157,27 @@ def testAjax():
 @app.route('/pp')
 def PrivacyPolicy():
     pprint.pprint(flask.session)
-    return flask.render_template('pp.html')
+    if google_auth.is_logged_in():
+        loggedin = True
+    else:
+        loggedin = False
+    return flask.render_template('pp.html',loggedin=loggedin)
 
 @app.route('/tos')
 def tos():
-    return flask.render_template('tos.html')
+    if google_auth.is_logged_in():
+        loggedin = True
+    else:
+        loggedin = False 
+    return flask.render_template('tos.html',loggedin=loggedin))
 
 @app.route('/about')
 def about():
-    return flask.render_template('about.html')
+    if google_auth.is_logged_in():
+        loggedin = True
+    else:
+        loggedin = False 
+    return flask.render_template('about.html',loggedin=loggedin)
 
 if __name__ == '__main__':
     app.run(
