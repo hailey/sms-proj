@@ -6,15 +6,14 @@ import pprint
 import configparser
 import json
 import re
-import appdb, appsms
 import flask
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
 
+import appdb, appsms, app_settings
 import google_auth
 import callback_sms
-import app_settings
 
 config = configparser.ConfigParser()
 config.read('config.ini')
