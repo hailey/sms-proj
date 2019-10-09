@@ -7,7 +7,6 @@ import configparser
 import json
 import re
 import appdb, appsms
-#from flask import Flask, render_template, request
 import flask
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
@@ -47,11 +46,11 @@ def index():
         refreshtoken = google_auth.getRefreshToken()
         if not refreshtoken:
             return "Error with your refresh token"
-        
+
         userid = appdb.getUserIDfromGoogleID(user_info['id'])
         if not userid:
             return 'You are not currently logged in.'
-        
+
         rows = appdb.getDIDsbyAccount(userid)
         return flask.render_template('index.html',
                                     name = user_info['name'],
@@ -75,12 +74,12 @@ def index():
 def manageSingleSMS(number):
     if not google_auth.is_logged_in():
         return flask.render_template('deny.html',denymsg = loginMsg, loggedin = False)
-    
+
     refreshtoken = google_auth.getRefreshToken()
     googleid = google_auth.getGoogleId()
     userid = appdb.getUserIDfromGoogleID(googleid)
     result = appdb.authIdforDID(userid,number)
-    
+
     prettynum = appsms.prettyPhone(number)
     if appdb.validateFrom(int(number)) and result:
         return flask.render_template('single.html',srcnumber = number, prettynum = prettynum,loggedin = True)
@@ -92,7 +91,7 @@ def getNumMessages(number):
     #This gets the mssages based on the provided from or two DID
     if not google_auth.is_logged_in():
         return json.dumps({'error': 'Unable to send SMS, you are not logged in'})
-    
+
     refreshtoken = google_auth.getRefreshToken()
     googleid = google_auth.getGoogleId()
     userid = appdb.getUserIDfromGoogleID(googleid)
@@ -100,7 +99,7 @@ def getNumMessages(number):
     smslog = appdb.getNumSMSLog(number,10)
     if not result:
         return json.dumps({'error': 'You are not allowed to use the requested DID'})
-    
+
     i = 0
     msgjson = ""
     for line in smslog:
@@ -111,18 +110,18 @@ def getNumMessages(number):
         else:
             msgjson =  json.dumps({'to':prettyto,'from':prettyfrom,'body':line[9],'timestamp': line[4], 'status': line[10]})
         i += 1
-        
-    
+
+
     msgArrayJson = '['+msgjson +']'
     return msgArrayJson
 
 @app.route('/submitMessage', methods=['POST'])
 def submitMessage():
     #This is to submit a message.
-    
+
     if not google_auth.is_logged_in():
         return json.dumps({'error': 'Unable to send SMS'})
-    
+
     message = flask.request.form['message']
     fromDid = flask.request.form['fromdid']
     targetDid = flask.request.form['targetdid']
@@ -131,18 +130,18 @@ def submitMessage():
     googleid = google_auth.getGoogleId()
     userid = appdb.getUserIDfromGoogleID(googleid)
     result = appdb.authIdforDID(userid,fromDid)
-    
+
     if userid != result:
         if app_debug == '1':
             pprint.pprint(userid)
             pprint.pprint(result)
         return json.dumps({'error': 'Unauthorized UserID of ' + str(userid) + " and DID id of " + str(result) + " and fromDID " + str(fromDid)})
-     
+
     if appdb.validateFrom(fromDid) == False:
         return json.dumps({'error': 'Unauthorized source phone number.'})
-    
+
     uglyphone = appsms.uglyPhone(targetDid)
-    
+
     #pprint.pprint('Got ' + message + ',' + fromDid)
     msg_id = appsms.sendsms(uglyphone,fromDid,message)
     if msg_id == False: #This sends the sms!
@@ -173,7 +172,7 @@ def tos():
     if google_auth.is_logged_in():
         loggedin = True
     else:
-        loggedin = False 
+        loggedin = False
     return flask.render_template('tos.html',loggedin=loggedin)
 
 @app.route('/about')
@@ -181,7 +180,7 @@ def about():
     if google_auth.is_logged_in():
         loggedin = True
     else:
-        loggedin = False 
+        loggedin = False
     return flask.render_template('about.html',loggedin=loggedin)
 
 if __name__ == '__main__':
@@ -189,4 +188,3 @@ if __name__ == '__main__':
         host="127.0.0.1",
         port=int("8890")
     )
-    

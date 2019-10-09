@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#appsettings.py
+#app_settings.py
 
 import functools
 import os
