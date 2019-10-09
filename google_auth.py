@@ -4,8 +4,6 @@
 
 import functools
 import os
-
-#from flask import Flask, request, session, render_template, flash
 import flask
 import pprint
 import configparser
@@ -17,7 +15,6 @@ import atom.data
 import gdata.data
 import gdata.contacts.client
 import gdata.contacts.data
-#from oauth2client import GOOGLE_TOKEN_URI
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -35,8 +32,8 @@ AUTH_REDIRECT_URI = config.get("auth","FN_AUTH_REDIRECT_URI")
 BASE_URI = config.get("auth","FN_BASE_URI")
 CLIENT_ID = config.get("auth","FN_CLIENT_ID")
 CLIENT_SECRET = config.get("auth","FN_CLIENT_SECRET")
- 
-#FN_FLASK_SECRET_KEY 
+
+#FN_FLASK_SECRET_KEY
 AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
 
@@ -46,8 +43,6 @@ app = flask.Blueprint('google_auth', __name__)
 app.debug = True
 ##else:
 #app.debug = False
-    
-
 
 def is_logged_in():
     return True if AUTH_TOKEN_KEY in flask.session else False
@@ -102,7 +97,7 @@ def getGoogleContacts():
     feed = gd_client.GetContacts()
     if not feed:
         return "Unable to run 'GetContacts()'"
-    
+
     for i, entry in enumerate(feed.entry):
         print( '\n%s %s' % (i+1, entry.name.full_name.text))
     if entry.content:
@@ -128,7 +123,7 @@ def login():
     session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                             scope=AUTHORIZATION_SCOPE,
                             redirect_uri=AUTH_REDIRECT_URI)
-  
+
     uri, state = session.create_authorization_url(AUTHORIZATION_URL,access_type='offline',include_granted_scopes='true')
     flask.session[AUTH_STATE_KEY] = state
     flask.session.permanent = True
@@ -143,16 +138,16 @@ def google_auth_redirect():
     if req_state != flask.session[AUTH_STATE_KEY]:
         response = flask.make_response('Invalid state parameter', 401)
         return response
-    
+
     session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                             scope=AUTHORIZATION_SCOPE,
                             state=flask.session[AUTH_STATE_KEY],
                             redirect_uri=AUTH_REDIRECT_URI)
     oauth2_tokens = session.fetch_token(
-                        ACCESS_TOKEN_URI,            
+                        ACCESS_TOKEN_URI,
                         authorization_response=flask.request.url)
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
-    
+
     userInfo = get_user_info()
     if app_debug == '1':
         pprint.pprint("User info")

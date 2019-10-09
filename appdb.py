@@ -37,7 +37,7 @@ def isUserinDB(google_id):
         return True
     else:
         return False
-    
+
 def isUserVerfied(google_id):
     #This checks to see if the account is set to verified true
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
@@ -112,8 +112,8 @@ def getDIDsbyAccount(account_id):
     cur.execute("SELECT number,provider FROM dids WHERE account_id=%s",(account_id))
     rows = cur.fetchall()
     db.close()
-    return rows 
-    
+    return rows
+
 
 def authIdforDID(account_id,did):
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
@@ -157,7 +157,7 @@ def getNumSMSLog(did, limit=5):
         #pprint.pprint(row)
     db.close()
     return rows
-    
+
 def updateMsgStatus(msg_id, status, msg_timestamp):
     #Update the delivered field in the database based on delivery reports.
     #UPDATE messages SET delivered='success' WHERE pid='mdr2-46999f9ce19e11e99074722a1f1f4bb4'
@@ -176,16 +176,13 @@ def updateMsgTimestamp(msg_id, timestamp):
     db.commit()
     db.close()
 
-# We gotta do lookups or checks here.. prolly a database call, but right now its an if statement.
 def validateFrom(did):
-    #this statement is here for testing. It bypasses DBs.
-    if '17605551212' == did: 
-        return True
+    # Looks up in the DB to see if a DID is a valid DID
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
     cur.execute("SELECT number FROM dids WHERE number=%s LIMIT 1" % did)
     data = cur.fetchone()
     db.close()
     if data != None and int(data[0]) == int(did):
-        return True    
+        return True
     return False
