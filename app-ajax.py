@@ -42,7 +42,8 @@ def index():
     user_info = google_auth.get_user_info()
     indbRes = appdb.isUserinDB(user_info['id'])
     if indbRes:
-        pprint.pprint(indbRes)
+        if app_debug == '1':
+            pprint.pprint(indbRes)
         refreshtoken = google_auth.getRefreshToken()
         if not refreshtoken:
             return "Error with your refresh token"
@@ -132,8 +133,9 @@ def submitMessage():
     result = appdb.authIdforDID(userid,fromDid)
     
     if userid != result:
-        pprint.pprint(userid)
-        pprint.pprint(result)
+        if app_debug == '1':
+            pprint.pprint(userid)
+            pprint.pprint(result)
         return json.dumps({'error': 'Unauthorized UserID of ' + str(userid) + " and DID id of " + str(result) + " and fromDID " + str(fromDid)})
      
     if appdb.validateFrom(fromDid) == False:
@@ -158,7 +160,8 @@ def testAjax():
 
 @app.route('/pp')
 def PrivacyPolicy():
-    pprint.pprint(flask.session)
+    if app_debug == '1':
+        pprint.pprint(flask.session)
     if google_auth.is_logged_in():
         loggedin = True
     else:

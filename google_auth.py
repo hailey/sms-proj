@@ -154,9 +154,11 @@ def google_auth_redirect():
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
     
     userInfo = get_user_info()
-    pprint.pprint("User info")
-    pprint.pprint(userInfo)
+    if app_debug == '1':
+        pprint.pprint("User info")
+        pprint.pprint(userInfo)
     flask.session['gid'] = userInfo['id']
+    flask.session['gmail'] = userInfo['email']
     appdb.setRefreshToken(oauth2_tokens['refresh_token'],userInfo['id'])
     return flask.redirect(BASE_URI, code=302)
 

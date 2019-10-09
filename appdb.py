@@ -61,6 +61,17 @@ def setNewUser(google_id, refresh_token, name, email, verified):
     db.close()
     return True
 
+def getInfobyEmail(email):
+    #This pulls * from 'account' and returns it if it matches an email.
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT * FROM account WHERE email=%s LIMIT 1",(email))
+    data = cur.fetchone()
+    db.close()
+    if not data:
+        return False
+    return data
+
 def getUserIdFromRT(refreshtoken):
     #This pulls an UserID from a Refresh Token
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
