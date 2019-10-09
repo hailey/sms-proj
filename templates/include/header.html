@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
     <link rel="stylesheet" href="/static/main.css">
     <script src="/static/jquery-3.3.1.min.js"></script>
     <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
@@ -9,3 +12,24 @@
     <meta name="application-name" content="TheWords SMS App">
     <meta name="msapplication-TileColor" content="#1d2f2e">
     <meta name="theme-color" content="#ff0000">
+    <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+    <script>
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#64386b",
+          "text": "#ffcdfd"
+        },
+        "button": {
+          "background": "#f8a8ff",
+          "text": "#3f0045"
+        }
+      },
+      "theme": "edgeless",
+      "content": {
+        "message": "This website uses cookies to manage your private information and help secure data.",
+        "href": "thewords.faith/pp"
+      }
+    });
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
