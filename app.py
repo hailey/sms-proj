@@ -26,7 +26,7 @@ app.register_blueprint(google_auth.app)
 app.register_blueprint(callback_sms.app)
 app.register_blueprint(app_settings.app)
 
-loginMsg = "You are not logged in.</a>"
+loginMsg = "You are not logged in."
 
 if app_debug == '1':
     app.debug = True
