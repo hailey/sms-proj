@@ -23,11 +23,12 @@ else:
 @app.route('/settings')
 def appsettings():
     if not google_auth.is_logged_in():
-        return flask.render_template('deny.html', denymsg = 'You are not authorized to be here', loggedin = False)
+        return flask.render_template('deny.html', denymsg = "I don't know who you are so I can't help you with your user settings. :(", loggedin = False)
     user_info = google_auth.get_user_info()
     refreshtoken = google_auth.getRefreshToken()
+
     if not refreshtoken:
-        return flask.render_template('error.html', denymsg = 'Error with your refresh token', loggedin = False)
+        return flask.render_template('error.html', denymsg = 'Error with your refresh token.', loggedin = False)
     userid = appdb.getUserIDfromGoogleID(user_info['id'])
     if not userid:
         return flask.render_template('error.html', denymsg = 'You are not currently logged in.', loggedin = False)
@@ -35,7 +36,6 @@ def appsettings():
     rows = appdb.getDIDsbyAccount(userid)
     dbEmail = appdb.getInfobyEmail(user_info['email'])
     return flask.render_template('settings.html',
-                                name = user_info['name'],
-                                email = user_info['email'],
+                                user_info = user_info,
                                 dids = rows,
                                 loggedin = True)

@@ -37,7 +37,7 @@ else:
 def index():
     #This is the root index. If not logged in it displays homepage.html
     if not google_auth.is_logged_in():
-        return flask.render_template('homepage.html', denymsg = loginMsg, loggedin = False)
+        return flask.render_template('homepage.html', loggedin = False)
 
     user_info = google_auth.get_user_info()
     indbRes = appdb.isUserinDB(user_info['id'])
@@ -46,11 +46,11 @@ def index():
             pprint.pprint(indbRes)
         refreshtoken = google_auth.getRefreshToken()
         if not refreshtoken:
-            return "Error with your refresh token"
+            return flask.render_template('error.html', denymsg = 'Error with your refresh token.', loggedin = False)
 
         userid = appdb.getUserIDfromGoogleID(user_info['id'])
         if not userid:
-            return 'You are not currently logged in.'
+            return flask.render_template('error.html', denymsg = 'You are not currently logged in.', loggedin = False)
 
         rows = appdb.getDIDsbyAccount(userid)
         return flask.render_template('index.html',
