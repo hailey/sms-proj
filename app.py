@@ -148,7 +148,7 @@ def submitMessage():
     else:
         msgTS = time.strftime("%Y-%m-%dT%H:%m:%SZ")
         appdb.logsms_db(msg_id, msgTS, 'outbound', uglyphone, fromDid, 0.0040, 'pending', message, result)
-        returndata = json.dumps({"msg" : message, "fromdid" : fromDid, 'targetdid' : targetDid,})
+        returndata = json.dumps({"msg" : message, "fromdid" : fromDid, 'targetdid' : targetDid})
     return returndata
 
 @app.route('/testAjax')
