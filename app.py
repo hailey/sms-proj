@@ -35,8 +35,10 @@ else:
 
 @app.route('/')
 def index():
+    #This is the root index. If not logged in it displays homepage.html
     if not google_auth.is_logged_in():
-        return flask.render_template('deny.html', denymsg = loginMsg, loggedin = False)
+        return flask.render_template('homepage.html', denymsg = loginMsg, loggedin = False)
+
     user_info = google_auth.get_user_info()
     indbRes = appdb.isUserinDB(user_info['id'])
     if indbRes:
