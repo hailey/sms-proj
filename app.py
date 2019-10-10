@@ -62,7 +62,7 @@ def index():
         if user_info['verified_email'] == True:
             verifiedVar = True
             appdb.setNewUser(user_info['id'], refreshtoken, user_info['name'], user_info['email'], verifiedVar)
-            return flask.redirect(uri, code=302)
+            return flask.redirect('https://thewords.faith/', code=302)
         else:
             #This means they aren't verified.
             verifiedVar = False
@@ -158,7 +158,7 @@ def testAjax():
 
 @app.route('/launch')
 def launchPage():
-    return flask.render_template_string('launch.html')
+    return flask.render_template('launch.html')
 
 @app.route('/pp')
 def PrivacyPolicy():
