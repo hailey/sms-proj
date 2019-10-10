@@ -36,7 +36,7 @@ a:disabled {color: #9BB291;}
     border: dotted;
     border-color: #AF3E4D;
     padding: 1em;
-    
+
 }
 
 #chat-director {
@@ -54,7 +54,7 @@ a:disabled {color: #9BB291;}
 }
 #right-side {
     float: right;
-    text-align: right;    
+    text-align: right;
 }
 .smsbody {
     font-size:2em;
