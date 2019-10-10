@@ -1,3 +1,6 @@
+{% if loggedin == False %}
+<div id='logintext'><p>Please login at <a href='/launch'>The Login Page</a></p></div>
+{% endif %}
 <div id='footer'>
     <div class='footlinks'><a href='/'>Index</a>
     {% if loggedin == True %}
@@ -5,7 +8,7 @@
     {% else %}
     | <a href="/launch">Login</a></div>
     {% endif %}
-    <div class='footlinks'><a href ='/about'>About</a> <a href='/tos'>Terms of Service</a> | <a href="/pp">Privacy Policy</a></div>
+    <div class='footlinks'><a href ='/about'>About</a> | <a href='/tos'>Terms of Service</a> | <a href="/pp">Privacy Policy</a></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
 <script>
