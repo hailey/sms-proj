@@ -1,0 +1,21 @@
+<body>
+  <div id='header'>
+    <div id='navblock'>
+      <div class='navitem'>&#183; <a href='/'>Index</a></div>
+      {% if loggedin == True %}
+      <div class='navitemborder'></div>
+      <div class='navitem'>&#183; <a href='/inbox'>Inbox</a></div>
+      <div class='navitem'>&#183; <a href='/trash'>Trash</a></div>
+      <div class='navitem'>&#183; <a href='/settings'>Settings</a></div>
+      <div class='navitem'>&#183; <a href="/google/logout">Logout</a></div>
+      {% else %}
+      <div class='navitem'>&#183; <a href="/launch">Login</a></div>
+      {% endif %}
+      <div class='navitemborder'></div>
+      <div class='navitemsmall'>&#183; <a href='/about'>About</a></div>
+      <div class='navitemsmall'>&#183; <a href='/tos'>Terms of Service</a></div>
+      <div class='navitemsmall'>&#183; <a href="/pp">Privacy Policy</a></div>
+
+    </div>
+  </div>
+  <div id='bodypane'>
