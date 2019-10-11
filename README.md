@@ -9,6 +9,6 @@ This requires a flowroute account. It uses google to authenticate. But I might a
 
 # App Server
 App runs via the following command.
-> gunicorn3 app.py
+> gunicorn3 app:app
 
 This will run and listen to as a daemon.
