@@ -60,8 +60,28 @@ a:disabled {color: #9BB291;}
     font-size:2em;
     color: #B0C592;
 }
-
+#bodypane {
+  float: left;
+  width: 80%;
+}
+#footer {
+  align-content: center;
+  float:left;
+  width: 100%;
+}
 #navblock {
   background-color: #2D3F3E;
-  font-size: 2em;
+  width: 15%;
+  float: left;
+  margin:5px 10px 20px 20px;
+  padding: 5px 5px 5px 5px;
+}
+.navitemsmall {
+  font-size: 1em;
+}
+.navitem {
+  font-size: 1.4em;
+}
+.navitemborder {
+    border-bottom: solid;
 }
