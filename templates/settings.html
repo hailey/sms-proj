@@ -1,5 +1,5 @@
 {% include 'include/header.html' %}
-    <title> {{ name }}'s Settings </title>
+    <title> {{ account_info.1 }}'s Settings </title>
     <script type="text/javascript">
     $("document").ready(function() {
 
@@ -7,13 +7,16 @@
     </script>
 </head>
 <body>
-<h1>Settings for {{ user_info['name'] }}!</h1>
+<h1>Settings for {{ account_info.1 }}!</h1>
 
 <div id='body'>
     <div id='accountInfoBlock'>
-        <div class='namefield'>Name: <input type='text' id='email' value='{{ user_info['name'] }}' /></div>
-        <div class='emailfield'>Email: {{ user_info['email'] }}</div>
-
+        <div class='uid'>User ID: {{ account_info.0 }}</div>
+        <div class='namefield'>Name: <input type='text' id='email' value='{{ account_info.1 }}' /></div>
+        <div class='emailfield'>Email: {{ account_info.2 }}</div>
+        <div class='creationTime'>Account created on {{ account_info.6 }}</div>
+        <div class='largeField'><h3>Google Info</h3></div>
+        <div class='googleID'>Google ID: {{ user_info.id }}</div>
     </div>
 Your active DIDs: (Click number to access messaging)
 <ul>

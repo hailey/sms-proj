@@ -11,4 +11,4 @@ This requires a flowroute account. It uses google to authenticate. But I might a
 App runs via the following command.
 > gunicorn3 app:app
 
-This will run and listen to as a daemon.
+This will run and listen on a port, probably port 8000 as its default as a daemon.
