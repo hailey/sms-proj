@@ -160,7 +160,7 @@ def testAjax():
 
 @app.route('/launch')
 def launchPage():
-    return flask.render_template_string('launch.html')
+    return flask.render_template('launch.html')
 
 @app.route('/pp')
 def PrivacyPolicy():

@@ -34,8 +34,11 @@ def appsettings():
         return flask.render_template('error.html', denymsg = 'You are not currently logged in.', loggedin = False)
 
     rows = appdb.getDIDsbyAccount(userid)
-    dbEmail = appdb.getInfobyEmail(user_info['email'])
+    accountInfo = appdb.getInfobyEmail(user_info['email'])
+    # userDBInfo.getInfobyE
+    pprint.pprint(accountInfo)
     return flask.render_template('settings.html',
                                 user_info = user_info,
+                                account_info = accountInfo,
                                 dids = rows,
                                 loggedin = True)

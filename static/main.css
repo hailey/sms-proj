@@ -60,3 +60,8 @@ a:disabled {color: #9BB291;}
     font-size:2em;
     color: #B0C592;
 }
+
+#navblock {
+  background-color: #2D3F3E;
+  font-size: 2em;
+}
