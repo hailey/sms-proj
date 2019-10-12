@@ -11,7 +11,7 @@ from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
 
-import appdb, appsms, app_settings
+import appdb, appsms, app_settings, app_auth
 import google_auth
 import callback_sms
 
@@ -155,7 +155,6 @@ def submitMessage():
 
 @app.route('/testAjax')
 def testAjax():
-    google_auth.getGoogleContacts()
     return json.dumps({"msg" : 'Success!'})
 
 @app.route('/launch')

@@ -107,3 +107,8 @@ CREATE TABLE `phonebase` (
 )
 COLLATE='utf8_bin'
 ENGINE=InnoDB;
+
+########### Update V5
+# Adding password and username support.
+ALTER TABLE account ADD COLUMN `username` VARCHAR(255) NULL UNIQUE;
+ALTER TABLE account ADD COLUMN `passwd` VARCHAR(255) NULL;
