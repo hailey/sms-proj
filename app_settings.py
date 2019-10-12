@@ -7,7 +7,7 @@ import pprint
 import configparser
 import flask
 
-import appdb
+import appdb, app_auth
 import google_auth
 
 config = configparser.ConfigParser()
@@ -22,7 +22,7 @@ else:
 
 @app.route('/settings')
 def appsettings():
-    if not google_auth.is_logged_in():
+    if not app_auth.is_logged_in():
         return flask.render_template('deny.html', denymsg = "I don't know who you are so I can't help you with your user settings. :(", loggedin = False)
     user_info = google_auth.get_user_info()
     refreshtoken = google_auth.getRefreshToken()
