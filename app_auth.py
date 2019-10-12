@@ -8,6 +8,8 @@ config.read('config.ini')
 app_debug = config.get("app","debug")
 app_salt = config.get("auth","FN_FLASK_SECRET_KEY")
 
+app = flask.Blueprint('app_auth', __name__)
+
 def is_logged_in():
     if google_auth.is_logged_in():
         return True

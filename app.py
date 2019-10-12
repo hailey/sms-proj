@@ -25,6 +25,7 @@ app.secret_key = config.get("auth","FN_FLASK_SECRET_KEY")
 app.register_blueprint(google_auth.app)
 app.register_blueprint(callback_sms.app)
 app.register_blueprint(app_settings.app)
+app.register_blueprint(app_auth.app)
 
 loginMsg = "You are not logged in."
 
