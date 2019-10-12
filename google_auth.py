@@ -25,7 +25,6 @@ AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent
 
 AUTHORIZATION_SCOPE = ['openid', 'https://www.googleapis.com/auth/userinfo.email',
                      'https://www.googleapis.com/auth/userinfo.profile',
-                     'https://www.googleapis.com/auth/contacts.readonly',
                      'https://www.googleapis.com/auth/user.phonenumbers.read']
 
 AUTH_REDIRECT_URI = config.get("auth","FN_AUTH_REDIRECT_URI")
