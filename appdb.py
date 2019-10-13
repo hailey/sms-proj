@@ -38,6 +38,16 @@ def isUserinDB(google_id):
     else:
         return False
 
+def isUserExist(name):
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT username FROM account WHERE username=%s",(name))
+    data = cur.fetchone()
+    db.close()
+    if data:
+        return True
+    return False
+
 def isUserVerfied(google_id):
     #This checks to see if the account is set to verified true
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
@@ -60,6 +70,19 @@ def setNewUser(google_id, refresh_token, name, email, verified):
     db.commit()
     db.close()
     return True
+
+def finalizeNewUser(email, username, passwd):
+    '''Finalizes a user creation after calling setNewUser(), this requires a password already converted to a
+    safe hash of the password. Don't store plaintext passwords in this please'''
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    rows = cur.execute("UPDATE account SET username=%s, passwd=%s WHERE email=%s LIMIT 1",(username, passwd, email))
+    db.commit()
+    db.close()
+    if rows == 1:
+        return True
+    else:
+        return False
 
 def getInfobyEmail(email):
     #This pulls * from 'account' and returns it if it matches an email.
@@ -166,7 +189,7 @@ def updateMsgStatus(msg_id, status, msg_timestamp):
     affected_count = cur.execute("UPDATE `messages` SET status=%s, `provider_timestamp`=%s WHERE `pid`=%s",(status, msg_timestamp ,msg_id))
     db.commit()
     db.close()
-    return True
+    return affected_count
 
 def updateMsgTimestamp(msg_id, timestamp):
     #This changes the timestamp of the msg_id to the timestamp provided by the provider.
@@ -175,6 +198,7 @@ def updateMsgTimestamp(msg_id, timestamp):
     affected_count = cur.execute("UPDATE `messages` SET `provider_timestamp`=%s WHERE `pid`=%s",(timestamp,msg_id))
     db.commit()
     db.close()
+    return affected_count
 
 def validateFrom(did):
     # Looks up in the DB to see if a DID is a valid DID
