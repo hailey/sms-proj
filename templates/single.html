@@ -1,129 +1,126 @@
 {% include 'include/header.html' %}
-    <title>SMS Chat for {{ srcnumber }}</title>
-    <script type="text/javascript">
-
-    function countChar(val) {
-        var len = val.value.length;
-        if (len >= 160) {
-          val.value = val.value.substring(0, 160);
-        } else {
-          $('#charNum').text(160 - len);
-        }
+<title>SMS Chat for {{ srcnumber }}</title>
+<script type="text/javascript">
+  $("document").ready(function() {
+    fromDid = $("#source-num").val();
+    getNumMessages(fromDid);
+    // Do something...
+    function setStatus(statusmsg) {
+      $("#alert-messages").text(statusmsg);
     }
-    $("document").ready(function() {
+
+    function clearInput() {
+      $("#input-chat").val("");
+    }
+
+    function getNumMessages(number) {
+      $.getJSON("/getNumber/" + number, function(result) {
+        chatHtml = "";
+        $.each(result, function(i, field) {
+          chatHtml = chatHtml +
+            "<div class='smschatlog'><div class='ts'>" +
+            field.timestamp + " Status:" + field.status + "</div> <span class='from'>" +
+            field.from + "</span> to <span class='to'>" +
+            field.to + "</span><div class='smsbody'>" +
+            field.body + "</div></div>";
+
+        });
+        $("#chat-body").html(chatHtml);
+      });
+    }
+    $("#refresh-msg").click(function() {
+      fromDid = $("#source-num").val();
+      getNumMessages(fromDid);
+    });
+    $("#resetbutton").click(function() {
+      $("#submit-chat").prop("disabled", false);
+      clearInput();
+    });
+
+    $("#chat-form").submit(function(event) {
+      $("#submit-chat").prop("disabled", true);
+      event.preventDefault();
+      fromDid = $("#source-num").val();
+      targetDid = $("#dest-num").val();
+      inputchat = $("#input-chat").val();
+
+      if (!$("#input-chat").val()) {
+        setStatus("Empty message field! Cant do this!");
+        return false;
+      }
+
+      $.ajax({
+        method: "POST",
+        url: "/submitMessage",
+        data: {
+          message: inputchat,
+          fromdid: fromDid,
+          targetdid: targetDid
+        }
+      }).done(function(msg) {
+        dt = new Date();
+        time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+        msgParsed = $.parseJSON(msg);
+        if (msgParsed.error) {
+          setStatus('Error! Got "' + msgParsed.error + '"');
+          return false;
+        }
         fromDid = $("#source-num").val();
         getNumMessages(fromDid);
-            // Do something...
-        function setStatus(statusmsg) {
-            $("#alert-messages").text(statusmsg);
-        }
-        function clearInput() {
-            $("#input-chat").val("");
-        }
-        function getNumMessages (number) {
-            $.getJSON("/getNumber/" + number,function(result) {
-                chatHtml = "";
-                $.each(result, function(i,field){
-                    chatHtml = chatHtml +
-                    "<div class='smschatlog'><div class='ts'>" +
-                    field.timestamp + " Status:" + field.status + "</div> <span class='from'>" +
-                    field.from + "</span> to <span class='to'>" +
-                    field.to + "</span><div class='smsbody'>" +
-                    field.body + "</div></div>";
-
-                });
-                $("#chat-body").html(chatHtml);
-            });
-        }
-        $( "#refresh-msg" ).click(function() {
-            fromDid = $("#source-num").val();
-           getNumMessages(fromDid);
-        });
-        $( "#resetbutton" ).click(function() {
-            $( "#submit-chat" ).prop("disabled", false);
-            clearInput();
-        });
-
-        $( "#chat-form" ).submit(function( event ) {
-            $( "#submit-chat" ).prop("disabled", true);
-            event.preventDefault();
-            fromDid = $("#source-num").val();
-            targetDid = $("#dest-num").val();
-            inputchat = $("#input-chat").val();
-
-            if (!$("#input-chat").val()){
-                setStatus("Empty message field! Cant do this!");
-                return false;
-            }
-
-            $.ajax({
-                method: "POST",
-                url: "/submitMessage",
-                data: { message: inputchat, fromdid: fromDid, targetdid : targetDid }
-            }).done(function( msg ) {
-                dt = new Date();
-                time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-                msgParsed = $.parseJSON(msg);
-                if (msgParsed.error) {
-                    setStatus('Error! Got "'+ msgParsed.error +'"');
-                    return false;
-                }
-                fromDid = $("#source-num").val();
-                getNumMessages(fromDid);
-                setStatus('Success! Got "'+ msg +'"');
-                $( "#submit-chat" ).prop("disabled", false);
-                $('#charNum').text('160');
-                clearInput();
-            });
-        });
-        $('#test-ajax').click(function() {
-            $.ajax({
-                url: '/testAjax',
-                type: 'GET',
-                success: function(response) {
-                newHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: ' + response + '</div>';
-                statusHTML = '<div id="alert-messages">Success! Got "'+ response +'"</div>';
-                $("#chat-body").append( newHTML );
-                $("#alert-messages").html(statusHTML);
-            },
-            error: function(error) {
-                errorHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: Error ' + error + '</div>';
-                statusHTML = '<div id="alert-messages">Error! Got "'+ error +'"</div>';
-                $("#chat-body").append( errorHTML );
-                $("#alert-messages").html(statusHTML);
-            }
-            });
-        });
+        setStatus('Success! Got "' + msg + '"');
+        $("#submit-chat").prop("disabled", false);
+        $('#charNum').text('160');
+        clearInput();
+      });
     });
-    </script>
+    $('#test-ajax').click(function() {
+      $.ajax({
+        url: '/testAjax',
+        type: 'GET',
+        success: function(response) {
+          newHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: ' + response + '</div>';
+          statusHTML = '<div id="alert-messages">Success! Got "' + response + '"</div>';
+          $("#chat-body").append(newHTML);
+          $("#alert-messages").html(statusHTML);
+        },
+        error: function(error) {
+          errorHTML = '<div id="msg"><span class="chat-from">SYSTEM</span>: Error ' + error + '</div>';
+          statusHTML = '<div id="alert-messages">Error! Got "' + error + '"</div>';
+          $("#chat-body").append(errorHTML);
+          $("#alert-messages").html(statusHTML);
+        }
+      });
+    });
+  });
+</script>
 </head>
 {% include 'include/navblock.html' %}
-    <h1 id="channel-name">SMS Chat for {{ prettynum }}</h1>
-    <div id="chat">
-        <div id="chat-input">
-            <form id="chat-form">
-                <div id="chat-director">
-                    <span id='fromnum'>From: <input type="tel" id="source-num" value="{{ srcnumber }}" size="10" readonly="readonly"/></span>
-                    <span id="tonum">To: <input type="tel" id="dest-num" size="10"/></soan>
-                </div>
-                <div id="chat-fields">
-                    <textarea type="text" id="input-chat" rows="3" cols="60" onkeyup="countChar(this);"></textarea>
-                    <span id="charNum">160</span> characters left.
-                </div>
-                <div id="chat-controls">
-                    <input type="submit" id="submit-chat" value="Send Message"/>
-                    <input type="button" id="test-ajax" value="Test Communications"/>
-                    <input type="button" id="refresh-msg" value="Refresh Log"/>
-                    <div id="right-side"><input type="button" id='resetbutton' value="RESET" /></div>
-                </div>
+<h1 id="channel-name">SMS Chat for {{ prettynum }}</h1>
+<div id="chat">
+  <div id="chat-input">
+    <form id="chat-form">
+      <div id="chat-director">
+        <span id='fromnum'>From: <input type="tel" id="source-num" value="{{ srcnumber }}" size="10" readonly="readonly" /></span>
+        <span id="tonum">To: <input type="tel" id="dest-num" size="10" /></soan>
+      </div>
+      <div id="chat-fields">
+        <textarea type="text" id="input-chat" rows="3" cols="60" onkeyup="countChar(this);"></textarea>
+        <span id="charNum">160</span> characters left.
+      </div>
+      <div id="chat-controls">
+        <input type="submit" id="submit-chat" value="Send Message" />
+        <input type="button" id="test-ajax" value="Test Communications" />
+        <input type="button" id="refresh-msg" value="Refresh Log" />
+        <div id="right-side"><input type="button" id='resetbutton' value="RESET" /></div>
+      </div>
 
-            </form>
-        </div>
-        <div id="alert-messages">
+    </form>
+  </div>
+  <div id="alert-messages">
 
-        </div>
-        <div id="chat-body">
-            <div id="msg"><span class="chat-from">OPERATOR</span>: Welcome!</div>
-        </div>
-    </div>
+  </div>
+  <div id="chat-body">
+    <div id="msg"><span class="chat-from">OPERATOR</span>: Welcome!</div>
+  </div>
+</div>
 {% include 'include/footer.html' %}

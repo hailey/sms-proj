@@ -36,7 +36,7 @@ else:
 
 @app.route('/')
 def index():
-    #This is the root index. If not logged in it displays homepage.html
+    '''This is the root index. If not logged in it displays homepage.html'''
     if not google_auth.is_logged_in():
         return flask.render_template('homepage.html', loggedin = False)
 
@@ -65,19 +65,30 @@ def index():
         if user_info['verified_email'] == True:
             verifiedVar = True
             appdb.setNewUser(user_info['id'], refreshtoken, user_info['name'], user_info['email'], verifiedVar)
-            return flask.redirect('https://thewords.faith/', code=302)
+            return flask.render_template('landing.html',
+                                         user_info = user_info, loggedin = False)
         else:
             #This means they aren't verified.
             verifiedVar = False
             return flask.render_template('deny.html',denymsg = 'Your google account does not have a verified email. This is required to use this service.', loggedin = False)
 
+@app.route('/landing')
+def landingPage():
+    '''This renders the landing page'''
+    user_info = google_auth.get_user_info()
+    if user_info:
+        loggedin = True
+    else:
+        loggedin = False
+    return flask.render_template('landing.html', user_info = user_info, loggedin = loggedin)
 
 @app.route('/single/<int:number>', methods=['GET'])
 def manageSingleSMS(number):
+    '''This renders a view for a single SMS number and its associated messages'''
     if not google_auth.is_logged_in():
         return flask.render_template('deny.html',denymsg = loginMsg, loggedin = False)
 
-    refreshtoken = google_auth.getRefreshToken()
+    #refreshtoken = google_auth.getRefreshToken()
     googleid = google_auth.getGoogleId()
     userid = appdb.getUserIDfromGoogleID(googleid)
     result = appdb.authIdforDID(userid,number)
@@ -94,7 +105,7 @@ def getNumMessages(number):
     if not google_auth.is_logged_in():
         return json.dumps({'error': 'Unable to send SMS, you are not logged in'})
 
-    refreshtoken = google_auth.getRefreshToken()
+    #refreshtoken = google_auth.getRefreshToken()
     googleid = google_auth.getGoogleId()
     userid = appdb.getUserIDfromGoogleID(googleid)
     result = appdb.authIdforDID(userid,number)
@@ -127,8 +138,8 @@ def submitMessage():
     message = flask.request.form['message']
     fromDid = flask.request.form['fromdid']
     targetDid = flask.request.form['targetdid']
-    user_info = google_auth.get_user_info()
-    refreshtoken = google_auth.getRefreshToken()
+    #user_info = google_auth.get_user_info()
+    #refreshtoken = google_auth.getRefreshToken()
     googleid = google_auth.getGoogleId()
     userid = appdb.getUserIDfromGoogleID(googleid)
     result = appdb.authIdforDID(userid,fromDid)
@@ -160,7 +171,14 @@ def testAjax():
 
 @app.route('/launch')
 def launchPage():
-    return flask.render_template('launch.html')
+    if google_auth.is_logged_in():
+        loggedin = True
+    else:
+        loggedin = False
+    if app_debug == '1':
+        pprint.pprint(loggedin)
+        pprint.pprint("loggedin")
+    return flask.render_template('launch.html',loggedin=loggedin)
 
 @app.route('/pp')
 def PrivacyPolicy():
