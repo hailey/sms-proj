@@ -64,8 +64,11 @@ def createUser():
     if appdb.isUserExist(username):
          return json.dumps({'error': 'Username already exists. Please choose another.'})
 
-    if appdb.getInfobyEmail(email):
+    data = appdb.getInfobyEmail(email)
+    if data[4] >= 2: # This should be 2 if a user is already registered. If its less than two it oughta be okay.
         return json.dumps({'error': 'A user has already been registered with this information. Maybe you want to try recovering a password?'})
+    if data[9]:
+        return json.dumps({'error': 'A password has already been registered with this information. Maybe you want to try recovering a password?'})
 
     passwd = app_auth.hash_password(password.encode('ascii'))
     res = appdb.finalizeNewUser(email, username, passwd)

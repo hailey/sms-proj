@@ -13,6 +13,7 @@ sqlhost = config.get("sql","sqlhost")
 sqluser = config.get("sql","sqluser")
 sqlpass = config.get("sql","sqlpass")
 sqldb = config.get("sql","sqldb")
+app_debug = config.get("app","debug")
 
 
 def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, status, msg, account_id):
@@ -76,7 +77,7 @@ def finalizeNewUser(email, username, passwd):
     safe hash of the password. Don't store plaintext passwords in this please'''
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    rows = cur.execute("UPDATE account SET username=%s, passwd=%s WHERE email=%s LIMIT 1",(username, passwd, email))
+    rows = cur.execute("UPDATE account SET username=%s, passwd=%s, verified_email=%s, last_modified=NOW() WHERE email=%s LIMIT 1",(username, passwd,2, email))
     db.commit()
     db.close()
     if rows == 1:
@@ -85,12 +86,15 @@ def finalizeNewUser(email, username, passwd):
         return False
 
 def getInfobyEmail(email):
-    #This pulls * from 'account' and returns it if it matches an email.
+    '''This pulls * from 'account' and returns it if it matches an email.'''
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
     cur.execute("SELECT * FROM account WHERE email=%s LIMIT 1",(email))
     data = cur.fetchone()
     db.close()
+    if app_debug == '1':
+        pprint.pprint("email data:")
+        pprint.pprint(data)
     if not data:
         return False
     return data
