@@ -127,7 +127,13 @@ def google_auth_redirect():
         pprint.pprint(userInfo)
     flask.session['gid'] = userInfo['id']
     flask.session['gmail'] = userInfo['email']
+    flask.session['loggedIn'] = True
     appdb.setRefreshToken(oauth2_tokens['refresh_token'],userInfo['id'])
+
+    usrInfoLocal = appdb.getInfobyEmail(userInfo['email'])
+    if app_debug == '1':
+        pprint.pprint(usrInfoLocal)
+    flask.session['loginID'] = usrInfoLocal[0]
     return flask.redirect(BASE_URI, code=302)
 
 @app.route('/google/logout')

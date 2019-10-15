@@ -37,22 +37,23 @@ else:
 @app.route('/')
 def index():
     '''This is the root index. If not logged in it displays homepage.html'''
-    if not google_auth.is_logged_in():
+    if not app_auth.is_logged_in():
         return flask.render_template('homepage.html', loggedin = False)
 
-    user_info = google_auth.get_user_info()
-    indbRes = appdb.isUserinDB(user_info['id'])
+    #user_info = google_auth.get_user_info()
+    logId = flask.session['loginID']
+    indbRes = appdb.isUserinDB(logId)
     if indbRes:
         if app_debug == '1':
             pprint.pprint(indbRes)
-        refreshtoken = google_auth.getRefreshToken()
-        if not refreshtoken:
-            return flask.render_template('error.html', denymsg = 'Error with your refresh token.', loggedin = False)
+        #refreshtoken = google_auth.getRefreshToken()
+        #if not refreshtoken:
+        #    return flask.render_template('error.html', denymsg = 'Error with your refresh token.', loggedin = False)
 
-        userid = appdb.getUserIDfromGoogleID(user_info['id'])
-        if not userid:
-            return flask.render_template('error.html', denymsg = 'You are not currently logged in.', loggedin = False)
-
+        #userid = appdb.getUserIDfromGoogleID(user_info['id'])
+        #if not userid:
+        #    return flask.render_template('error.html', denymsg = 'You are not currently logged in.', loggedin = False)
+        
         rows = appdb.getDIDsbyAccount(userid)
         return flask.render_template('index.html',
                                     name = user_info['name'],
@@ -168,6 +169,14 @@ def submitMessage():
 @app.route('/testAjax')
 def testAjax():
     return json.dumps({"msg" : 'Success!'})
+
+@app.route('/inbox')
+def inbox():
+    if not app_auth.is_logged_in():
+        return 'You are not logged in'
+    loginId = flask.session.loggedIn
+    results = appdb.getSMSbyAccount(loginId,10)
+    return results
 
 @app.route('/launch')
 def launchPage():

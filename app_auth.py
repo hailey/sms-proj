@@ -12,10 +12,14 @@ app_salt = config.get("auth","FN_FLASK_SECRET_KEY")
 app = flask.Blueprint('app_auth', __name__)
 
 def is_logged_in():
+    #return True if loggedIn in flask.session else False
+    return True if 'loggedIn' in flask.session else False
     if google_auth.is_logged_in():
         return True
-    if flask.session.loginhash:
-        pprint.pprint(flask.session.loginhash)
+    if flask.session.loggedIn:
+        pprint.pprint('Flask session loginhash:')
+        pprint.pprint(flask.session.loggedIn)
+        return True
     return False
 
 def hash_password(password):

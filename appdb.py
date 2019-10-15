@@ -27,7 +27,21 @@ def logsms_db(msg_id, msg_ts, direction, to_did, from_did, cost, status, msg, ac
     db.close()
     return True
 
-def isUserinDB(google_id):
+def getUserInfobyID(id):
+    '''This pulls * from 'account' and returns it if it matches an email.'''
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT * FROM account WHERE id=%s LIMIT 1",(id))
+    data = cur.fetchone()
+    db.close()
+    if app_debug == '1':
+        pprint.pprint("email data:")
+        pprint.pprint(data)
+    if not data:
+        return False
+    return data
+
+def isGUserinDB(google_id):
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
     cur.execute("SELECT * FROM account WHERE google_id=%s LIMIT 1" % google_id)
@@ -38,6 +52,18 @@ def isUserinDB(google_id):
         return True
     else:
         return False
+
+def isUserinDB(id):
+        db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+        cur = db.cursor()
+        cur.execute("SELECT * FROM account WHERE id=%s LIMIT 1" % id)
+        data = cur.fetchone()
+        db.close()
+        if data:
+            pprint.pprint(data)
+            return True
+        else:
+            return False
 
 def isUserExist(name):
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
@@ -57,7 +83,6 @@ def isUserVerfied(google_id):
     data = cur.fetchone()
     db.close()
     if data:
-        pprint.pprint(data)
         return True
     else:
         return False
@@ -170,6 +195,14 @@ def getAllSMSLog(limit=5, order='desc'):
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
     cur.execute("SELECT * FROM messages ORDER BY timestamp DESC LIMIT %s",(limit))
+    rows = cur.fetchall()
+    db.close()
+    return rows
+
+def getSMSbyAccount(account_id, limit=5):
+    db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT * FROM messages WHERE account_id=%s ORDER BY id DESC LIMIT %s",(account_id, limit))
     rows = cur.fetchall()
     db.close()
     return rows
