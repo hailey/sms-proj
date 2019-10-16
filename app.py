@@ -86,7 +86,7 @@ def landingPage():
 @app.route('/single/<int:number>', methods=['GET'])
 def manageSingleSMS(number):
     '''This renders a view for a single SMS number and its associated messages'''
-    if not google_auth.is_logged_in():
+    if not app_auth.is_logged_in():
         return flask.render_template('deny.html',denymsg = loginMsg, loggedin = False)
 
     #refreshtoken = google_auth.getRefreshToken()
