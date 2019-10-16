@@ -61,7 +61,7 @@ def isUserinDB(id):
         db.close()
         if data:
             pprint.pprint(data)
-            return True
+            return data
         else:
             return False
 

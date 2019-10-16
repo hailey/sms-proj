@@ -40,10 +40,10 @@ def index():
     if not app_auth.is_logged_in():
         return flask.render_template('homepage.html', loggedin = False)
 
-    #user_info = google_auth.get_user_info()
+    user_info = google_auth.get_user_info()
     logId = flask.session['loginID']
     indbRes = appdb.isUserinDB(logId)
-    if indbRes:
+    if indbRes[9]:
         if app_debug == '1':
             pprint.pprint(indbRes)
         #refreshtoken = google_auth.getRefreshToken()
@@ -53,8 +53,8 @@ def index():
         #userid = appdb.getUserIDfromGoogleID(user_info['id'])
         #if not userid:
         #    return flask.render_template('error.html', denymsg = 'You are not currently logged in.', loggedin = False)
-        
-        rows = appdb.getDIDsbyAccount(userid)
+
+        rows = appdb.getDIDsbyAccount(logId)
         return flask.render_template('index.html',
                                     name = user_info['name'],
                                     picture = user_info['picture'],
