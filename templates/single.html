@@ -32,6 +32,7 @@
       fromDid = $("#source-num").val();
       getNumMessages(fromDid);
     });
+
     $("#resetbutton").click(function() {
       $("#submit-chat").prop("disabled", false);
       clearInput();
@@ -58,11 +59,12 @@
           targetdid: targetDid
         }
       }).done(function(msg) {
-        dt = new Date();
-        time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+        //dt = new Date();
+        //time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
         msgParsed = $.parseJSON(msg);
         if (msgParsed.error) {
           setStatus('Error! Got "' + msgParsed.error + '"');
+          $("#submit-chat").prop("disabled", false);
           return false;
         }
         fromDid = $("#source-num").val();

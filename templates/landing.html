@@ -8,9 +8,13 @@
       check_username(usrname);
       $("#checkname").prop("disabled", false);
     });
-    $('#submitpw').click(function() {
-      $("#submitpw").prop("disabled", true);
+
+    $('form').submit(function(event) {
+      event.preventDefault(); //Stop the submit.
+      $("#submitpw").prop("disabled", true); //Block out the button from multiple clicks
+      email = $('#emailfield').val();
       usrname = $('#username').val();
+
       if (usrname.length < 2) {
         $('#status').text("Username is too short or invalid.");
         return false;
@@ -26,7 +30,7 @@
         //When the password fails.
         return false;
       }
-      email = $('#emailfield').val();
+
       if (checkEmail(email)) {
         //Email is good
       } else {
@@ -62,13 +66,13 @@
 </head>
 {% include 'include/navblock.html' %}
 <h2>Its your first time! Welcome {{ name }}! Please take a moment to configure your local credentials.</h2>
-<form id='userform'>
+<form>
   <div class='uname'>User Name: <input type='text' id='username' value='' /> <input type='button' id='checkname' value='Check Availability' /><span id='usrError'></span></div>
   <div class='namefield'>Name: <input type='text' id='namefield' value='{{ user_info.name }}' /></div>
   <div class='emailfield'>Email: <input type='text' id='emailfield' value='{{ user_info.email }}' readonly /></div>
   <div class='passwd'>Password: <input type='password' id='passwdone' /></div>
   <div class='passwd'>Confirm: <input type='password' id='passwdtwo' /></div>
-  <div class='submit'><input type='button' id="submitpw" value="Submit credentials" /></div>
+  <div class='submit'><input type='submit' id="submitpw" value="Submit credentials" /></div>
 </form>
 <div id='status'></div>
 {% include 'include/footer.html' %}
