@@ -43,7 +43,7 @@ def index():
     user_info = google_auth.get_user_info()
     logId = flask.session['loginID']
     indbRes = appdb.isUserinDB(logId)
-    if indbRes[9]:
+    if not indbRes[9].empty():
         if app_debug == '1':
             pprint.pprint(indbRes)
         #refreshtoken = google_auth.getRefreshToken()
