@@ -40,10 +40,15 @@ def index():
     if not app_auth.is_logged_in():
         return flask.render_template('homepage.html', loggedin = False)
 
-    user_info = google_auth.get_user_info()
-    logId = flask.session['loginID']
     indbRes = appdb.isUserinDB(logId)
-    if indbRes:
+
+    if google_auth.is_logged_in():
+        user_info = google_auth.get_user_info()
+    else:
+        user_info['name'] = flask.session['name']
+    logId = flask.session['loginID']
+    
+    if indbRes and not user_info:
         if app_debug == '1':
             pprint.pprint(indbRes)
         #refreshtoken = google_auth.getRefreshToken()
@@ -86,7 +91,7 @@ def landingPage():
 @app.route('/single/<int:number>', methods=['GET'])
 def manageSingleSMS(number):
     '''This renders a view for a single SMS number and its associated messages'''
-    if not google_auth.is_logged_in():
+    if not app_auth.is_logged_in():
         return flask.render_template('deny.html',denymsg = loginMsg, loggedin = False)
 
     #refreshtoken = google_auth.getRefreshToken()
