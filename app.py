@@ -40,15 +40,23 @@ def index():
     if not app_auth.is_logged_in():
         return flask.render_template('homepage.html', loggedin = False)
 
-    indbRes = appdb.isUserinDB(logId)
-
-    if google_auth.is_logged_in():
-        user_info = google_auth.get_user_info()
-    else:
-        user_info['name'] = flask.session['name']
     logId = flask.session['loginID']
-    
-    if indbRes and not user_info:
+    indbRes = appdb.isUserinDB(logId)
+    try:
+        if google_auth.is_logged_in():
+            user_info = google_auth.get_user_info()
+
+        elif loggedIn in flask.session == True:
+            user_info['name'] = flask.session['name']
+            user_info['picture'] = flask.session['picture']
+            user_info['verified_email'] = flask.session['verified_email']
+        else:
+            user_info = False
+    except NameError:
+        user_info = False
+        indbRes = False
+
+    if indbRes and user_info['name'] == '':
         if app_debug == '1':
             pprint.pprint(indbRes)
         #refreshtoken = google_auth.getRefreshToken()
@@ -67,16 +75,19 @@ def index():
                                     loggedin = True)
     else:
         # Lets setup the user
-        refreshtoken = google_auth.getRefreshToken()
-        if user_info['verified_email'] == True:
-            verifiedVar = True
-            appdb.setNewUser(user_info['id'], refreshtoken, user_info['name'], user_info['email'], verifiedVar)
-            return flask.render_template('landing.html',
-                                         user_info = user_info, loggedin = False)
+        if google_auth.is_logged_in():
+            refreshtoken = google_auth.getRefreshToken()
+            if user_info['verified_email'] <= 1:
+                verifiedVar = True
+                appdb.setNewUser(user_info['id'], refreshtoken, user_info['name'], user_info['email'],1)
+                return flask.render_template('landing.html',
+                                             user_info = user_info, loggedin = False)
+            else:
+                #This means they aren't verified.
+                verifiedVar = False
+                return flask.render_template('deny.html',denymsg = 'Your google account does not have a verified email. This is required to use this service.', loggedin = False)
         else:
-            #This means they aren't verified.
-            verifiedVar = False
-            return flask.render_template('deny.html',denymsg = 'Your google account does not have a verified email. This is required to use this service.', loggedin = False)
+            return flask.render_template('deny.html',denymsg = 'Your google account does not have a Refresh Token. This is required to use this service.', loggedin = False)
 
 @app.route('/landing')
 def landingPage():

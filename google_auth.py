@@ -76,8 +76,14 @@ def getGoogleId():
     return gid
 
 def getRefreshToken():
-    oauth2_tokens = flask.session[AUTH_TOKEN_KEY]
-    return oauth2_tokens['refresh_token']
+    try:
+        if AUTH_TOKEN_KEY in flask.session:
+            oauth2_tokens = flask.session['AUTH_TOKEN_KEY']
+            return oauth2_tokens['refresh_token']
+        else:
+            return False
+    except KeyError:
+        return False
 
 def no_cache(view):
     @functools.wraps(view)
@@ -125,8 +131,12 @@ def google_auth_redirect():
     if app_debug == '1':
         pprint.pprint("User info")
         pprint.pprint(userInfo)
+
     flask.session['gid'] = userInfo['id']
     flask.session['gmail'] = userInfo['email']
+    flask.session['name'] = userInfo['name']
+    flask.session['picture'] = userInfo['picture']
+    flask.session['verified_email'] = userInfo['verified_email']
     flask.session['loggedIn'] = True
     appdb.setRefreshToken(oauth2_tokens['refresh_token'],userInfo['id'])
 
