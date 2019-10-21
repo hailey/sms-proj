@@ -26,8 +26,17 @@ def appsettings():
     '''This function pulls some information and then renders the settings or error template'''
     if not app_auth.is_logged_in():
         return flask.render_template('deny.html', denymsg = "I don't know who you are so I can't help you with your user settings. :(", loggedin = False)
-    user_info = google_auth.get_user_info()
-    refreshtoken = google_auth.getRefreshToken()
+    try:
+        user_info = google_auth.get_user_info()
+        refreshtoken = google_auth.getRefreshToken()
+
+        if loggedIn in flask.session == True:
+            user_info['name'] = flask.session['name']
+            user_info['picture'] = flask.session['picture']
+            user_info['verified_email'] = flask.session['verified_email']
+    except NameError:
+        user_info = False
+        indbRes = False
 
     if not refreshtoken:
         return flask.render_template('error.html', denymsg = 'Error with your refresh token.', loggedin = False)
