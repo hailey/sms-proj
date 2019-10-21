@@ -56,7 +56,7 @@ def index():
         user_info = False
         indbRes = False
 
-    if indbRes and user_info['name'] == '':
+    if indbRes and user_info['name'] != False:
         if app_debug == '1':
             pprint.pprint(indbRes)
         #refreshtoken = google_auth.getRefreshToken()
