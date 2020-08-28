@@ -1,0 +1,32 @@
+project: https://platform.activestate.com/haileyxb/komodo-sms-proj-2?commitID=9090c128-e948-4388-8f7f-96e2c1e00d98
+
+languages: # Please run 'state push' to create your language runtime, once you do the language entry here will be removed
+  - name: python3
+    version: 
+
+scripts:
+  - name: helloWorld
+    constraints: 
+      os: macos,linux
+    value: echo "Hello World!"
+  - name: helloWorld
+    constraints: 
+      os: windows
+    value: echo Hello World!
+  - name: intro
+    constraints: 
+      os: macos,linux
+    value: |
+      echo "Your runtime environment is now ready!"
+      echo ""
+      echo "To see how scripts work and add your own, open up the activestate.yaml file with your editor."
+  - name: intro
+    constraints: 
+      os: windows
+    value: |
+      echo Your runtime environment is now ready!
+      echo.
+      echo To see how scripts work and add your own, open up the activestate.yaml file with your editor.
+events:
+  - name: ACTIVATE
+    value: $scripts.intro
