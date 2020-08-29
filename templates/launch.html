@@ -2,14 +2,39 @@
 <title>Login Methods</title>
 <script type="text/javascript">
 $("document").ready(function() {
-
+  $('#loginAction').click(function(){
+    email = $("#email").val();
+    password = $("#passwd").val();
+    $.post("/auth/login",{ email:email, passwd:password},function(data){
+            alert(data);
+        });
   });
+  $('#registerAction').click(function(){
+    email = $("#email").val();
+    password = $("#passwd").val();
+    $.post("/auth/register",{ email:email, passwd:password},function(data){
+            alert(data);
+        });
+  });
+});
 </script>
 </head>
 {% include 'include/navblock.html' %}
 <div id='loginbody'>
   <h1>Login Options</h1>
-  Login via: <br /><a href='/google/login'><img src='static/img/btn_google_signin_dark_normal_web@2x.png' alt='Login with Google'/></a>
+  <!--Login via: <br /><a href='/google/login'><img src='static/img/btn_google_signin_dark_normal_web@2x.png' alt='Login with Google'/></a>-->
+<div id='loginForm'>
+  <form name='localLoginForm' method="post" action="/auth/login">
+  <table>
+    <tr><td>Email:</td><td><input id='email' type="email" /></td></tr>
+    <tr><td>Password:</td><td><input id='passwd' type="password" /></td></tr>
+    <tr>
+      <td><input type="button" id="loginAction" value="Log In" /></td>
+      <td><input type="button" id="registerAction" value="Register" /></td>
+    </tr>
+  </table>
+</form>
+</div>
 <div>More Login Options coming Soon!</div>
 </div>
 {% include 'include/footer.html' %}

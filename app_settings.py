@@ -9,7 +9,7 @@ import json
 import flask
 
 import appdb, app_auth
-import google_auth
+#import google_auth
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -27,8 +27,8 @@ def appsettings():
     if not app_auth.is_logged_in():
         return flask.render_template('deny.html', denymsg = "I don't know who you are so I can't help you with your user settings. :(", loggedin = False)
     try:
-        user_info = google_auth.get_user_info()
-        refreshtoken = google_auth.getRefreshToken()
+        user_info = app_auth.get_user_info()
+        #refreshtoken = app_auth.getRefreshToken()
 
         if loggedIn in flask.session == True:
             user_info['name'] = flask.session['name']
@@ -38,10 +38,9 @@ def appsettings():
         user_info = False
         indbRes = False
 
-    if not refreshtoken:
-        return flask.render_template('error.html', denymsg = 'Error with your refresh token.', loggedin = False)
-    userid = appdb.getUserIDfromGoogleID(user_info['id'])
-    if not userid:
+    #if not refreshtoken:
+    #    return flask.render_template('error.html', denymsg = 'Error with your refresh token.', loggedin = False)
+    if not user_info['id']:
         return flask.render_template('error.html', denymsg = 'You are not currently logged in.', loggedin = False)
 
     rows = appdb.getDIDsbyAccount(userid)
@@ -69,7 +68,7 @@ def createUser():
     username = flask.request.form['username']
     password = flask.request.form['password']
     email = flask.request.form['email']
-    user_info = google_auth.get_user_info()
+    #user_info = google_auth.get_user_info()
     if appdb.isUserExist(username):
          return json.dumps({'error': 'Username already exists. Please choose another.'})
 

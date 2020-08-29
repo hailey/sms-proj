@@ -7,12 +7,12 @@ import configparser
 import json
 import re
 import flask
-from authlib.client import OAuth2Session
-import google.oauth2.credentials
-import googleapiclient.discovery
+#from authlib.client import OAuth2Session
+#import google.oauth2.credentials
+#import googleapiclient.discovery
 
 import appdb, appsms, app_settings, app_auth
-import google_auth
+#import google_auth
 import callback_sms
 
 config = configparser.ConfigParser()
@@ -22,7 +22,7 @@ app_debug = config.get("app","debug")
 app = flask.Flask(__name__)
 app.secret_key = config.get("auth","FN_FLASK_SECRET_KEY")
 
-app.register_blueprint(google_auth.app)
+#app.register_blueprint(google_auth.app)
 app.register_blueprint(callback_sms.app)
 app.register_blueprint(app_settings.app)
 app.register_blueprint(app_auth.app)
@@ -43,10 +43,9 @@ def index():
     logId = flask.session['loginID']
     indbRes = appdb.isUserinDB(logId)
     try:
-        if google_auth.is_logged_in():
-            user_info = google_auth.get_user_info()
-
-        elif loggedIn in flask.session == True:
+        #if google_auth.is_logged_in():
+        #    user_info = google_auth.get_user_info()
+        if loggedIn in flask.session == True:
             user_info['name'] = flask.session['name']
             user_info['picture'] = flask.session['picture']
             user_info['verified_email'] = flask.session['verified_email']
@@ -75,24 +74,21 @@ def index():
                                     loggedin = True)
     else:
         # Lets setup the user
-        if google_auth.is_logged_in():
-            refreshtoken = google_auth.getRefreshToken()
-            if user_info['verified_email'] <= 1:
-                verifiedVar = True
-                appdb.setNewUser(user_info['id'], refreshtoken, user_info['name'], user_info['email'],1)
-                return flask.render_template('landing.html',
-                                             user_info = user_info, loggedin = False)
-            else:
+        if user_info['verified_email'] <= 1:
+            verifiedVar = True
+            appdb.setNewUser(user_info['id'], refreshtoken, user_info['name'], user_info['email'],1)
+            return flask.render_template('landing.html',
+                                         user_info = user_info, loggedin = False)
+        else:
                 #This means they aren't verified.
                 verifiedVar = False
-                return flask.render_template('deny.html',denymsg = 'Your google account does not have a verified email. This is required to use this service.', loggedin = False)
-        else:
-            return flask.render_template('deny.html',denymsg = 'Your google account does not have a Refresh Token. This is required to use this service.', loggedin = False)
+                return flask.render_template('deny.html',denymsg = 'Your account does not have a verified email. This is required to use this service.', loggedin = False)
 
 @app.route('/landing')
 def landingPage():
     '''This renders the landing page'''
-    user_info = google_auth.get_user_info()
+    #user_info = google_auth.get_user_info()
+    #Going to replace google_auth with a local authentication.
     if user_info:
         loggedin = True
     else:
@@ -106,9 +102,9 @@ def manageSingleSMS(number):
         return flask.render_template('deny.html',denymsg = loginMsg, loggedin = False)
 
     #refreshtoken = google_auth.getRefreshToken()
-    googleid = google_auth.getGoogleId()
-    userid = appdb.getUserIDfromGoogleID(googleid)
-    result = appdb.authIdforDID(userid,number)
+    #googleid = google_auth.getGoogleId()
+    #userid = appdb.getUserIDfromGoogleID(googleid)
+    #result = appdb.authIdforDID(userid,number)
 
     prettynum = appsms.prettyPhone(number)
     if appdb.validateFrom(int(number)) and result:
@@ -119,16 +115,18 @@ def manageSingleSMS(number):
 @app.route('/getNumber/<int:number>',methods=['GET'])
 def getNumMessages(number):
     #This gets the mssages based on the provided from or two DID
-    if not google_auth.is_logged_in():
+    if not app_auth.is_logged_in():
         return json.dumps({'error': 'Unable to send SMS, you are not logged in'})
 
     #refreshtoken = google_auth.getRefreshToken()
-    googleid = google_auth.getGoogleId()
-    userid = appdb.getUserIDfromGoogleID(googleid)
+    #googleid = google_auth.getGoogleId()
+    if 'userid' in session:
+      userid = session['userid']
+    #userid = appdb.getUserIDfromGoogleID(googleid)
     result = appdb.authIdforDID(userid,number)
     smslog = appdb.getNumSMSLog(number,10)
-    if not result:
-        return json.dumps({'error': 'You are not allowed to use the requested DID'})
+    #if not result:
+    #    return json.dumps({'error': 'You are not allowed to use the requested DID'})
 
     i = 0
     msgjson = ""
@@ -149,7 +147,7 @@ def getNumMessages(number):
 def submitMessage():
     #This is to submit a message.
 
-    if not google_auth.is_logged_in():
+    if not app_auth.is_logged_in():
         return json.dumps({'error': 'Unable to send SMS'})
 
     message = flask.request.form['message']
@@ -157,8 +155,10 @@ def submitMessage():
     targetDid = flask.request.form['targetdid']
     #user_info = google_auth.get_user_info()
     #refreshtoken = google_auth.getRefreshToken()
-    googleid = google_auth.getGoogleId()
-    userid = appdb.getUserIDfromGoogleID(googleid)
+    #googleid = google_auth.getGoogleId()
+    #userid = appdb.getUserIDfromGoogleID(googleid)
+    if 'userid' in session:
+      userid = session['userid']
     result = appdb.authIdforDID(userid,fromDid)
 
     if userid != result:
@@ -196,7 +196,7 @@ def inbox():
 
 @app.route('/launch')
 def launchPage():
-    if google_auth.is_logged_in():
+    if app_auth.is_logged_in():
         loggedin = True
     else:
         loggedin = False
@@ -209,7 +209,7 @@ def launchPage():
 def PrivacyPolicy():
     if app_debug == '1':
         pprint.pprint(flask.session)
-    if google_auth.is_logged_in():
+    if app_auth.is_logged_in():
         loggedin = True
     else:
         loggedin = False
@@ -217,7 +217,7 @@ def PrivacyPolicy():
 
 @app.route('/tos')
 def tos():
-    if google_auth.is_logged_in():
+    if app_auth.is_logged_in():
         loggedin = True
     else:
         loggedin = False
@@ -225,7 +225,7 @@ def tos():
 
 @app.route('/about')
 def about():
-    if google_auth.is_logged_in():
+    if app_auth.is_logged_in():
         loggedin = True
     else:
         loggedin = False

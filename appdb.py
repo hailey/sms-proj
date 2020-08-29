@@ -87,12 +87,12 @@ def isUserVerfied(google_id):
     else:
         return False
 
-def setNewUser(google_id, refresh_token, name, email, verified):
+def setNewUser(user_id, refresh_token, name, email, verified):
     #This statement is for creating a user into the account table.
     db = pymysql.connect(host=sqlhost, user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    cur.execute("INSERT INTO account (`name`, `email`, `refresh_token`, `google_id`, `verified_email`, `created`, `last_modified`) VALUES \
-                (%s, %s, %s, %s, %s, NOW(), NOW())",(name, email, refresh_token, google_id, verified))
+    cur.execute("INSERT INTO account (`name`, `email`, `refresh_token`, `user_id`, `verified_email`, `created`, `last_modified`) VALUES \
+                (%s, %s, %s, %s, %s, NOW(), NOW())",(name, email, refresh_token, user_id, verified))
     db.commit()
     db.close()
     return True
