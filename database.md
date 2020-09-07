@@ -112,3 +112,10 @@ ENGINE=InnoDB;
 # Adding password and username support.
 ALTER TABLE account ADD COLUMN `username` VARCHAR(255) NULL UNIQUE;
 ALTER TABLE account ADD COLUMN `passwd` VARCHAR(255) NULL;
+
+########## UPDATE V6
+ALTER TABLE account DROP COLUMN `google_id`;
+ALTER TABLE account DROP COLUMN `username`;
+ALTER TABLE account DROP COLUMN `refresh_token`;
+ALTER TABLE account ADD COLUMN `loginid` VARCHAR(255) NULL UNIQUE;
+ALTER TABLE account ADD COLUMN `picture_url` VARCHAR(255) NULL;

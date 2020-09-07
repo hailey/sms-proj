@@ -37,59 +37,30 @@ else:
 @app.route('/')
 def index():
     '''This is the root index. If not logged in it displays homepage.html'''
-    if not app_auth.is_logged_in():
-        return flask.render_template('homepage.html', loggedin = False)
-
-    logId = flask.session['loginID']
-    indbRes = appdb.isUserinDB(logId)
-    try:
-        #if google_auth.is_logged_in():
-        #    user_info = google_auth.get_user_info()
-        if loggedIn in flask.session == True:
-            user_info['name'] = flask.session['name']
-            user_info['picture'] = flask.session['picture']
-            user_info['verified_email'] = flask.session['verified_email']
-        else:
-            user_info = False
-    except NameError:
-        user_info = False
-        indbRes = False
-
-    if indbRes and user_info['name'] != False:
-        if app_debug == '1':
-            pprint.pprint(indbRes)
-        #refreshtoken = google_auth.getRefreshToken()
-        #if not refreshtoken:
-        #    return flask.render_template('error.html', denymsg = 'Error with your refresh token.', loggedin = False)
-
-        #userid = appdb.getUserIDfromGoogleID(user_info['id'])
-        #if not userid:
-        #    return flask.render_template('error.html', denymsg = 'You are not currently logged in.', loggedin = False)
-
-        rows = appdb.getDIDsbyAccount(logId)
+    pprint.pprint("Printing session info")
+    pprint.pprint(flask.session)
+    if flask.session.get('loginid'):
+        user_info = appdb.getUserInfo(flask.session['email'],flask.session['loginid'])
+        pprint.pprint(user_info)
+        loggedin = True
+        pprint.pprint("Printing user_info")
+        rows = appdb.getDIDsbyAccount(flask.session['account_id'])
         return flask.render_template('index.html',
-                                    name = user_info['name'],
-                                    picture = user_info['picture'],
+                                    name = user_info[2],
+                                    picture = user_info[9],
                                     dids = rows,
                                     loggedin = True)
     else:
-        # Lets setup the user
-        if user_info['verified_email'] <= 1:
-            verifiedVar = True
-            appdb.setNewUser(user_info['id'], refreshtoken, user_info['name'], user_info['email'],1)
-            return flask.render_template('landing.html',
-                                         user_info = user_info, loggedin = False)
-        else:
-                #This means they aren't verified.
-                verifiedVar = False
-                return flask.render_template('deny.html',denymsg = 'Your account does not have a verified email. This is required to use this service.', loggedin = False)
+        return flask.render_template('homepage.html', loggedin = False)
 
 @app.route('/landing')
 def landingPage():
     '''This renders the landing page'''
     #user_info = google_auth.get_user_info()
+    if flask.session['loginid']:
+        user_info = appdb.getUserInfo(flask.session['email'],flask.session['loginid'])
     #Going to replace google_auth with a local authentication.
-    if user_info:
+    if app_auth.is_logged_in():
         loggedin = True
     else:
         loggedin = False
@@ -188,11 +159,14 @@ def testAjax():
 
 @app.route('/inbox')
 def inbox():
-    if not app_auth.is_logged_in():
-        return 'You are not logged in'
-    loginId = flask.session.loggedIn
+    if app_auth.is_logged_in():
+        loggedin = True
+    else:
+        loggedin = False
+    loginId = flask.session['loginid']
     results = appdb.getSMSbyAccount(loginId,10)
-    return results
+    pprint.pprint(results)
+    return flask.render_template('inbox.html', loggedin=loggedin)
 
 @app.route('/launch')
 def launchPage():

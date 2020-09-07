@@ -4,15 +4,17 @@
 $("document").ready(function() {
   $('#loginAction').click(function(){
     email = $("#email").val();
+    name = $("#Name").val();
     password = $("#passwd").val();
-    $.post("/auth/login",{ email:email, passwd:password},function(data){
+    $.post("/auth/login",{ email:email, passwd:password, name:name},function(data){
             alert(data);
         });
   });
   $('#registerAction').click(function(){
     email = $("#email").val();
     password = $("#passwd").val();
-    $.post("/auth/register",{ email:email, passwd:password},function(data){
+    name = $("#Name").val();
+    $.post("/auth/register",{ email:email, passwd:password, name:name},function(data){
             alert(data);
         });
   });
@@ -26,6 +28,7 @@ $("document").ready(function() {
 <div id='loginForm'>
   <form name='localLoginForm' method="post" action="/auth/login">
   <table>
+    <tr><td>Name:</td><td><input id='name' type="text" /></td></tr>
     <tr><td>Email:</td><td><input id='email' type="email" /></td></tr>
     <tr><td>Password:</td><td><input id='passwd' type="password" /></td></tr>
     <tr>

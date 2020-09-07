@@ -1,0 +1,77 @@
+{% include 'include/header.html' %}
+<title>Finish your account creation</title>
+<script type="text/javascript">
+  $("document").ready(function() {
+    $('#checkname').click(function() {
+      $("#checkname").prop("disabled", true);
+      usrname = $('#username').val();
+      check_username(usrname);
+      $("#checkname").prop("disabled", false);
+    });
+
+    $('form').submit(function(event) {
+      event.preventDefault(); //Stop the submit.
+      $("#submitpw").prop("disabled", true); //Block out the button from multiple clicks
+      email = $('#emailfield').val();
+      usrname = $('#username').val();
+
+      if (usrname.length < 2) {
+        $('#status').text("Username is too short or invalid.");
+        return false;
+      } else {
+        res = check_username(usrname);
+        if (res) {
+          return false;
+        }
+      }
+      if (checkPasswd()) {
+        passwd = $('#passwdone').val();
+      } else {
+        //When the password fails.
+        return false;
+      }
+
+      if (checkEmail(email)) {
+        //Email is good
+      } else {
+        //Email isn't good
+        return false;
+      }
+
+      $.ajax({
+        url: '/createUser',
+        type: 'POST',
+        data: {
+          username: usrname,
+          password: passwd,
+          email: email
+        },
+        success: function(response) {
+          //When we get a message from the server.
+          if (response['error']) {
+            $('#status').text("Got the message " + response);
+          } else {
+            $('#status').text("Success? " + response);
+          }
+        },
+        error: function(error) {
+          //When there is an error on the client side
+          alert('error' + error.msg);
+        }
+      });
+      $("#submitpw").prop("disabled", false);
+    });
+  });
+</script>
+</head>
+{% include 'include/navblock.html' %}
+<h2>Its your first time! Welcome {{ name }}! Please take a moment to configure your local credentials.</h2>
+<form>
+  <div class='namefield'>Name: <input type='text' id='namefield' value='{{ user_info.name }}' /></div>
+  <div class='emailfield'>Email: <input type='text' id='emailfield' value='{{ user_info.email }}' readonly /></div>
+  <div class='passwd'>Password: <input type='password' id='passwdone' /></div>
+  <div class='passwd'>Confirm: <input type='password' id='passwdtwo' /></div>
+  <div class='submit'><input type='submit' id="submitpw" value="Submit credentials" /></div>
+</form>
+<div id='status'></div>
+{% include 'include/footer.html' %}

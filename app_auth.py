@@ -1,9 +1,9 @@
 import hashlib, binascii, os
 import flask
-from flask import request
+from flask import Flask, request, redirect, url_for
 import functools
 import os
-
+import appdb
 import pprint
 #import google_auth
 import configparser
@@ -12,6 +12,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 app_debug = config.get("app","debug")
 app_salt = config.get("auth","FN_FLASK_SECRET_KEY")
+login_redirect = "/"
 
 app = flask.Blueprint('app_auth', __name__)
 app.debug = True
@@ -29,10 +30,16 @@ def no_cache(view):
 
 def is_logged_in():
     #return True if loggedIn in flask.session else False
-    return True if 'loggedIn' in flask.session else False
-    if flask.session.loggedIn:
+    return True if 'loginid' in flask.session else False
+    if flask.session.loggedin:
         pprint.pprint('Flask session loginhash:')
-        pprint.pprint(flask.session.loggedIn)
+        pprint.pprint(flask.session.loggedin)
+        return True
+    return False
+
+def verify_login(email, password):
+    result = appdb.verify_login(email, password)
+    if result:
         return True
     return False
 
@@ -40,17 +47,33 @@ def is_logged_in():
 @no_cache
 def auth_login():
     """Login using provided credentials"""
-    pprint.pprint('Got credentials offff')
-    pprint.pprint(request.form)
-    return "Success %s" % request.form['email']
+    #pprint.pprint('Got credentials offff')
+    #pprint.pprint(request.form)
+    if appdb.verify_login(request.form['email'], request.form['passwd']):
+        pprint.pprint("got variables")
+        uniqueID = appdb.generate_id(request.form['email'])
+        flask.session['loggedin'] = True
+        flask.session['loginid'] = uniqueID
+        flask.session['account_id'] = appdb.getAccountId(uniqueID)
+        flask.session['email'] = request.form['email']
+        flask.session['password'] = request.form['passwd']
+        return "Success! "
+    return "Unable to Login"
+    #return login_redirect
 
 @app.route('/auth/register', methods=['POST'])
 @no_cache
 def auth_register_login():
     """Create a login using the supplied credentials in request.form"""
-    pprint.pprint('Got credentials offff')
-    pprint.pprint(request.form)
-    return "Success %s" % request.form['passwd']
+    #pprint.pprint('Got credentials offff')
+    #pprint.pprint(request.form)
+    return "DISABLED"
+
+@app.route('/auth/logout')
+@no_cache
+def auth_logout():
+    flask.session.clear()
+    return redirect('/')
 
 def hash_password(password):
     """Hash a password for storing."""
