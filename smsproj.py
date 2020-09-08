@@ -37,17 +37,14 @@ else:
 @app.route('/')
 def index():
     '''This is the root index. If not logged in it displays homepage.html'''
-    pprint.pprint("Printing session info")
-    pprint.pprint(flask.session)
     if flask.session.get('loginid'):
         user_info = appdb.getUserInfo(flask.session['email'],flask.session['loginid'])
-        pprint.pprint(user_info)
         loggedin = True
-        pprint.pprint("Printing user_info")
+
         rows = appdb.getDIDsbyAccount(flask.session['account_id'])
         return flask.render_template('index.html',
                                     name = user_info[2],
-                                    picture = user_info[9],
+                                    picture = user_info[8],
                                     dids = rows,
                                     loggedin = True)
     else:
@@ -71,7 +68,8 @@ def manageSingleSMS(number):
     '''This renders a view for a single SMS number and its associated messages'''
     if not app_auth.is_logged_in():
         return flask.render_template('deny.html',denymsg = loginMsg, loggedin = False)
-
+    if flask.session['loginid']:
+        user_info = appdb.getUserInfo(flask.session['email'],flask.session['loginid'])
     #refreshtoken = google_auth.getRefreshToken()
     #googleid = google_auth.getGoogleId()
     #userid = appdb.getUserIDfromGoogleID(googleid)
@@ -83,8 +81,10 @@ def manageSingleSMS(number):
     else:
         return flask.render_template('notvalid.html', srcnumber = number, prettynum = prettynum, loggedin = True)
 
+#Gotta redo this logic
 @app.route('/getNumber/<int:number>',methods=['GET'])
 def getNumMessages(number):
+    '''Return the messages from a single DID in json form'''
     #This gets the mssages based on the provided from or two DID
     if not app_auth.is_logged_in():
         return json.dumps({'error': 'Unable to send SMS, you are not logged in'})

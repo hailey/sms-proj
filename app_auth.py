@@ -29,7 +29,6 @@ def no_cache(view):
     return functools.update_wrapper(no_cache_impl, view)
 
 def is_logged_in():
-    #return True if loggedIn in flask.session else False
     return True if 'loginid' in flask.session else False
     if flask.session.loggedin:
         pprint.pprint('Flask session loginhash:')
