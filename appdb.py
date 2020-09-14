@@ -227,9 +227,6 @@ def authIdforDID(account_id,did):
     data = cur.fetchone()
     db.close()
     if data:
-    #pprint.pprint('-----')
-    #pprint.pprint(data)
-    #pprint.pprint('----')
         return data[0]
     else:
         return False

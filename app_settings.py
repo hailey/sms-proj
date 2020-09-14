@@ -24,27 +24,17 @@ else:
 @app.route('/settings')
 def appsettings():
     '''This function pulls some information and then renders the settings or error template'''
-    if not app_auth.is_logged_in():
-        return flask.render_template('deny.html', denymsg = "I don't know who you are so I can't help you with your user settings. :(", loggedin = False)
-    try:
-        user_info = app_auth.get_user_info()
-        #refreshtoken = app_auth.getRefreshToken()
-
-        if loggedIn in flask.session == True:
-            user_info['name'] = flask.session['name']
-            user_info['picture'] = flask.session['picture']
-            user_info['verified_email'] = flask.session['verified_email']
-    except NameError:
+    if flask.session.get('loginid'):
+        user_info = appdb.getUserInfo(flask.session['email'],flask.session['loginid'])
+        loggedin = True
+    else:
         user_info = False
         indbRes = False
+        return flask.render_template('deny.html', denymsg = "I don't know who you are so I can't help you with your user settings. :(", loggedin = False)
 
-    #if not refreshtoken:
-    #    return flask.render_template('error.html', denymsg = 'Error with your refresh token.', loggedin = False)
-    if not user_info['id']:
-        return flask.render_template('error.html', denymsg = 'You are not currently logged in.', loggedin = False)
-
-    rows = appdb.getDIDsbyAccount(userid)
-    accountInfo = appdb.getInfobyEmail(user_info['email'])
+    rows = appdb.getDIDsbyAccount(user_info[0])
+    pprint.pprint(user_info)
+    accountInfo = appdb.getInfobyEmail(user_info[2])
     # userDBInfo.getInfobyE
     pprint.pprint(accountInfo)
     return flask.render_template('settings.html',

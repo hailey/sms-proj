@@ -70,12 +70,10 @@ def manageSingleSMS(number):
         return flask.render_template('deny.html',denymsg = loginMsg, loggedin = False)
     if flask.session['loginid']:
         user_info = appdb.getUserInfo(flask.session['email'],flask.session['loginid'])
-    #refreshtoken = google_auth.getRefreshToken()
-    #googleid = google_auth.getGoogleId()
-    #userid = appdb.getUserIDfromGoogleID(googleid)
-    #result = appdb.authIdforDID(userid,number)
 
+    result = appdb.authIdforDID(user_info[0],number)
     prettynum = appsms.prettyPhone(number)
+
     if appdb.validateFrom(int(number)) and result:
         return flask.render_template('single.html',srcnumber = number, prettynum = prettynum, loggedin = True)
     else:
@@ -89,15 +87,9 @@ def getNumMessages(number):
     if not app_auth.is_logged_in():
         return json.dumps({'error': 'Unable to send SMS, you are not logged in'})
 
-    #refreshtoken = google_auth.getRefreshToken()
-    #googleid = google_auth.getGoogleId()
-    if 'userid' in session:
-      userid = session['userid']
-    #userid = appdb.getUserIDfromGoogleID(googleid)
+    userid = flask.session['account_id']
     result = appdb.authIdforDID(userid,number)
     smslog = appdb.getNumSMSLog(number,10)
-    #if not result:
-    #    return json.dumps({'error': 'You are not allowed to use the requested DID'})
 
     i = 0
     msgjson = ""
