@@ -16,14 +16,12 @@
     <div class='namefield'>Name: <input type='text' id='email' value='{{ account_info.1 }}' /></div>
     <div class='emailfield'>Email: {{ account_info.2 }}</div>
     <div class='creationTime'>Account created on {{ account_info.4 }}</div>
-    <div class='largeField'>
-      <h3>Google Info</h3>
-    </div>
   </div>
   <div id='passwdForm'>
     <div class='largeField'>
-      <h3>Local Password</h3>
+      <h3>Password</h3>
     </div>
+    <div class='passwd'>Corrent Password: <input type='password' id='passwdzero' /></div>
     <div class='passwd'>Password: <input type='password' id='passwdone' /></div>
     <div class='passwd'>Confirm: <input type='password' id='passwdtwo' /></div>
     <div class='submit'><input type='button' id="submitpw" value="Update Password" /></div>

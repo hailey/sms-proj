@@ -116,12 +116,9 @@ def submitMessage():
     message = flask.request.form['message']
     fromDid = flask.request.form['fromdid']
     targetDid = flask.request.form['targetdid']
-    #user_info = google_auth.get_user_info()
-    #refreshtoken = google_auth.getRefreshToken()
-    #googleid = google_auth.getGoogleId()
-    #userid = appdb.getUserIDfromGoogleID(googleid)
-    if 'userid' in session:
-      userid = session['userid']
+
+    user_info = appdb.getUserInfo(flask.session['email'],flask.session['loginid'])
+    userid = flask.session['account_id']
     result = appdb.authIdforDID(userid,fromDid)
 
     if userid != result:

@@ -23,9 +23,10 @@ function checkEmail (email) {
 }
 function checkPasswd () {
   $('#status').text('');
+  passwdzero = $('#passwdzero').val();
   passwdone = $('#passwdone').val();
   passwdtwo = $('#passwdtwo').val();
-  if (passwdone.length < 6 || passwdtwo.length < 6) {
+  if (passwdone.length < 6 || passwdtwo.length < 6 || passwdzero.length < 6) {
     $('#status').text("The password length is too short. Six or more characters is required.");
     return false;
   } else {
