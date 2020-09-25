@@ -4,31 +4,31 @@
 $("document").ready(function() {
   $('#loginAction').click(function(){
     email = $("#email").val();
-    name = $("#Name").val();
     password = $("#passwd").val();
-    $.post("/auth/login",{ email:email, passwd:password, name:name},function(data){
-            alert(data);
-        });
+    $.post("/auth/login",{ email:email, passwd:password},function(data){
+      if (data == 'error') {
+        $('#loginstatus').replaceWith("Invalid Login Credentials.");
+        return;
+      }
+      $( location ).attr("href", data);
+    });
   });
   $('#registerAction').click(function(){
     email = $("#email").val();
     password = $("#passwd").val();
-    name = $("#Name").val();
-    $.post("/auth/register",{ email:email, passwd:password, name:name},function(data){
-            alert(data);
-        });
+    $.post("/auth/register",{ email:email, passwd:password},function(data){
+      $('#loginstatus').replaceWith(data);
+    });
   });
 });
 </script>
 </head>
 {% include 'include/navblock.html' %}
 <div id='loginbody'>
-  <h1>Login Options</h1>
-  <!--Login via: <br /><a href='/google/login'><img src='static/img/btn_google_signin_dark_normal_web@2x.png' alt='Login with Google'/></a>-->
+  <h1>Login</h1>
 <div id='loginForm'>
   <form name='localLoginForm' method="post" action="/auth/login">
   <table>
-    <tr><td>Name:</td><td><input id='name' type="text" /></td></tr>
     <tr><td>Email:</td><td><input id='email' type="email" /></td></tr>
     <tr><td>Password:</td><td><input id='passwd' type="password" /></td></tr>
     <tr>
@@ -37,7 +37,7 @@ $("document").ready(function() {
     </tr>
   </table>
 </form>
+<div id='loginstatus'></div>
 </div>
-<div>More Login Options coming Soon!</div>
 </div>
 {% include 'include/footer.html' %}

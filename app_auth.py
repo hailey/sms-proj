@@ -56,8 +56,8 @@ def auth_login():
         flask.session['account_id'] = appdb.getAccountId(uniqueID)
         flask.session['email'] = request.form['email']
         flask.session['password'] = request.form['passwd']
-        return "Success! "
-    return "Unable to Login"
+        return "/"
+    return "error"
     #return login_redirect
 
 @app.route('/auth/register', methods=['POST'])

@@ -9,14 +9,10 @@ import datetime
 import string
 import appdb, appsms
 import configparser
-#from flask import Flask, render_template, request
 import flask
 
 ########################
-##      Code starts here
-#app = Flask(__name__)
 app = flask.Blueprint('callback-sms', __name__)
-#app = flask.Flask(__name__)
 
 #########
 # This is so bare I don't need a config right now.
@@ -26,10 +22,6 @@ app_debug = config.get("app","debug")
 
 #############################
 ##      Callback defs go here
-#@app.route('/')
-#ef index():
-#    return render_template('index.html')
-
 def prettyStatus(status):
     if status == 'message buffered':
         return 'Delivered'

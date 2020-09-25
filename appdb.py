@@ -226,8 +226,9 @@ def authIdforDID(account_id,did):
     cur.execute("SELECT account.id FROM dids,account WHERE dids.account_id=account.id AND account.id=%s AND dids.number=%s LIMIT 1",(account_id,did))
     data = cur.fetchone()
     db.close()
+    pprint.pprint("Printing AUTH ID")
     if data:
-        return data[0]
+        return account_id
     else:
         return False
 

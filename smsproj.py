@@ -22,7 +22,6 @@ app_debug = config.get("app","debug")
 app = flask.Flask(__name__)
 app.secret_key = config.get("auth","FN_FLASK_SECRET_KEY")
 
-#app.register_blueprint(google_auth.app)
 app.register_blueprint(callback_sms.app)
 app.register_blueprint(app_settings.app)
 app.register_blueprint(app_auth.app)
@@ -122,9 +121,6 @@ def submitMessage():
     result = appdb.authIdforDID(userid,fromDid)
 
     if userid != result:
-        if app_debug == '1':
-            pprint.pprint(userid)
-            pprint.pprint(result)
         return json.dumps({'error': 'Unauthorized UserID of ' + str(userid) + " and DID id of " + str(result) + " and fromDID " + str(fromDid)})
 
     if appdb.validateFrom(fromDid) == False:
