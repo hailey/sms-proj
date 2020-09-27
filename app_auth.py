@@ -1,8 +1,11 @@
 import hashlib, binascii, os
 import flask
 from flask import Flask, request, redirect, url_for
+import hashlib, binascii
+from passlib.hash import pbkdf2_sha256
 import functools
 import os
+salt = os.urandom(32)
 import appdb
 import pprint
 #import google_auth
@@ -48,7 +51,7 @@ def auth_login():
     """Login using provided credentials"""
     #pprint.pprint('Got credentials offff')
     #pprint.pprint(request.form)
-    if appdb.verify_login(request.form['email'], request.form['passwd']):
+    if appdb.verify_login(request.form['email'],hash_password(request.form['passwd'].encode('ascii'))):
         pprint.pprint("got variables")
         uniqueID = appdb.generate_id(request.form['email'])
         flask.session['loggedin'] = True
@@ -73,10 +76,17 @@ def auth_register_login():
 def auth_updatepw():
     '''This takes three post variables to match the old password then match two passwords
     forms then update password if it all checks out.'''
+    if not is_logged_in():
+        return "error"
+    if flask.session['loginid']:
+        user_info = appdb.getUserInfo(flask.session['email'],flask.session['loginid'])
+
     passzero = request.form['passwdzero']
     passone = request.form['passwdone']
-    if (appdb.updatePass(passzero,passone) == 1):
-        return "200"
+    orighash = hash_password(passzero.encode('ascii'))
+    newhash = hash_password(passone.encode('ascii'))
+    if (appdb.updatePass(user_info[0],orighash,newhash)):
+        return '200'
     return "error"
 
 @app.route('/auth/logout')
@@ -87,8 +97,8 @@ def auth_logout():
 
 def hash_password(password):
     """Hash a password for storing."""
-    pwdhash = hashlib.pbkdf2_hmac('sha512', password,
-                                app_salt.encode('ascii'), 100000)
+    pwdhash = hashlib.pbkdf2_hmac('sha512', password, app_salt.encode('ascii'), 100000)
+    #hash = pbkdf2_sha256.encrypt(password, rounds=200000, salt_size=16)
     pwdhash = binascii.hexlify(pwdhash).decode('ascii')
     return pwdhash
 

@@ -39,6 +39,8 @@ def index():
     if flask.session.get('loginid'):
         user_info = appdb.getUserInfo(flask.session['email'],flask.session['loginid'])
         loggedin = True
+        if not user_info:
+            return flask.render_template('homepage.html', loggedin = False)
 
         rows = appdb.getDIDsbyAccount(flask.session['account_id'])
         return flask.render_template('index.html',

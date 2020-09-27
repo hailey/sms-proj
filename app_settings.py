@@ -30,12 +30,14 @@ def appsettings():
         user_info = False
         indbRes = False
         return flask.render_template('deny.html', denymsg = "I don't know who you are so I can't help you with your user settings. :(", loggedin = False)
+    if user_info:
+        rows = appdb.getDIDsbyAccount(user_info[0])
+        pprint.pprint(user_info)
+        accountInfo = appdb.getInfobyEmail(user_info[2])
 
-    rows = appdb.getDIDsbyAccount(user_info[0])
-    pprint.pprint(user_info)
-    accountInfo = appdb.getInfobyEmail(user_info[2])
-
-    pprint.pprint(accountInfo)
+        pprint.pprint(accountInfo)
+    else:
+        return 'error';
     return flask.render_template('settings.html',
                                 user_info = user_info,
                                 account_info = accountInfo,
