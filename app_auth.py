@@ -68,6 +68,17 @@ def auth_register_login():
     #pprint.pprint(request.form)
     return "DISABLED"
 
+@app.route('/auth/updatepw', methods=['POST'])
+@no_cache
+def auth_updatepw():
+    '''This takes three post variables to match the old password then match two passwords
+    forms then update password if it all checks out.'''
+    passzero = request.form['passwdzero']
+    passone = request.form['passwdone']
+    if (appdb.updatePass(passzero,passone) == 1):
+        return "200"
+    return "error"
+
 @app.route('/auth/logout')
 @no_cache
 def auth_logout():

@@ -3,8 +3,13 @@
 <script type="text/javascript">
   $("document").ready(function() {
     $("#submitpw").click(function() {
-      checkPasswd();
-    });
+      if (checkPasswd() == false) {
+        return false;
+      }
+      //This passes so lets verify the old password.
+      if(updatePW() == true) {
+          // Success!
+      }
   });
 </script>
 </head>
@@ -21,7 +26,7 @@
     <div class='largeField'>
       <h3>Password</h3>
     </div>
-    <div class='passwd'>Corrent Password: <input type='password' id='passwdzero' /></div>
+    <div class='passwd'>Current Password: <input type='password' id='passwdzero' /></div>
     <div class='passwd'>Password: <input type='password' id='passwdone' /></div>
     <div class='passwd'>Confirm: <input type='password' id='passwdtwo' /></div>
     <div class='submit'><input type='button' id="submitpw" value="Update Password" /></div>

@@ -298,6 +298,17 @@ def updateMsgTimestamp(msg_id, timestamp):
     db.close()
     return affected_count
 
+def updatePass(origpass,newpass):
+    '''updatePass(origpass, newpass) this assumes newpass has been verified twice
+    and origpass equals the current password. Returns the amount of rows updated which should
+    always be 1 or 0.'''
+    db = pymysql.connect(host=sqlhost, port=sqlport, user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    affected_count = cur.execute("UPDATE account SET passwd=%s WHERE passwd=%s LIMIT 1",(newpass,origpass))
+    db.commit()
+    db.close()
+    return affected_count
+
 def validateFrom(did):
     # Looks up in the DB to see if a DID is a valid DID
     db = pymysql.connect(host=sqlhost, port=sqlport, user=sqluser, passwd=sqlpass, db=sqldb)

@@ -39,7 +39,20 @@ function checkPasswd () {
     }
   }
 }
-
+function updatePW() {
+  passwdzero = $('#passwdzero').val();
+  passwdone = $('#passwdone').val();
+  passwdtwo = $('#passwdtwo').val();
+  $.post("/auth/updatepw",{ passwdzero:passwdzero, passwdone:passwdone},function(data){
+    if (data == 'error') {
+      $('#status').replaceWith("Incorrect password.");
+      return false;
+    } else {
+      $('#status').text("Password updated successfully.");
+      return true;
+    }
+  });
+}
 function countChar(val) {
     var len = val.value.length;
     if (len >= 160) {

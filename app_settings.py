@@ -9,7 +9,6 @@ import json
 import flask
 
 import appdb, app_auth
-#import google_auth
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -35,7 +34,7 @@ def appsettings():
     rows = appdb.getDIDsbyAccount(user_info[0])
     pprint.pprint(user_info)
     accountInfo = appdb.getInfobyEmail(user_info[2])
-    # userDBInfo.getInfobyE
+
     pprint.pprint(accountInfo)
     return flask.render_template('settings.html',
                                 user_info = user_info,
