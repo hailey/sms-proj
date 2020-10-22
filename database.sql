@@ -119,3 +119,4 @@ ALTER TABLE account DROP COLUMN `username`;
 ALTER TABLE account DROP COLUMN `refresh_token`;
 ALTER TABLE account ADD COLUMN `loginid` VARCHAR(255) NULL UNIQUE;
 ALTER TABLE account ADD COLUMN `picture_url` VARCHAR(255) NULL;
+ALTER TABLE messages ADD COLUMN `is_read` BOOL NOT NULL DEFAULT '0';

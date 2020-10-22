@@ -1,12 +1,83 @@
 {% include 'include/header.html' %}
-<title>Login Methods</title>
+<title>Inbox</title>
 <script type="text/javascript">
 $("document").ready(function() {
+  $("#markallread").click(function() {
+    $.get("/markallread",function(data){
+      if (data == 'error') {
+        $('#status').text("Error updating.");
+        return false;
+      } else {
+        $('#status').text("All messages marked read.");
+        return true;
+      }
+    });
+  });
+  $("#markallunread").click(function() {
+    $.get("/markallunread",function(data){
+      if (data == 'error') {
+        $('#status').text("Error updating.");
+        return false;
+      } else {
+        $('#status').text("All messages marked unread.");
+        return true;
+      }
+    });
+  });
+
+  $("#refreshinbox").click(function() {
+    msgResults = "";
+/*    $.getJSON("/getInbox").done(function(result) {
+      alert("YAR");
+    }).fail(function(error ) {
+      alert( "Request Failed: " + error);
+    });*/
+    alert ("start");
+    $.ajax({
+      method: "GET",
+      url: "/getInbox",
+      data: ''
+    }).done(function(msg) {
+      //msgParsed = $.parseJSON(msg);
+      $.each(msgParsed, function(field) {
+        chatHtml = chatHtml + " GOT SOME " + field.msg;
+      });
+      alert(chatHtml);
+      if (msgParsed.error) {
+        alert('Error! Got "' + msgParsed.error + '"');
+      }
+    });
+    $("#chat-body").html(msgResults);
+  });
 });
+
 </script>
 </head>
 {% include 'include/navblock.html' %}
 <div id='inboxpage'>
   <h1>UNDER CONSTRUCTION</h1>
+  <div id='status'></div>
+  <div id='chatlogcontroller'>
+    <input type='button' id='markallread' value='Mark all Read' /> |
+    <input type='button' id='markallunread' value='Mark all Unread' /> |
+    <input type='button' id='refreshinbox' value='Refresh Inbox' />
+  </div>
+  <div id='chat-body'>
+
+  </div>
+  {% for n in results %}
+  <div class='smschatlog'>
+    <div class='ts'>
+      {{n[2]}} Status: {{n[5]}} {{n[0]}}
+    </div>
+    <span class='from'>{{n[6]}}</span> to <span class='to'>{{n[7]}}</span>
+    {% if n[11] == 1 %}
+         Read
+    {% else %}
+         Unread
+    {% endif %}
+      <div class='smsbody'>{{n[9]}}</div>
+  </div>
+  {% endfor %}
 </div>
 {% include 'include/footer.html' %}
