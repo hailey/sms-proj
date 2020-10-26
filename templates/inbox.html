@@ -2,6 +2,11 @@
 <title>Inbox</title>
 <script type="text/javascript">
 $("document").ready(function() {
+  var myLooper = setInterval(myLooper, 15000);
+
+  function myLooper() {
+    getInboxData();
+  }
   $("#markallread").click(function() {
     $.get("/markallread",function(data){
       if (data == 'error') {
@@ -26,44 +31,41 @@ $("document").ready(function() {
   });
 
   $("#refreshinbox").click(function() {
-    msgResults = "";
-/*    $.getJSON("/getInbox").done(function(result) {
-      alert("YAR");
-    }).fail(function(error ) {
-      alert( "Request Failed: " + error);
-    });*/
-    alert ("start");
-    $.ajax({
-      method: "GET",
-      url: "/getInbox",
-      data: ''
-    }).done(function(msg) {
-      //msgParsed = $.parseJSON(msg);
-      $.each(msgParsed, function(field) {
-        chatHtml = chatHtml + " GOT SOME " + field.msg;
-      });
-      alert(chatHtml);
-      if (msgParsed.error) {
-        alert('Error! Got "' + msgParsed.error + '"');
-      }
-    });
-    $("#chat-body").html(msgResults);
+    getInboxData();
   });
-});
 
+  function getInboxData() {
+    msgResults = "";
+      $.getJSON("/getInbox", function(result) {
+        chatHtml = "";
+        $.each(result, function(i, field) {
+          chatHtml = chatHtml +
+            "<div class='smschatlog'><div class='ts'>" +
+            field.timestamp + " Status:" + field.status +
+            "</div> <span class='from'>" +
+            field.fromdid + "</span> to <span class='to'>" +
+            field.targetdid + "</span><div class='smsbody'>" +
+            field.body + "</div></div>";
+        });
+        $("#chat-body").html(chatHtml);
+      }).fail(function(error) {
+        alert("FAIL");
+      });
+  }
+});
 </script>
 </head>
 {% include 'include/navblock.html' %}
 <div id='inboxpage'>
-  <h1>UNDER CONSTRUCTION</h1>
+  <h1>Global Messages Inbox</h1>
   <div id='status'></div>
   <div id='chatlogcontroller'>
     <input type='button' id='markallread' value='Mark all Read' /> |
     <input type='button' id='markallunread' value='Mark all Unread' /> |
     <input type='button' id='refreshinbox' value='Refresh Inbox' />
   </div>
-  <div id='chat-body'>
-
+  <div id="chat-body">
+    <div id="msg"><span class="chat-from">OPERATOR</span>: Welcome!</div>
   </div>
   {% for n in results %}
   <div class='smschatlog'>

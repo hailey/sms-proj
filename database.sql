@@ -120,3 +120,12 @@ ALTER TABLE account DROP COLUMN `refresh_token`;
 ALTER TABLE account ADD COLUMN `loginid` VARCHAR(255) NULL UNIQUE;
 ALTER TABLE account ADD COLUMN `picture_url` VARCHAR(255) NULL;
 ALTER TABLE messages ADD COLUMN `is_read` BOOL NOT NULL DEFAULT '0';
+
+ALTER DATABASE smsproject CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+ALTER TABLE messages CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE account CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE contacts CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE dids CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE phonebase CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE destination CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

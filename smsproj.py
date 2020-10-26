@@ -98,8 +98,9 @@ def manageSingleSMS(number):
             prettynum=prettynum,
             loggedin=True)
 
-#Gotta redo this logic
-@app.route('/getNumber/<int:number>',methods=['GET'])
+
+# Gotta redo this logic
+@app.route('/getNumber/<int:number>', methods=['GET'])
 def getNumMessages(number):
     '''Return the messages from a single DID in json form'''
     # This gets the mssages based on the provided from or two DID
@@ -170,13 +171,13 @@ def markallunread():
     if appdb.updateMarkAllUnread(userid) == 0:
         return json.dumps({'error': 'Nothing to update or error updating the read status.'})
     else:
-        return json.dumps({'status':'success'})
+        return json.dumps({'status': 'success'})
     return False
 
 
 @app.route('/submitMessage', methods=['POST'])
 def submitMessage():
-    #This is to submit a message.
+    '''This is to submit a message.'''
 
     if not app_auth.is_logged_in():
         return json.dumps({'error': 'Unable to send SMS'})
@@ -229,7 +230,7 @@ def inbox():
     return flask.render_template('inbox.html', loggedin=loggedin)
 
 
-@app.route('/getInbox')
+@app.route('/getInbox', methods=['GET'])
 def returnInbox():
     if not app_auth.is_logged_in():
         return json.dumps({'error':
@@ -238,19 +239,23 @@ def returnInbox():
     # userid = flask.session['account_id']
     loginId = flask.session['loginid']
     results = appdb.getSMSbyAccount(loginId, 20)
-    # pprint.pprint(results)
     jsonresult = ''
     i = 0
     for x in results:
         if i >= 1:
-            jsonresult += ',' + json.dumps({"msg": x[9],
-                                            "fromdid": x[6],
-                                            "targetdid": x[7]})
+            jsonresult = jsonresult + ',' + json.dumps({"body": x[9],
+                                                        "fromdid": x[6],
+                                                        "targetdid": x[7],
+                                                        'timestamp': x[4],
+                                                        'status': x[10]})
         else:
-            jsonresult = json.dumps({"msg": x[9],
+            jsonresult = json.dumps({"body": x[9],
                                      "fromdid": x[6],
-                                     "targetdid": x[7]})
+                                     "targetdid": x[7],
+                                     "timestamp": x[4],
+                                     'status': x[10]})
         i += 1
+    jsonresult = '[' + jsonresult + ']'
     return jsonresult
 
 

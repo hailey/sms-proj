@@ -285,11 +285,11 @@ def getAllSMSLog(limit=5, order='desc'):
     return rows
 
 
-def getSMSbyAccount(account_id, limit=5):
+def getSMSbyAccount(login_id, limit=5):
     db = pymysql.connect(host=sqlhost, port=sqlport,
                          user=sqluser, passwd=sqlpass, db=sqldb)
     cur = db.cursor()
-    cur.execute("SELECT messages.* FROM messages, account WHERE messages.account_id=account.id AND ACCOUNT.loginid=%s ORDER BY id DESC LIMIT %s",(account_id, limit))
+    cur.execute("SELECT messages.* FROM messages, account WHERE messages.account_id=account.id AND account.loginid=%s ORDER BY id DESC LIMIT %s",(login_id, limit))
     rows = cur.fetchall()
     db.close()
     return rows

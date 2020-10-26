@@ -13,13 +13,21 @@
       $("#input-chat").val("");
     }
 
+    var myLooper = setInterval(myLooper, 15000);
+
+    function myLooper() {
+      fromDid = $("#source-num").val();
+      getNumMessages(fromDid);
+    }
+
     function getNumMessages(number) {
       $.getJSON("/getNumber/" + number, function(result) {
         chatHtml = "";
         $.each(result, function(i, field) {
           chatHtml = chatHtml +
             "<div class='smschatlog'><div class='ts'>" +
-            field.timestamp + " Status:" + field.status + "</div> <span class='from'>" +
+            field.timestamp + " Status:" + field.status +
+            "</div> <span class='from'>" +
             field.from + "</span> to <span class='to'>" +
             field.to + "</span><div class='smsbody'>" +
             field.body + "</div></div>";
