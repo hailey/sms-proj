@@ -32,3 +32,9 @@ static/img/davecat.jpg
 static/yoyo-medium.gif
 
 static/leo.goldfish.fyi.png
+
+private_key.txt
+
+public_key.txt
+
+vapid_private.pem

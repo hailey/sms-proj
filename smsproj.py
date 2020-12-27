@@ -6,9 +6,12 @@ import time
 import pprint
 import configparser
 import json
-# import re
+import os
 import flask
 
+# import re
+from flask import request, Response, render_template, jsonify, Flask, session
+from pywebpush import webpush, WebPushException
 
 import appdb
 import appsms
@@ -20,8 +23,18 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 app_debug = config.get("app", "debug")
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 app.secret_key = config.get("auth", "FN_FLASK_SECRET_KEY")
+app.config['SECRET_KEY'] = config.get("auth", "FN_FLASK_SECRET_KEY")
+DER_BASE64_ENCODED_PRIVATE_KEY_FILE_PATH = os.path.join(os.getcwd(),"private_key.txt")
+DER_BASE64_ENCODED_PUBLIC_KEY_FILE_PATH = os.path.join(os.getcwd(),"public_key.txt")
+
+VAPID_PRIVATE_KEY = open(DER_BASE64_ENCODED_PRIVATE_KEY_FILE_PATH, "r+").readline().strip("\n")
+VAPID_PUBLIC_KEY = open(DER_BASE64_ENCODED_PUBLIC_KEY_FILE_PATH, "r+").read().strip("\n")
+
+VAPID_CLAIMS = {
+"sub": "mailto:support@athnex.com"
+}
 
 app.register_blueprint(callback_sms.app)
 app.register_blueprint(app_settings.app)
@@ -34,6 +47,13 @@ if app_debug == '1':
 else:
     app.debug = False
 
+def send_web_push(subscription_information, message_body):
+    return webpush(
+        subscription_info=subscription_information,
+        data=message_body,
+        vapid_private_key=VAPID_PRIVATE_KEY,
+        vapid_claims=VAPID_CLAIMS
+    )
 
 @app.route('/')
 def index():
@@ -105,7 +125,7 @@ def getNumMessages(number):
     '''Return the messages from a single DID in json form'''
     # This gets the mssages based on the provided from or two DID
     if not app_auth.is_logged_in():
-        return json.dumps({'error': 'Unable to send SMS, you are not logged in'})
+        return json.dumps({'error': 'You are not logged in.'})
 
     # We need to take and compare the authIDforDID, gotta add use id
     # to getNumSMSLog and pull the id from result.
@@ -174,6 +194,20 @@ def markallunread():
         return json.dumps({'status': 'success'})
     return False
 
+@app.route("/subscription/", methods=["GET", "POST"])
+def subscription():
+    """
+        POST creates a subscription
+        GET returns vapid public key which clients uses to send around push notification
+    """
+
+    if request.method == "GET":
+        return Response(response=json.dumps({"public_key": VAPID_PUBLIC_KEY}),
+            headers={"Access-Control-Allow-Origin": "*"}, content_type="application/json")
+
+    subscription_token = request.get_json("subscription_token")
+    return Response(status=201, mimetype="application/json")
+
 
 @app.route('/submitMessage', methods=['POST'])
 def submitMessage():
@@ -215,6 +249,24 @@ def submitMessage():
                                  "targetdid": targetDid})
     return returndata
 
+@app.route("/push_v1/",methods=['POST'])
+def push_v1():
+    message = "Push Test v1"
+    print("is_json",request.is_json)
+
+    if not request.json or not request.json.get('sub_token'):
+        return jsonify({'failed':1})
+
+    print("request.json",request.json)
+
+    token = request.json.get('sub_token')
+    try:
+        token = json.loads(token)
+        send_web_push(token, message)
+        return jsonify({'success':1})
+    except Exception as e:
+        print("error",e)
+        return jsonify({'failed':str(e)})
 
 @app.route('/testAjax')
 def testAjax():
