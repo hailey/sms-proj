@@ -103,7 +103,7 @@ CREATE TABLE `phonebase` (
 	INDEX `pb_phonebaseID` (`contact_id`),
 	INDEX `index_archivedNumbers` (`archived`),
 	CONSTRAINT `pb_accountassoc`
-		FOREIGN KEY (`contact_id`) REFERENCES account (id)
+    FOREIGN KEY (`contact_id`) REFERENCES account (id)
 )
 COLLATE='utf8_bin'
 ENGINE=InnoDB;
@@ -129,3 +129,5 @@ ALTER TABLE contacts CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ALTER TABLE dids CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE phonebase CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE destination CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE `account` ADD COLUMN `subscription_token` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_bin' AFTER `picture_url`;

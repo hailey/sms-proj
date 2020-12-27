@@ -202,13 +202,12 @@ def subscription():
     ''' POST creates a subscription
         GET returns vapid public key which clients uses to send around push
         notification'''
+    subscription_token = request.get_json("subscription_token")
+    appdb.updateSubscriptionToken(flask.session['account_id'], subscription_token)
 
     if request.method == "GET":
         return Response(response=json.dumps({"public_key": VAPID_PUBLIC_KEY}),
             headers={"Access-Control-Allow-Origin": "*"}, content_type="application/json")
-
-    subscription_token = request.get_json("subscription_token")
-    appdb.updateSubscriptionToken(flask.session['account_id'], subscription_token)
     return Response(status=201, mimetype="application/json")
 
 

@@ -58,7 +58,6 @@ function updateSubscriptionOnServer(subscription) {
 function subscribeUser() {
 	const applicationServerPublicKey = localStorage.getItem('applicationServerPublicKey');
 	const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
-	alert("TEST");
 	swRegistration.pushManager.subscribe({
 			userVisibleOnly: true,
 			applicationServerKey: applicationServerKey
