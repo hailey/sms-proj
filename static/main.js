@@ -58,6 +58,7 @@ function updateSubscriptionOnServer(subscription) {
 function subscribeUser() {
 	const applicationServerPublicKey = localStorage.getItem('applicationServerPublicKey');
 	const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
+	alert("TEST");
 	swRegistration.pushManager.subscribe({
 			userVisibleOnly: true,
 			applicationServerKey: applicationServerKey
@@ -140,23 +141,6 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
 } else {
 	console.warn('Push meapplicationServerPublicKeyssaging is not supported');
 	pushButton.textContent = 'Push Not Supported';
-}
-
-function push_message() {
-	console.log("sub_token", localStorage.getItem('sub_token'));
-	$.ajax({
-		type: "POST",
-		url: "/push_v1/",
-		contentType: 'application/json; charset=utf-8',
-		dataType:'json',
-		data: JSON.stringify({'sub_token':localStorage.getItem('sub_token')}),
-		success: function( data ){
-			console.log("success",data);
-    },
-    error: function( jqXhr, textStatus, errorThrown ){
-        console.log("error",errorThrown);
-    }
-	});
 }
 
 $(document).ready(function(){

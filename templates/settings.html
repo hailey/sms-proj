@@ -40,5 +40,10 @@
     <li><a href='/single/{{ item[0] }}'>{{ item[0] }}</a></li>
     {% endfor %}
   </ul>
+  <div id="subscribePush">
+    <button class="js-push-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onclick="subscribeUser()">
+      Enable Push Messaging
+    </button>
+  </div>
 </div>
 {% include 'include/footer.html' %}

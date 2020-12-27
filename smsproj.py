@@ -26,6 +26,8 @@ app_debug = config.get("app", "debug")
 app = Flask(__name__)
 app.secret_key = config.get("auth", "FN_FLASK_SECRET_KEY")
 app.config['SECRET_KEY'] = config.get("auth", "FN_FLASK_SECRET_KEY")
+
+# VAPID keys for push notifications
 DER_BASE64_ENCODED_PRIVATE_KEY_FILE_PATH = os.path.join(os.getcwd(),"private_key.txt")
 DER_BASE64_ENCODED_PUBLIC_KEY_FILE_PATH = os.path.join(os.getcwd(),"public_key.txt")
 
@@ -194,18 +196,19 @@ def markallunread():
         return json.dumps({'status': 'success'})
     return False
 
+
 @app.route("/subscription/", methods=["GET", "POST"])
 def subscription():
-    """
-        POST creates a subscription
-        GET returns vapid public key which clients uses to send around push notification
-    """
+    ''' POST creates a subscription
+        GET returns vapid public key which clients uses to send around push
+        notification'''
 
     if request.method == "GET":
         return Response(response=json.dumps({"public_key": VAPID_PUBLIC_KEY}),
             headers={"Access-Control-Allow-Origin": "*"}, content_type="application/json")
 
     subscription_token = request.get_json("subscription_token")
+    appdb.updateSubscriptionToken(flask.session['account_id'], subscription_token)
     return Response(status=201, mimetype="application/json")
 
 
@@ -249,24 +252,24 @@ def submitMessage():
                                  "targetdid": targetDid})
     return returndata
 
-@app.route("/push_v1/",methods=['POST'])
-def push_v1():
-    message = "Push Test v1"
-    print("is_json",request.is_json)
+#@app.route("/push_v1/",methods=['POST'])
+#def push_v1():
+#    message = "Push Test v1"
+#    print("is_json",request.is_json)
 
-    if not request.json or not request.json.get('sub_token'):
-        return jsonify({'failed':1})
-
-    print("request.json",request.json)
-
-    token = request.json.get('sub_token')
-    try:
-        token = json.loads(token)
-        send_web_push(token, message)
-        return jsonify({'success':1})
-    except Exception as e:
-        print("error",e)
-        return jsonify({'failed':str(e)})
+#    if not request.json or not request.json.get('sub_token'):
+#        return jsonify({'failed':1})
+#
+#    print("request.json",request.json)
+#
+#    token = request.json.get('sub_token')
+#    try:
+#        token = json.loads(token)
+#        send_web_push(token, message)
+#        return jsonify({'success':1})
+#    except Exception as e:
+#        print("error",e)
+#        return jsonify({'failed':str(e)})
 
 @app.route('/testAjax')
 def testAjax():

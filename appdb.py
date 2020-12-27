@@ -273,6 +273,19 @@ def getAccountId(uniqueID):
     return False
 
 
+def getSubToken(account_id):
+
+    db = pymysql.connect(host=sqlhost, port=sqlport,
+                         user=sqluser, passwd=sqlpass, db=sqldb)
+    cur = db.cursor()
+    cur.execute("SELECT subscription_token FROM account WHERE id =%s", (account_id))
+    data = cur.fetchone()
+    db.close()
+    if not data:
+        return False
+    return data[0]
+
+
 def getAllSMSLog(limit=5, order='desc'):
     '''This gets the last X amount of logs from all numbers.'''
     db = pymysql.connect(host=sqlhost, port=sqlport,
@@ -365,6 +378,21 @@ def updateMsgTimestamp(msg_id, timestamp):
     db.close()
     return affected_count
 
+
+def updateSubscriptionToken(account_id, token):
+    '''We need to store the token (I think) so that it can be used to send
+    messages to single endpoints rather than everyone. '''
+    db = pymysql.connect(host=sqlhost, port=sqlport,
+                         user=sqluser, passwd=sqlpass, db=sqldb)
+
+    cur = db.cursor()
+    affected_count = cur.execute("UPDATE `account` SET `subscription_token`=%s WHERE `account_id`=%s",(account_id, token))
+
+    db.commit()
+    db.close()
+    if not data:
+        return False
+    return affected_count
 
 def updatePass(account_id, origpass, newpass):
     '''updatePass(origpass, newpass) this assumes newpass has been verified
