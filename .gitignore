@@ -38,3 +38,9 @@ private_key.txt
 public_key.txt
 
 vapid_private.pem
+Scripts/
+Lib/
+bin/
+include/
+
+pyvenv.cfg

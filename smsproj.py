@@ -11,6 +11,7 @@ import flask
 
 # import re
 from flask import request, Response, render_template, jsonify, Flask, session
+from waitress import serve
 from pywebpush import webpush, WebPushException
 
 import appdb
@@ -359,7 +360,5 @@ def about():
 
 
 if __name__ == '__main__':
-    app.run(
-        host="0.0.0.0",
-        port=int("8890")
-    )
+    #app.run(host="0.0.0.0", port=int("8890"))
+    serve(app, host='0.0.0.0', port=5000)
