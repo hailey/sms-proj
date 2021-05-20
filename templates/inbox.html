@@ -40,7 +40,7 @@ $("document").ready(function() {
         chatHtml = "";
         $.each(result, function(i, field) {
           chatHtml = chatHtml +
-            "<div class='smschatlog'><div class='ts'>" +
+            "<div class='smschatlog " + field.direction + "'><div class='ts'>" +
             field.timestamp + " Status:" + field.status +
             "</div> <span class='from'>" +
             field.fromdid + "</span> to <span class='to'>" +

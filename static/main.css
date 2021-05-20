@@ -1,6 +1,6 @@
 body {
-    background-color: #1D2F2E;
-    color: #ACF39D;
+    background-color: #CDB4DB;
+    color: #000;
 }
 /************
  * 1D2F2E
@@ -10,9 +10,9 @@ body {
  * AF3E4D
  ************/
 
-a {color: #D9FFF8;}
-a:visited {color: #C7FFDA;}
-a:hover, a:active {color: C4F4C7;}
+a {color: #138;}
+a:visited {color: #238;}
+a:hover, a:active {color: #34;}
 a:disabled {color: #9BB291;}
 
 
@@ -20,9 +20,18 @@ a:disabled {color: #9BB291;}
     font-size: 1em;
 }
 
+.inbound {
+  background-color: #FFC8DD;
+  color: #000;
+}
+
+.outbound {
+  background-color: #FFAFCC;
+}
+
 .to,.from {
     font-size: 2em;
-    color: #ACF39D;
+    color: #000;
 }
 
 .smschatlog {
@@ -58,11 +67,12 @@ a:disabled {color: #9BB291;}
 }
 .smsbody {
     font-size:2em;
-    color: #B0C592;
+    color: #000;
 }
 #bodypane {
   float: left;
   width: 80%;
+  background-color: #CDB4DB;
 }
 #footer {
   align-content: center;
@@ -70,7 +80,7 @@ a:disabled {color: #9BB291;}
   width: 100%;
 }
 #navblock {
-  background-color: #2D3F3E;
+  background-color: #CDB4DB;
   width: 15%;
   float: left;
   margin:5px 10px 20px 20px;

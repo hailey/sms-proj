@@ -146,13 +146,15 @@ def getNumMessages(number):
                                                   'from': prettyfrom,
                                                   'body': line[9],
                                                   'timestamp': line[4],
-                                                  'status': line[10]})
+                                                  'status': line[10],
+                                                  'direction': line[5]})
         else:
             msgjson = json.dumps({'to': prettyto,
                                   'from': prettyfrom,
                                   'body': line[9],
                                   'timestamp': line[4],
-                                  'status': line[10]})
+                                  'status': line[10],
+                                  'direction': line[5]})
         i += 1
     msgArrayJson = '[' + msgjson + ']'
     return msgArrayJson
@@ -302,13 +304,15 @@ def returnInbox():
                                                         "fromdid": x[6],
                                                         "targetdid": x[7],
                                                         'timestamp': x[4],
-                                                        'status': x[10]})
+                                                        'status': x[10],
+                                                        'direction': x[5]})
         else:
             jsonresult = json.dumps({"body": x[9],
                                      "fromdid": x[6],
                                      "targetdid": x[7],
                                      "timestamp": x[4],
-                                     'status': x[10]})
+                                     'status': x[10],
+                                     'direction': x[5]})
         i += 1
     jsonresult = '[' + jsonresult + ']'
     return jsonresult

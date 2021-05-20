@@ -61,3 +61,16 @@ function countChar(val) {
       $('#charNum').text(160 - len);
     }
 }
+
+// Turns 1 (951) 555-1212 to 19515551212
+function uglifyNumber(number) {
+  var re = /\((\d{3})\)\s(\d{3})-(\d{4})/;
+  var rez = re.exec(number);
+  if (!rez) {
+        $("#alert-messages").text("failed parsing uglify.");
+  } else {
+      ugly = "1" + rez[1] + rez[2] + rez[3];
+      return ugly;
+  }
+    return false;
+}

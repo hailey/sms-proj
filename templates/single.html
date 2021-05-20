@@ -20,12 +20,13 @@
       getNumMessages(fromDid);
     }
 
+
     function getNumMessages(number) {
       $.getJSON("/getNumber/" + number, function(result) {
         chatHtml = "";
         $.each(result, function(i, field) {
           chatHtml = chatHtml +
-            "<div class='smschatlog'><div class='ts'>" +
+            "<div class='smschatlog " + field.direction + "'><div class='ts'>" +
             field.timestamp + " Status:" + field.status +
             "</div> <span class='from'>" +
             field.from + "</span> to <span class='to'>" +
