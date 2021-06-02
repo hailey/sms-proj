@@ -48,7 +48,7 @@ snowballstemmer==2.0.0
 SQLAlchemy==1.4.15
 toml==0.10.2
 ujson==4.0.2
-urllib3==1.26.4
+urllib3==1.26.5
 virtualenv==20.4.6
 waitress==1.4.4
 Werkzeug==2.0.1
