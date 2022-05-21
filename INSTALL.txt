@@ -20,3 +20,10 @@ Create the enviroment
 
 Edit config.ini
 Edit public_key.txt and private_key.txt. I dont know what these are just yet.
+
+LINUX ENV Install
+Create enviroment
+~ python3 -m venv venv
+~ source ./venv/bin/activate
+~ pip install -r requirements.txt
+~ gunicorn smsproj:app
