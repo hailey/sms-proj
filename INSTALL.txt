@@ -1,0 +1,22 @@
+WINDOWS ISNTALL
+
+Create the enviroment
+~ git clone https://github.com/hailey/sms-proj.git smsproj
+~ py -m venv venv smsproj
+~ ./smsproj/Scripts/activate.bat
+~ git clone https://github.com/flowroute/flowroute-sdk-v3-python.git
+
+### This might not be needed, use after this instead
+~ cd flowroute-sdk-v3-python
+~ pip3 install -r requirements.txt
+#USE This
+~  python.exe -m pip install .\flowroute-sdk-v3-python\
+
+# For me I got....
+# pywebpush 1.11.0 requires requests>=2.21.0, but you have requests 2.9.1 which is incompatible.
+
+
+~ cd ..
+
+Edit config.ini
+Edit public_key.txt and private_key.txt. I dont know what these are just yet.
