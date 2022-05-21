@@ -280,11 +280,7 @@ def testAjax():
 
 @app.route('/inbox')
 def inbox():
-    if app_auth.is_logged_in():
-        loggedin = True
-    else:
-        loggedin = False
-    return flask.render_template('inbox.html', loggedin=loggedin)
+    return short_render('inbox.html')
 
 
 @app.route('/getInbox', methods=['GET'])
@@ -322,46 +318,39 @@ def returnInbox():
 def launchPage():
     if app_debug == '1':
         pprint.pprint(flask.session)
-    if app_auth.is_logged_in():
-        loggedin = True
-    else:
-        loggedin = False
-
     if app_debug == '1':
         pprint.pprint(loggedin)
         pprint.pprint("loggedin")
 
-    return flask.render_template('launch.html', loggedin=loggedin)
+    return short_render('launch.html')
 
 
 @app.route('/pp')
 def PrivacyPolicy():
     if app_debug == '1':
         pprint.pprint(flask.session)
-    if app_auth.is_logged_in():
-        loggedin = True
-    else:
-        loggedin = False
-    return flask.render_template('pp.html', loggedin=loggedin)
+    return short_render('pp.html')
 
 
 @app.route('/tos')
 def tos():
-    if app_auth.is_logged_in():
-        loggedin = True
-    else:
-        loggedin = False
-    return flask.render_template('tos.html', loggedin=loggedin)
+    return short_render('tos.html')
 
 
 @app.route('/about')
 def about():
+    return short_render('about.html')
+
+@app.route('/matrix')
+def matrix_info():
+    return short_render('matrix.html')
+
+def short_render(template_file):
     if app_auth.is_logged_in():
         loggedin = True
     else:
         loggedin = False
-    return flask.render_template('about.html', loggedin=loggedin)
-
+    return flask.render_template(template_file, loggedin=loggedin)
 
 if __name__ == '__main__':
     #app.run(host="0.0.0.0", port=int("8890"))

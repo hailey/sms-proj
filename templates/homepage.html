@@ -10,25 +10,19 @@ $("document").ready(function() {
 <h1>TheWords.faith Home Page</h1>
 <img src='static/thewords.faith-favico-v1.2.png' alt='TheWords.Faith Alpha Logo' />
 <div id='indexabout'>
-  <p>TheWords.faith is a communications site and integrated into our <a href="https://matrix.org">Matrix</a> server.</p>
-  <p>You can connect to the matrix home server with any standard matrix client by setting your homeserver to <a href="https://thewords.faith">thewords.faith</a>.
-     <a href="https://thewords.faith">TheWords.faith</a> matrix server should support email verification as well as VoIP and Video calls.</p>
-  <p>Any Matrix compattable client will work. Our offical one is at <a href="https://app.thewords.faith">app.thewords.faith</a> however are several other web clients such as, <a href="https://app.element.io/#/welcome">Element Web</a>,
-     <a href="https://app.schildi.chat/">Schildi Chat Web</a>, <a href="https://app.cinny.in/">Cinny</a> or my favorite <a href="https://fluffychat.im/web/#/home">fluffychat.im</a>. For native apps I suggest
-    <a href="https://schildi.chat/">SchildiChat</a> for your phone or desktop.
-    Or my favorite for smaller screens, <a href="https://fluffychat.im/en/">fluffychat.im</a> for android/ios.</p>
-    <p>For a list of all the clients available check out <a href="https://matrix.org/docs/projects/try-matrix-now/">matrix clients</a>.</p>
+  <p>TheWords.faith is a communications site and integrated into our <a href="https://matrix.org">Matrix</a> service.</p>
   <p>Right now we are not even in beta, and the service isn't ready for the world yet.
     At least until we get some more testers.</p>
   <p>This site, in the end, will allow users to send text messages to the US for a low monthly fee.
     This allows businesses or end users who want privacy minded or a business sms number that
     allows you to stay in touch with your customers by providing SMS and eventually MMS support.</p>
-    <h3>This is a public service. There are no logs stored only encrypted datasets. Please be respectful to everyone and their equipment as this is provided as a public service.</h3>
 </div>
-<div id='advert'>
-  <p>We are still looking for testers or developers so, if you're interested and don't mind a work
+{% include 'include/matrix-info.html' %}
+<h3>This is a public service. There are no logs stored only encrypted datasets. Please be respectful to everyone and their equipment as this is provided as a public service.</h3>
+<!--<div id='advert'>
+  <p>We are still looking for anyone willing to testers or developers so, if you're interested and don't mind a work
     in progress, then maybe you can help out by sending an email to submit at athnex dot com. Or better yet, message me on our
   <a href='https://github.com/hailey/sms-proj'>GitHub</a>. This is a side project of mine so development will be slow
   for as long as its only me. Thanks for your interest!</p>
-</div>
+</div>-->
 {% include 'include/footer.html' %}

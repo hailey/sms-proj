@@ -1,6 +1,6 @@
 body {
-    background-color: #CDB4DB;
-    color: #000;
+    background-color: #1D2F2E;
+    color: #fff;
 }
 /************
  * 1D2F2E
@@ -10,10 +10,10 @@ body {
  * AF3E4D
  ************/
 
-a {color: #138;}
-a:visited {color: #238;}
-a:hover, a:active {color: #34;}
-a:disabled {color: #9BB291;}
+a {color: #ACF39D;}
+a:visited {color: #B0C592;}
+a:hover, a:active {color: #AF3E4D;}
+a:disabled {color: #A97C73;}
 
 
 .ts {
@@ -72,7 +72,7 @@ a:disabled {color: #9BB291;}
 #bodypane {
   float: left;
   width: 80%;
-  background-color: #CDB4DB;
+  background-color: #1D2F2E;
 }
 #footer {
   align-content: center;
@@ -80,7 +80,7 @@ a:disabled {color: #9BB291;}
   width: 100%;
 }
 #navblock {
-  background-color: #CDB4DB;
+  background-color: #2E413F;
   width: 15%;
   float: left;
   margin:5px 10px 20px 20px;
