@@ -318,9 +318,6 @@ def returnInbox():
 def launchPage():
     if app_debug == '1':
         pprint.pprint(flask.session)
-    if app_debug == '1':
-        pprint.pprint(loggedin)
-        pprint.pprint("loggedin")
 
     return short_render('launch.html')
 
@@ -346,6 +343,11 @@ def matrix_info():
     return short_render('matrix.html')
 
 def short_render(template_file):
+    # debug infos.
+    if app_debug == '1':
+        pprint.pprint(loggedin)
+        pprint.pprint("loggedin")
+
     if app_auth.is_logged_in():
         loggedin = True
     else:
