@@ -14,16 +14,19 @@ Create the enviroment
 
 # For me I got....
 # pywebpush 1.11.0 requires requests>=2.21.0, but you have requests 2.9.1 which is incompatible.
-
-
 ~ cd ..
 
 Edit config.ini
 Edit public_key.txt and private_key.txt. I dont know what these are just yet.
 
+~ waitress-serve.exe --listen=*:5000 smsproj:app
+
 LINUX ENV Install
 Create enviroment
 ~ python3 -m venv venv
+Then activate enviroment and install requirements.
 ~ source ./venv/bin/activate
 ~ pip install -r requirements.txt
+
+Then when you're ready you can run the following command.
 ~ gunicorn smsproj:app
