@@ -343,15 +343,15 @@ def matrix_info():
     return short_render('matrix.html')
 
 def short_render(template_file):
+    if app_auth.is_logged_in():
+        loggedin = True
+    else:
+        loggedin = False
     # debug infos.
     if app_debug == '1':
         pprint.pprint(loggedin)
         pprint.pprint("loggedin")
 
-    if app_auth.is_logged_in():
-        loggedin = True
-    else:
-        loggedin = False
     return flask.render_template(template_file, loggedin=loggedin)
 
 if __name__ == '__main__':
