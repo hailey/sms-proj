@@ -349,8 +349,8 @@ def short_render(template_file):
         loggedin = False
     # debug infos.
     if app_debug == '1':
-        pprint.pprint(loggedin)
         pprint.pprint("loggedin")
+        pprint.pprint(loggedin)
 
     return flask.render_template(template_file, loggedin=loggedin)
 
